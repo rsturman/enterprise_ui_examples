@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian & Co. — Our Intranet</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ========================================
+     IBM CARBON DESIGN SYSTEM — TOKENS
+     ======================================== */
+  :root {
+    /* Carbon Gray Scale */
+    --cds-gray-10: #f4f4f4;
+    --cds-gray-20: #e0e0e0;
+    --cds-gray-30: #c6c6c6;
+    --cds-gray-50: #8d8d8d;
+    --cds-gray-60: #6f6f6f;
+    --cds-gray-70: #525252;
+    --cds-gray-80: #393939;
+    --cds-gray-90: #262626;
+    --cds-gray-100: #161616;
+
+    /* Carbon Blue */
+    --cds-blue-20: #d0e2ff;
+    --cds-blue-40: #78a9ff;
+    --cds-blue-60: #0f62fe;
+    --cds-blue-70: #0043ce;
+    --cds-blue-80: #002d9c;
+
+    /* Carbon Support */
+    --cds-teal-50: #009d9a;
+    --cds-teal-60: #007d79;
+    --cds-green-50: #24a148;
+    --cds-purple-60: #8a3ffc;
+    --cds-white: #ffffff;
+
+    /* Carbon Spacing Scale */
+    --cds-spacing-03: 0.5rem;
+    --cds-spacing-04: 0.75rem;
+    --cds-spacing-05: 1rem;
+    --cds-spacing-06: 1.5rem;
+    --cds-spacing-07: 2rem;
+    --cds-spacing-08: 2.5rem;
+    --cds-spacing-09: 3rem;
+    --cds-spacing-10: 4rem;
+    --cds-spacing-11: 5rem;
+    --cds-spacing-12: 6rem;
+    --cds-spacing-13: 10rem;
+
+    /* Layout */
+    --max-width: 1584px;
+    --content-width: 1200px;
+  }
+
+  /* ========================================
+     RESET & BASE
+     ======================================== */
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--cds-gray-100);
+    background: var(--cds-white);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  a {
+    color: var(--cds-blue-60);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* ========================================
+     CARBON TYPOGRAPHY
+     ======================================== */
+  .heading-01 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.16px;
+    line-height: 1.3;
+  }
+
+  .heading-02 {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+
+  .heading-03 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+
+  .heading-04 {
+    font-size: 1.75rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.3;
+  }
+
+  .heading-05 {
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
+
+  .display-01 {
+    font-size: 2.625rem;
+    font-weight: 300;
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+
+  .display-02 {
+    font-size: 3.375rem;
+    font-weight: 300;
+    letter-spacing: 0;
+    line-height: 1.15;
+  }
+
+  .body-long-01 {
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.16px;
+    line-height: 1.7;
+  }
+
+  .body-long-02 {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.7;
+  }
+
+  .label-01 {
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.32px;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  /* ========================================
+     LAYOUT — CARBON 2x GRID
+     ======================================== */
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--cds-spacing-07);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: var(--cds-spacing-07);
+  }
+
+  .col-span-4 { grid-column: span 4; }
+  .col-span-6 { grid-column: span 6; }
+  .col-span-8 { grid-column: span 8; }
+  .col-span-10 { grid-column: span 10; }
+  .col-span-12 { grid-column: span 12; }
+  .col-span-16 { grid-column: span 16; }
+  .col-start-2 { grid-column-start: 2; }
+  .col-start-3 { grid-column-start: 3; }
+  .col-start-5 { grid-column-start: 5; }
+
+  /* ========================================
+     HEADER / NAV — CARBON UI SHELL
+     ======================================== */
+  .cds-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 48px;
+    background: var(--cds-gray-100);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--cds-spacing-05);
+    border-bottom: 1px solid var(--cds-gray-80);
+  }
+
+  .cds-header__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--cds-spacing-04);
+    color: var(--cds-white);
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.1px;
+    height: 100%;
+    padding-right: var(--cds-spacing-07);
+    border-right: 1px solid var(--cds-gray-80);
+  }
+
+  .cds-header__logo svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--cds-white);
+  }
+
+  .cds-header__nav {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-left: var(--cds-spacing-03);
+  }
+
+  .cds-header__nav a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 var(--cds-spacing-05);
+    color: var(--cds-gray-30);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.16px;
+    text-decoration: none;
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .cds-header__nav a:hover {
+    background: var(--cds-gray-80);
+    color: var(--cds-white);
+    text-decoration: none;
+  }
+
+  .cds-header__nav a.active {
+    color: var(--cds-white);
+    border-bottom-color: var(--cds-blue-60);
+  }
+
+  .cds-header__badge {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--cds-spacing-04);
+    color: var(--cds-gray-30);
+    font-size: 0.75rem;
+    letter-spacing: 0.32px;
+  }
+
+  .cds-header__badge .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--cds-green-50);
+    border-radius: 50%;
+  }
+
+  /* ========================================
+     HERO SECTION
+     ======================================== */
+  .hero {
+    margin-top: 48px;
+    position: relative;
+    height: 85vh;
+    min-height: 600px;
+    max-height: 900px;
+    background: var(--cds-gray-100);
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .hero__image {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(22,22,22,0.15) 0%, rgba(22,22,22,0.0) 30%, rgba(22,22,22,0.6) 70%, rgba(22,22,22,0.95) 100%),
+      url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1920&q=80') center center / cover no-repeat;
+    animation: heroZoom 25s ease-in-out infinite alternate;
+  }
+
+  @keyframes heroZoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 2;
+    padding: var(--cds-spacing-12) var(--cds-spacing-07) var(--cds-spacing-10);
+    max-width: var(--max-width);
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .hero__eyebrow {
+    color: var(--cds-blue-40);
+    margin-bottom: var(--cds-spacing-05);
+    display: flex;
+    align-items: center;
+    gap: var(--cds-spacing-04);
+  }
+
+  .hero__eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--cds-blue-40);
+  }
+
+  .hero__title {
+    color: var(--cds-white);
+    font-size: 3.75rem;
+    font-weight: 300;
+    line-height: 1.1;
+    max-width: 700px;
+    margin-bottom: var(--cds-spacing-06);
+  }
+
+  .hero__title strong {
+    font-weight: 600;
+  }
+
+  .hero__subtitle {
+    color: var(--cds-gray-30);
+    max-width: 520px;
+    margin-bottom: var(--cds-spacing-08);
+  }
+
+  .hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cds-spacing-04);
+    padding: 14px 64px 14px 16px;
+    background: var(--cds-blue-60);
+    color: var(--cds-white);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.16px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .hero__cta:hover {
+    background: var(--cds-blue-70);
+    text-decoration: none;
+  }
+
+  .hero__cta svg {
+    position: absolute;
+    right: 16px;
+    width: 20px;
+    height: 20px;
+    fill: var(--cds-white);
+    transition: transform 0.2s ease;
+  }
+
+  .hero__cta:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* ========================================
+     SECTION LAYOUTS
+     ======================================== */
+  .section {
+    padding: var(--cds-spacing-12) 0;
+  }
+
+  .section--lg {
+    padding: var(--cds-spacing-13) 0;
+  }
+
+  .section--gray {
+    background: var(--cds-gray-10);
+  }
+
+  .section--dark {
+    background: var(--cds-gray-100);
+    color: var(--cds-white);
+  }
+
+  .section__eyebrow {
+    color: var(--cds-blue-60);
+    margin-bottom: var(--cds-spacing-04);
+  }
+
+  .section--dark .section__eyebrow {
+    color: var(--cds-blue-40);
+  }
+
+  .section__title {
+    margin-bottom: var(--cds-spacing-06);
+  }
+
+  .section__intro {
+    color: var(--cds-gray-60);
+    max-width: 640px;
+  }
+
+  .section--dark .section__intro {
+    color: var(--cds-gray-30);
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--cds-gray-20);
+    margin: 0;
+  }
+
+  .section--dark .divider {
+    border-color: var(--cds-gray-80);
+  }
+
+  /* ========================================
+     CEO LETTER
+     ======================================== */
+  .ceo {
+    padding: var(--cds-spacing-13) 0;
+  }
+
+  .ceo__layout {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: var(--cds-spacing-07);
+    align-items: start;
+  }
+
+  .ceo__portrait-col {
+    grid-column: 1 / 6;
+    position: sticky;
+    top: 100px;
+  }
+
+  .ceo__portrait-wrapper {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--cds-gray-20);
+  }
+
+  .ceo__portrait-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ceo__portrait-caption {
+    margin-top: var(--cds-spacing-05);
+    padding-top: var(--cds-spacing-05);
+    border-top: 1px solid var(--cds-gray-20);
+  }
+
+  .ceo__portrait-caption .name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: 2px;
+  }
+
+  .ceo__portrait-caption .role {
+    color: var(--cds-gray-60);
+    font-size: 0.8125rem;
+  }
+
+  .ceo__content-col {
+    grid-column: 7 / 15;
+  }
+
+  .ceo__letter {
+    margin-top: var(--cds-spacing-08);
+  }
+
+  .ceo__letter p {
+    color: var(--cds-gray-70);
+    margin-bottom: var(--cds-spacing-06);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .ceo__letter p:first-of-type::first-letter {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 3.5rem;
+    float: left;
+    line-height: 1;
+    margin-right: 8px;
+    margin-top: 4px;
+    color: var(--cds-gray-100);
+    font-weight: 500;
+  }
+
+  .ceo__signature {
+    margin-top: var(--cds-spacing-07);
+    padding-top: var(--cds-spacing-07);
+    border-top: 1px solid var(--cds-gray-20);
+  }
+
+  .ceo__signature .sig-name {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .ceo__signature .sig-title {
+    color: var(--cds-gray-60);
+    font-size: 0.875rem;
+  }
+
+  .pull-quote {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--cds-gray-100);
+    border-left: 4px solid var(--cds-blue-60);
+    padding-left: var(--cds-spacing-06);
+    margin: var(--cds-spacing-08) 0;
+  }
+
+  /* ========================================
+     MISSION & VISION
+     ======================================== */
+  .mv__grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: var(--cds-spacing-07);
+  }
+
+  .mv__card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mv__card--mission {
+    grid-column: 1 / 9;
+  }
+
+  .mv__card--vision {
+    grid-column: 9 / 17;
+  }
+
+  .mv__card-image {
+    height: 360px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .mv__card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .mv__card:hover .mv__card-image img {
+    transform: scale(1.03);
+  }
+
+  .mv__card-image::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(22,22,22,0.5), transparent);
+  }
+
+  .mv__card-body {
+    padding: var(--cds-spacing-07) 0 var(--cds-spacing-05);
+  }
+
+  .mv__card-label {
+    color: var(--cds-blue-60);
+    margin-bottom: var(--cds-spacing-04);
+    display: flex;
+    align-items: center;
+    gap: var(--cds-spacing-03);
+  }
+
+  .mv__card-label::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--cds-blue-60);
+    display: block;
+  }
+
+  .mv__card--vision .mv__card-label::before {
+    border-radius: 50%;
+  }
+
+  .mv__card-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.35;
+    margin-bottom: var(--cds-spacing-05);
+    color: var(--cds-gray-100);
+  }
+
+  .mv__card-text {
+    color: var(--cds-gray-60);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    max-width: 500px;
+  }
+
+  .mv__detail {
+    margin-top: var(--cds-spacing-10);
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: var(--cds-spacing-07);
+  }
+
+  .mv__detail-left {
+    grid-column: 1 / 5;
+  }
+
+  .mv__detail-right {
+    grid-column: 5 / 14;
+  }
+
+  .mv__detail-right p {
+    color: var(--cds-gray-70);
+    font-size: 1rem;
+    line-height: 1.75;
+    margin-bottom: var(--cds-spacing-06);
+  }
+
+  /* ========================================
+     VALUES
+     ======================================== */
+  .values__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--cds-gray-80);
+    margin-top: var(--cds-spacing-09);
+  }
+
+  .value-card {
+    background: var(--cds-gray-90);
+    padding: var(--cds-spacing-08) var(--cds-spacing-07);
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease;
+  }
+
+  .value-card:hover {
+    background: var(--cds-gray-80);
+  }
+
+  .value-card__number {
+    font-size: 4rem;
+    font-weight: 300;
+    color: var(--cds-gray-70);
+    line-height: 1;
+    margin-bottom: var(--cds-spacing-09);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .value-card__icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: var(--cds-spacing-06);
+  }
+
+  .value-card__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .value-card__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--cds-white);
+    margin-bottom: var(--cds-spacing-05);
+  }
+
+  .value-card__desc {
+    color: var(--cds-gray-30);
+    font-size: 0.875rem;
+    line-height: 1.65;
+    margin-top: auto;
+  }
+
+  .value-card__accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    transition: background 0.3s ease;
+  }
+
+  .value-card:nth-child(1):hover .value-card__accent { background: var(--cds-blue-60); }
+  .value-card:nth-child(2):hover .value-card__accent { background: var(--cds-teal-50); }
+  .value-card:nth-child(3):hover .value-card__accent { background: var(--cds-green-50); }
+  .value-card:nth-child(4):hover .value-card__accent { background: var(--cds-purple-60); }
+
+  /* ========================================
+     STRATEGY
+     ======================================== */
+  .strategy__hero {
+    position: relative;
+    height: 420px;
+    overflow: hidden;
+    margin-bottom: var(--cds-spacing-10);
+  }
+
+  .strategy__hero-img {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, rgba(15,98,254,0.85), rgba(0,67,206,0.7)),
+      url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80') center center / cover no-repeat;
+  }
+
+  .strategy__hero-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: var(--cds-spacing-10) var(--cds-spacing-07);
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  .strategy__hero-content h2 {
+    color: var(--cds-white);
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: var(--cds-spacing-05);
+  }
+
+  .strategy__hero-content p {
+    color: var(--cds-blue-20);
+    max-width: 600px;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: var(--cds-spacing-07);
+    margin-bottom: var(--cds-spacing-10);
+  }
+
+  .pillars__header {
+    grid-column: 1 / 6;
+    position: sticky;
+    top: 80px;
+    align-self: start;
+  }
+
+  .pillars__list {
+    grid-column: 6 / 16;
+  }
+
+  .pillar-item {
+    padding: var(--cds-spacing-07) 0;
+    border-top: 1px solid var(--cds-gray-20);
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: var(--cds-spacing-06);
+  }
+
+  .pillar-item:last-child {
+    border-bottom: 1px solid var(--cds-gray-20);
+  }
+
+  .pillar-item__num {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--cds-blue-60);
+    padding-top: 2px;
+  }
+
+  .pillar-item__content h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--cds-spacing-04);
+  }
+
+  .pillar-item__content p {
+    color: var(--cds-gray-60);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  .pillar-item__tags {
+    display: flex;
+    gap: var(--cds-spacing-03);
+    margin-top: var(--cds-spacing-05);
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    background: var(--cds-gray-10);
+    color: var(--cds-gray-70);
+    font-size: 0.75rem;
+    letter-spacing: 0.32px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* ========================================
+     KPI BAR
+     ======================================== */
+  .kpi-bar {
+    background: var(--cds-gray-90);
+    padding: var(--cds-spacing-08) 0;
+  }
+
+  .kpi-bar__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+  }
+
+  .kpi {
+    text-align: left;
+    padding: 0 var(--cds-spacing-07);
+    border-left: 1px solid var(--cds-gray-70);
+  }
+
+  .kpi:first-child {
+    padding-left: 0;
+    border-left: none;
+  }
+
+  .kpi__value {
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--cds-white);
+    line-height: 1;
+    margin-bottom: var(--cds-spacing-03);
+  }
+
+  .kpi__label {
+    color: var(--cds-gray-30);
+    font-size: 0.8125rem;
+    letter-spacing: 0.16px;
+  }
+
+  /* ========================================
+     FOOTER
+     ======================================== */
+  .footer {
+    background: var(--cds-gray-100);
+    border-top: 1px solid var(--cds-gray-80);
+    padding: var(--cds-spacing-08) 0 var(--cds-spacing-10);
+    color: var(--cds-gray-30);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: var(--cds-spacing-07);
+  }
+
+  .footer__brand {
+    grid-column: 1 / 5;
+  }
+
+  .footer__brand-name {
+    color: var(--cds-white);
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: var(--cds-spacing-04);
+  }
+
+  .footer__brand p {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--cds-gray-50);
+  }
+
+  .footer__links {
+    grid-column: 6 / 10;
+  }
+
+  .footer__links h4 {
+    color: var(--cds-white);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.16px;
+    margin-bottom: var(--cds-spacing-05);
+  }
+
+  .footer__links ul {
+    list-style: none;
+  }
+
+  .footer__links li {
+    margin-bottom: var(--cds-spacing-03);
+  }
+
+  .footer__links a {
+    color: var(--cds-gray-30);
+    font-size: 0.8125rem;
+    text-decoration: none;
+  }
+
+  .footer__links a:hover {
+    color: var(--cds-white);
+  }
+
+  .footer__legal {
+    grid-column: 1 / -1;
+    margin-top: var(--cds-spacing-09);
+    padding-top: var(--cds-spacing-06);
+    border-top: 1px solid var(--cds-gray-80);
+    font-size: 0.75rem;
+    color: var(--cds-gray-50);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ========================================
+     ANIMATIONS
+     ======================================== */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stagger-1 { transition-delay: 0.05s; }
+  .stagger-2 { transition-delay: 0.12s; }
+  .stagger-3 { transition-delay: 0.19s; }
+  .stagger-4 { transition-delay: 0.26s; }
+
+  /* ========================================
+     RESPONSIVE
+     ======================================== */
+  @media (max-width: 1200px) {
+    .hero__title { font-size: 3rem; }
+    .display-02 { font-size: 2.625rem; }
+    .values__grid { grid-template-columns: repeat(2, 1fr); }
+    .value-card { min-height: 300px; }
+  }
+
+  @media (max-width: 900px) {
+    .grid,
+    .mv__grid,
+    .mv__detail,
+    .pillars,
+    .ceo__layout,
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+    .mv__card--mission,
+    .mv__card--vision,
+    .ceo__portrait-col,
+    .ceo__content-col,
+    .pillars__header,
+    .pillars__list,
+    .mv__detail-left,
+    .mv__detail-right,
+    .footer__brand,
+    .footer__links {
+      grid-column: 1 / -1;
+    }
+    .ceo__portrait-col { position: static; }
+    .pillars__header { position: static; }
+    .hero__title { font-size: 2.25rem; }
+    .kpi-bar__grid { grid-template-columns: repeat(2, 1fr); gap: var(--cds-spacing-07); }
+    .kpi { border-left: none; padding: var(--cds-spacing-05) 0; border-top: 1px solid var(--cds-gray-70); }
+    .kpi:first-child, .kpi:nth-child(2) { border-top: none; }
+    .cds-header__nav { display: none; }
+    .values__grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     HEADER — Carbon UI Shell
+     ============================================ -->
+<header class="cds-header">
+  <div class="cds-header__logo">
+    <svg viewBox="0 0 32 32"><path d="M16 2L4 8v16l12 6 12-6V8L16 2zm0 2.2L26 9v13l-10 5-10-5V9l10-4.8z"/><path d="M16 7l-7 3.5v9L16 23l7-3.5v-9L16 7zm0 2.2l5 2.5v6.6l-5 2.5-5-2.5v-6.6l5-2.5z"/></svg>
+    Meridian &amp; Co.
+  </div>
+  <nav class="cds-header__nav">
+    <a href="#welcome" class="active">Home</a>
+    <a href="#ceo-letter">CEO Letter</a>
+    <a href="#mission-vision">Mission &amp; Vision</a>
+    <a href="#values">Our Values</a>
+    <a href="#strategy">Strategy</a>
+  </nav>
+  <div class="cds-header__badge">
+    <span class="dot"></span>
+    Internal — Meridian Intranet
+  </div>
+</header>
+
+<!-- ============================================
+     HERO SECTION
+     ============================================ -->
+<section class="hero" id="welcome">
+  <div class="hero__image" role="img" aria-label="Diverse customers shopping in a bright modern Meridian store"></div>
+  <div class="hero__content">
+    <p class="hero__eyebrow label-01">Who We Are</p>
+    <h1 class="hero__title fade-in">
+      Bringing the <strong>best of the world</strong> to every community.
+    </h1>
+    <p class="hero__subtitle body-long-02 fade-in stagger-1">
+      For over 60 years, Meridian &amp; Co. has connected people with quality products, fair prices, and a shopping experience that puts communities first. Welcome to our intranet — your guide to what drives us.
+    </p>
+    <a href="#mission-vision" class="hero__cta fade-in stagger-2">
+      Explore our purpose
+      <svg viewBox="0 0 20 20"><path d="M11.8 2.8L10.8 3.8 16.2 9.2H1v1.5h15.2l-5.4 5.4 1 1 7.2-7.2z"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ============================================
+     KPI BAR
+     ============================================ -->
+<div class="kpi-bar">
+  <div class="container">
+    <div class="kpi-bar__grid">
+      <div class="kpi fade-in">
+        <div class="kpi__value">2,400+</div>
+        <div class="kpi__label">Stores across 38 countries</div>
+      </div>
+      <div class="kpi fade-in stagger-1">
+        <div class="kpi__value">185k</div>
+        <div class="kpi__label">Team members worldwide</div>
+      </div>
+      <div class="kpi fade-in stagger-2">
+        <div class="kpi__value">£42.6B</div>
+        <div class="kpi__label">Annual revenue (FY 2025)</div>
+      </div>
+      <div class="kpi fade-in stagger-3">
+        <div class="kpi__value">1961</div>
+        <div class="kpi__label">Founded in Manchester, UK</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     CEO LETTER
+     ============================================ -->
+<section class="ceo section" id="ceo-letter">
+  <div class="container">
+    <div class="ceo__layout">
+      <div class="ceo__portrait-col fade-in">
+        <div class="ceo__portrait-wrapper">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80" alt="Photograph of CEO Amara Osei">
+        </div>
+        <div class="ceo__portrait-caption">
+          <p class="name">Amara Osei</p>
+          <p class="role">Chief Executive Officer, Meridian &amp; Co.</p>
+        </div>
+      </div>
+
+      <div class="ceo__content-col">
+        <p class="section__eyebrow label-01 fade-in">A message from our CEO</p>
+        <h2 class="display-01 section__title fade-in stagger-1">Our people, our purpose, our future</h2>
+        <hr class="divider">
+
+        <div class="ceo__letter fade-in stagger-2">
+          <p>When I walk through any of our 2,400 stores around the world, I see the same thing — teams of people who genuinely care about the customers and communities they serve. That spirit is not something you can manufacture or mandate. It grows from a shared sense of purpose, and it is the single greatest advantage Meridian &amp; Co. possesses.</p>
+
+          <p>Our world is changing rapidly. Customers expect more transparency about where products come from and how they are made. They want convenience, but not at the cost of their values. Communities are asking businesses to be active partners in addressing social and environmental challenges. And our own team members rightly expect a workplace that invests in their growth and wellbeing.</p>
+
+          <div class="pull-quote">
+            "We are not simply a retailer that sells products. We are a connector — linking the people who make things with the people who need them, and doing so in a way that benefits everyone in between."
+          </div>
+
+          <p>This intranet exists to make our strategic direction visible and accessible to every member of the Meridian family. Our mission, vision, and values are not abstract statements written for annual reports — they are working tools that should guide decisions at every level of this organisation, from the boardroom to the shop floor.</p>
+
+          <p>Our five-year strategy, <em>Meridian Forward 2030</em>, asks us to grow responsibly, invest in digital capability, deepen our commitment to sustainable sourcing, and above all, stay relentlessly focused on the communities we serve. These are ambitious goals. But I have seen what this organisation can achieve when it moves together with clarity and conviction.</p>
+
+          <p>Thank you for the work you do every day. I hope you will take the time to explore the pages that follow, reflect on how your role connects to our wider purpose, and share your ideas on how we can continue to improve.</p>
+        </div>
+
+        <div class="ceo__signature">
+          <p class="sig-name">Amara Osei</p>
+          <p class="sig-title">Chief Executive Officer</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     MISSION & VISION
+     ============================================ -->
+<section class="section section--gray section--lg" id="mission-vision">
+  <div class="container">
+    <div class="mv__grid">
+      <div class="mv__card mv__card--mission fade-in">
+        <div class="mv__card-image">
+          <img src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&q=80" alt="A Meridian team member helping a customer find a product in a bright, well-organised store aisle">
+        </div>
+        <div class="mv__card-body">
+          <p class="mv__card-label label-01">Our Mission</p>
+          <h3 class="mv__card-title">To provide quality, affordable products that improve everyday life — sourced responsibly, sold fairly, and delivered with care.</h3>
+          <p class="mv__card-text">Our mission defines what we do today. It is the promise we make to every customer who walks through our doors or shops online. It shapes our buying decisions, our pricing strategy, and the experience we create in store and at home.</p>
+        </div>
+      </div>
+
+      <div class="mv__card mv__card--vision fade-in stagger-2">
+        <div class="mv__card-image">
+          <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&q=80" alt="Lush green supply chain landscape representing sustainability and responsible growth">
+        </div>
+        <div class="mv__card-body">
+          <p class="mv__card-label label-01">Our Vision</p>
+          <h3 class="mv__card-title">To become the world's most trusted retailer — known for putting people and planet at the heart of every decision we make.</h3>
+          <p class="mv__card-text">Our vision describes the future we are building toward. It is deliberately aspirational. Trust is earned over decades and lost in moments, which is why it demands constant vigilance across everything from supply chain ethics to data privacy.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mission / Vision explanatory detail -->
+    <div class="mv__detail fade-in">
+      <div class="mv__detail-left">
+        <p class="section__eyebrow label-01">Understanding the difference</p>
+        <h3 class="heading-04">Mission vs. Vision</h3>
+      </div>
+      <div class="mv__detail-right">
+        <p>A <strong>mission statement</strong> explains the fundamental reason an organisation exists. It describes the present — what the company does, who it serves, and how it creates value. Meridian's mission centres on three interconnected promises: quality and affordability for customers, responsible sourcing from suppliers, and an experience delivered with genuine care.</p>
+        <p>A <strong>vision statement</strong> looks ahead. It articulates the long-term aspiration that the organisation is working toward. Meridian's vision to become the world's most trusted retailer sets a clear North Star that shapes strategic priorities and investment decisions. Whereas the mission can be measured through daily operations, the vision is a destination that drives continuous improvement.</p>
+        <p>Together, mission and vision form the strategic foundation of an organisation. The mission provides operational focus; the vision provides directional ambition. Effective strategies bridge the gap between the two.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     VALUES
+     ============================================ -->
+<section class="section section--dark section--lg" id="values">
+  <div class="container">
+    <p class="section__eyebrow label-01 fade-in">What we stand for</p>
+    <h2 class="display-01 section__title fade-in stagger-1">Our four values</h2>
+    <p class="body-long-02 section__intro fade-in stagger-2">
+      Values shape culture, and culture shapes performance. These four principles guide how we behave, how we make decisions, and how we treat every person we interact with — from suppliers and partners to customers and each other.
+    </p>
+  </div>
+
+  <div class="container">
+    <div class="values__grid">
+      <div class="value-card fade-in">
+        <div class="value-card__accent"></div>
+        <div class="value-card__number">01</div>
+        <svg class="value-card__icon" viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="1.5"><circle cx="16" cy="16" r="14"/><path d="M16 8v8l5.5 3.5"/></svg>
+        <h3 class="value-card__title">Customer First</h3>
+        <p class="value-card__desc">Every decision starts with the customer. We listen before we act, we solve problems before they are reported, and we measure our success by the loyalty and satisfaction of the people we serve.</p>
+      </div>
+
+      <div class="value-card fade-in stagger-1">
+        <div class="value-card__accent"></div>
+        <div class="value-card__number">02</div>
+        <svg class="value-card__icon" viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="1.5"><path d="M16 2C9.4 2 4 7.4 4 14c0 8 12 16 12 16s12-8 12-16C28 7.4 22.6 2 16 2z"/></svg>
+        <h3 class="value-card__title">Act with Integrity</h3>
+        <p class="value-card__desc">We do the right thing even when no one is watching. Transparency in pricing, honesty with suppliers, and ethical conduct across our supply chain are non-negotiable commitments we make to every stakeholder.</p>
+      </div>
+
+      <div class="value-card fade-in stagger-2">
+        <div class="value-card__accent"></div>
+        <div class="value-card__number">03</div>
+        <svg class="value-card__icon" viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="1.5"><path d="M8 28V18m8 10V12m8 16V6"/><path d="M4 18h8M12 12h8M20 6h8"/></svg>
+        <h3 class="value-card__title">Sustainable Growth</h3>
+        <p class="value-card__desc">Growth without responsibility is not growth — it is debt. We pursue commercial success in ways that regenerate communities, protect the environment, and create long-term value for future generations.</p>
+      </div>
+
+      <div class="value-card fade-in stagger-3">
+        <div class="value-card__accent"></div>
+        <div class="value-card__number">04</div>
+        <svg class="value-card__icon" viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="1.5"><circle cx="10" cy="12" r="4"/><circle cx="22" cy="12" r="4"/><path d="M2 24c0-4 4-7 8-7 1.6 0 3 .4 4.2 1.2M30 24c0-4-4-7-8-7-1.6 0-3 .4-4.2 1.2"/></svg>
+        <h3 class="value-card__title">Stronger Together</h3>
+        <p class="value-card__desc">We believe diversity makes us better, collaboration makes us faster, and respect makes us stronger. We invest in our people because their growth is inseparable from ours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     STRATEGY SECTION
+     ============================================ -->
+<section class="section section--lg" id="strategy">
+  <div class="strategy__hero">
+    <div class="strategy__hero-img" role="img" aria-label="Aerial view of a modern Meridian distribution centre representing operational scale"></div>
+    <div class="strategy__hero-content fade-in">
+      <p class="label-01" style="color: var(--cds-blue-20); margin-bottom: var(--cds-spacing-04);">Strategic Direction 2025 – 2030</p>
+      <h2>Meridian Forward 2030</h2>
+      <p>Our five-year strategy sets out how we will bridge the gap between our mission today and our vision for the future. It is built on five strategic pillars — each reinforced by measurable targets and clear accountabilities.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="pillars">
+      <div class="pillars__header fade-in">
+        <p class="section__eyebrow label-01">Strategic Pillars</p>
+        <h3 class="heading-04" style="margin-bottom: var(--cds-spacing-06);">Five priorities that connect our mission to our vision</h3>
+        <p class="body-long-01" style="color: var(--cds-gray-60);">Each pillar represents a critical area of investment and focus. Together they form an integrated strategy — progress in one area reinforces progress in the others.</p>
+      </div>
+
+      <div class="pillars__list">
+        <div class="pillar-item fade-in">
+          <div class="pillar-item__num">01</div>
+          <div class="pillar-item__content">
+            <h4>Digital-First Customer Experience</h4>
+            <p>Invest £2.4 billion over five years in omnichannel infrastructure, personalisation technology, and a unified commerce platform. By 2030, we aim for 45% of revenue to flow through digital channels — up from 28% today — while ensuring physical stores remain vibrant community hubs.</p>
+            <div class="pillar-item__tags">
+              <span class="tag">E-commerce</span>
+              <span class="tag">Omnichannel</span>
+              <span class="tag">Personalisation</span>
+              <span class="tag">Technology investment</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pillar-item fade-in">
+          <div class="pillar-item__num">02</div>
+          <div class="pillar-item__content">
+            <h4>Responsible Sourcing &amp; Circularity</h4>
+            <p>Achieve 100% traceability across Tier 1 and Tier 2 suppliers by 2028. Launch "Meridian Renewed" — a product take-back and resale programme — in all markets by 2027. Reduce Scope 3 emissions by 40% against our 2022 baseline, aligned with Science Based Targets.</p>
+            <div class="pillar-item__tags">
+              <span class="tag">Supply chain</span>
+              <span class="tag">Sustainability</span>
+              <span class="tag">Circular economy</span>
+              <span class="tag">ESG targets</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pillar-item fade-in">
+          <div class="pillar-item__num">03</div>
+          <div class="pillar-item__content">
+            <h4>Community-Anchored Growth</h4>
+            <p>Expand into 8 new markets across Southeast Asia and Sub-Saharan Africa, prioritising local partnerships, local sourcing, and culturally relevant product ranges. Every new market entry must demonstrate measurable community benefit within 24 months of opening.</p>
+            <div class="pillar-item__tags">
+              <span class="tag">International expansion</span>
+              <span class="tag">Localisation</span>
+              <span class="tag">Community impact</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pillar-item fade-in">
+          <div class="pillar-item__num">04</div>
+          <div class="pillar-item__content">
+            <h4>People &amp; Culture Investment</h4>
+            <p>Become a top-10 employer in every market we operate in. Deliver 40 hours of development per team member per year, close all gender and ethnicity pay gaps by 2028, and introduce employee equity participation across all regions by 2027.</p>
+            <div class="pillar-item__tags">
+              <span class="tag">Talent development</span>
+              <span class="tag">DEI</span>
+              <span class="tag">Employee engagement</span>
+              <span class="tag">Pay equity</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pillar-item fade-in">
+          <div class="pillar-item__num">05</div>
+          <div class="pillar-item__content">
+            <h4>Operational Excellence &amp; Efficiency</h4>
+            <p>Implement AI-driven demand forecasting to reduce inventory waste by 30%. Transition 100% of own-brand packaging to recyclable or compostable materials by 2029. Achieve a 200-basis-point improvement in operating margin through supply chain optimisation and energy efficiency.</p>
+            <div class="pillar-item__tags">
+              <span class="tag">AI &amp; automation</span>
+              <span class="tag">Cost efficiency</span>
+              <span class="tag">Waste reduction</span>
+              <span class="tag">Margin improvement</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <p class="footer__brand-name">Meridian &amp; Co.</p>
+        <p>This is an internal resource for Meridian team members. All content is confidential and should not be shared externally without authorisation.</p>
+      </div>
+      <div class="footer__links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#welcome">Home</a></li>
+          <li><a href="#ceo-letter">CEO Letter</a></li>
+          <li><a href="#mission-vision">Mission &amp; Vision</a></li>
+          <li><a href="#values">Our Values</a></li>
+          <li><a href="#strategy">Strategy 2030</a></li>
+        </ul>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Meridian &amp; Co. All rights reserved. Internal use only.</span>
+        <span>This is a fictitious organisation created for educational purposes.</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+<script>
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section, .hero');
+  const navLinks = document.querySelectorAll('.cds-header__nav a');
+
+  const updateNav = () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 100;
+      if (window.scrollY >= top) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+  };
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+
+  // Smooth scroll for nav links
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
