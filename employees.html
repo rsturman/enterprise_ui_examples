@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lovely HR – Employees</title>
+<link href="https://fonts.googleapis.com/css2?family=72:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── SAP Fiori Design Tokens ─────────────────────────────── */
+:root {
+  --sap-brand:         #0070F2;
+  --sap-brand-hover:   #0064D9;
+  --sap-shell-bg:      #354A5E;
+  --sap-page-bg:       #F5F6F7;
+  --sap-base-bg:       #FFFFFF;
+  --sap-tile-bg:       #FFFFFF;
+  --sap-border:        #D9D9D9;
+  --sap-border-strong: #89919A;
+  --sap-text-1:        #32363A;
+  --sap-text-2:        #6A6D70;
+  --sap-text-3:        #89919A;
+  --sap-link:          #0070F2;
+  --sap-positive:      #107E3E;
+  --sap-positive-bg:   #F5FAF5;
+  --sap-positive-text: #107E3E;
+  --sap-warning:       #E9730C;
+  --sap-warning-bg:    #FEF7F1;
+  --sap-critical:      #BB0000;
+  --sap-critical-bg:   #FFEBEB;
+  --sap-neutral:       #5899DA;
+  --sap-neutral-bg:    #EBF3FD;
+  --sap-highlight:     #C0399F;
+  --sap-shadow-sm:     0 1px 4px rgba(0,0,0,.12);
+  --sap-shadow-md:     0 2px 8px rgba(0,0,0,.14);
+  --sap-shadow-lg:     0 4px 20px rgba(0,0,0,.18);
+  --sap-radius:        4px;
+  --sap-radius-lg:     8px;
+  --nav-h:             44px;
+  --sidenav-w:         168px;
+  --detail-w:          320px;
+  --transition:        0.18s ease;
+}
+[data-theme="dark"] {
+  --sap-shell-bg:      #1D2D3E;
+  --sap-page-bg:       #12171A;
+  --sap-base-bg:       #1C2228;
+  --sap-tile-bg:       #232C35;
+  --sap-border:        #3A4A5A;
+  --sap-border-strong: #5A7080;
+  --sap-text-1:        #E0E8F0;
+  --sap-text-2:        #AAB5C0;
+  --sap-text-3:        #7A8FA0;
+  --sap-link:          #5BA0F2;
+  --sap-positive-bg:   #0A2A15;
+  --sap-positive-text: #57C288;
+  --sap-warning-bg:    #2A1A06;
+  --sap-critical-bg:   #2A0808;
+  --sap-neutral-bg:    #0A1A2A;
+  --sap-shadow-sm:     0 1px 4px rgba(0,0,0,.4);
+  --sap-shadow-md:     0 2px 10px rgba(0,0,0,.5);
+  --sap-shadow-lg:     0 4px 20px rgba(0,0,0,.6);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  font-family: '72', 'Segoe UI', Arial, sans-serif;
+  background: var(--sap-page-bg);
+  color: var(--sap-text-1);
+  line-height: 1.5;
+  transition: background var(--transition), color var(--transition);
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ─── Shell Bar ───────────────────────────────────────────── */
+.shell-bar {
+  background: var(--sap-shell-bg);
+  height: var(--nav-h);
+  display: flex; align-items: center;
+  padding: 0 1rem; gap: 0.75rem;
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 300;
+  box-shadow: var(--sap-shadow-sm);
+}
+.shell-logo {
+  width: 32px; height: 32px; background: var(--sap-brand);
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 18px; cursor: pointer; flex-shrink: 0;
+}
+.shell-title { color:#fff; font-size:0.875rem; font-weight:600; letter-spacing:.03em; white-space:nowrap; }
+.shell-subtitle {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+  padding-left: 10px; margin-left: 6px;
+  border-left: 1px solid rgba(255,255,255,0.25);
+}
+.shell-spacer { flex: 1; }
+.shell-search {
+  display: flex; align-items: center;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--sap-radius);
+  padding: 4px 10px; gap: 6px; width: 220px;
+}
+.shell-search input {
+  background: transparent; border: none; outline: none;
+  color: #fff; font-size: 0.8rem; width: 100%;
+}
+.shell-search input::placeholder { color: rgba(255,255,255,0.5); }
+.shell-btn {
+  width: 36px; height: 36px; display: flex; align-items: center;
+  justify-content: center; color: #fff; cursor: pointer;
+  border-radius: var(--sap-radius); border: none; background: transparent;
+  transition: background var(--transition); flex-shrink: 0; position: relative;
+}
+.shell-btn:hover { background: rgba(255,255,255,0.15); }
+.notif-dot {
+  position: absolute; top: 5px; right: 5px;
+  width: 8px; height: 8px; background: #E03;
+  border-radius: 50%; border: 1.5px solid var(--sap-shell-bg);
+}
+.avatar-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--sap-brand);
+  border: 2px solid rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 0.7rem; font-weight: 700;
+  cursor: pointer; flex-shrink: 0;
+}
+.theme-btn { color:#fff; background:transparent; border:none; cursor:pointer; font-size:17px; width:32px; height:32px; border-radius:var(--sap-radius); display:flex;align-items:center;justify-content:center; transition:background var(--transition); }
+.theme-btn:hover { background: rgba(255,255,255,0.15); }
+
+/* ─── App Layout ──────────────────────────────────────────── */
+.app-wrap {
+  display: flex;
+  height: calc(100vh - var(--nav-h));
+  margin-top: var(--nav-h);
+}
+
+/* ─── Side Nav ────────────────────────────────────────────── */
+.side-nav {
+  width: var(--sidenav-w);
+  background: var(--sap-base-bg);
+  border-right: 1px solid var(--sap-border);
+  display: flex; flex-direction: column;
+  align-items: stretch; padding: 0.625rem 0.5rem;
+  gap: 1px; flex-shrink: 0;
+  transition: background var(--transition), border-color var(--transition);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--sap-text-3);
+  padding: 0.75rem 0.625rem 0.25rem;
+}
+.nav-item {
+  width: 100%; height: 38px;
+  display: flex; flex-direction: row;
+  align-items: center; justify-content: flex-start;
+  gap: 9px; padding: 0 0.625rem;
+  border-radius: var(--sap-radius);
+  cursor: pointer; border: none;
+  background: transparent; color: var(--sap-text-2);
+  font-size: 0.8rem; font-weight: 500;
+  font-family: inherit; transition: all var(--transition);
+  position: relative; white-space: nowrap; text-align: left;
+}
+.nav-item svg { flex-shrink:0; opacity:0.7; }
+.nav-item:hover { background: var(--sap-neutral-bg); color: var(--sap-brand); }
+.nav-item:hover svg { opacity:1; }
+.nav-item.active { background: var(--sap-neutral-bg); color: var(--sap-brand); font-weight: 600; }
+.nav-item.active svg { opacity:1; }
+.nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 6px; bottom: 6px;
+  width: 3px; background: var(--sap-brand); border-radius: 0 3px 3px 0;
+}
+.nav-divider { height: 1px; background: var(--sap-border); margin: 0.5rem 0; }
+
+/* ─── Main Area ───────────────────────────────────────────── */
+.main-area {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── Page Header ─────────────────────────────────────────── */
+.page-header {
+  padding: 0.875rem 1.25rem 0;
+  flex-shrink: 0;
+}
+.page-header-top {
+  display: flex; align-items: center; gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--sap-border);
+  margin-bottom: 0.875rem;
+}
+.page-header-top h1 { font-size: 1.1rem; font-weight: 600; }
+.page-header-top .sub { font-size: 0.75rem; color: var(--sap-text-3); margin-top: 2px; }
+.header-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+
+/* ─── KPI Row ─────────────────────────────────────────────── */
+.kpi-row {
+  display: grid; grid-template-columns: repeat(5,1fr);
+  gap: 0.625rem; padding: 0 1.25rem 0.875rem;
+  flex-shrink: 0;
+}
+.kpi-tile {
+  background: var(--sap-tile-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 0.875rem 1rem;
+  position: relative; overflow: hidden;
+  transition: box-shadow var(--transition), transform var(--transition);
+  cursor: default;
+}
+.kpi-tile::after {
+  content: ''; position: absolute; top:0; left:0; right:0; height:3px;
+  border-radius: var(--sap-radius-lg) var(--sap-radius-lg) 0 0;
+}
+.kpi-tile.blue::after   { background: var(--sap-brand); }
+.kpi-tile.green::after  { background: var(--sap-positive); }
+.kpi-tile.orange::after { background: var(--sap-warning); }
+.kpi-tile.purple::after { background: var(--sap-highlight); }
+.kpi-tile.teal::after   { background: #0BB; }
+.kpi-tile:hover { box-shadow: var(--sap-shadow-md); transform: translateY(-1px); }
+.kpi-val { font-size: 1.6rem; font-weight: 300; line-height: 1.1; }
+.kpi-lbl { font-size: 0.7rem; color: var(--sap-text-2); font-weight: 500; text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+.kpi-sub { font-size: 0.68rem; color: var(--sap-text-3); margin-top: 3px; }
+
+/* ─── Tab Bar ─────────────────────────────────────────────── */
+.tab-bar {
+  display: flex; border-bottom: 1px solid var(--sap-border);
+  padding: 0 1.25rem; flex-shrink: 0;
+}
+.tab {
+  padding: 0 1rem; height: 44px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.875rem; font-weight: 500; color: var(--sap-text-2);
+  cursor: pointer; border: none; background: transparent;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all var(--transition); white-space: nowrap;
+}
+.tab:hover { color: var(--sap-brand); background: var(--sap-neutral-bg); }
+.tab.active { color: var(--sap-brand); border-bottom-color: var(--sap-brand); }
+.tab-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--sap-brand); color: #fff;
+  font-size: 0.65rem; font-weight: 700;
+  border-radius: 10px; padding: 1px 6px;
+}
+
+/* ─── Content Panel (scrollable) ─────────────────────────── */
+.content-panel {
+  flex: 1; overflow: hidden;
+  display: flex; position: relative;
+}
+.tab-pane { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+.tab-pane.active { display: flex; }
+
+/* ─── Toolbar ─────────────────────────────────────────────── */
+.toolbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.75rem 1.25rem; flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.search-field {
+  display: flex; align-items: center;
+  border: 1px solid var(--sap-border); border-radius: var(--sap-radius);
+  background: var(--sap-base-bg); padding: 5px 10px; gap: 6px; width: 240px;
+}
+.search-field input {
+  border: none; outline: none; background: transparent;
+  font-size: 0.8rem; color: var(--sap-text-1); width: 100%;
+}
+.search-field:focus-within { border-color: var(--sap-brand); }
+select.fsel {
+  border: 1px solid var(--sap-border); border-radius: var(--sap-radius);
+  background: var(--sap-base-bg); color: var(--sap-text-1);
+  padding: 5px 28px 5px 10px; font-size: 0.8rem; cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%236A6D70' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+  font-family: inherit;
+}
+select.fsel:focus { outline: none; border-color: var(--sap-brand); }
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; font-size: 0.8rem; font-weight: 500;
+  border-radius: var(--sap-radius); cursor: pointer;
+  transition: all var(--transition); border: 1px solid; white-space: nowrap;
+  font-family: inherit;
+}
+.btn-primary { background: var(--sap-brand); color: #fff; border-color: var(--sap-brand); }
+.btn-primary:hover { background: var(--sap-brand-hover); }
+.btn-ghost { background: transparent; color: var(--sap-text-1); border-color: var(--sap-border); }
+.btn-ghost:hover { background: var(--sap-neutral-bg); border-color: var(--sap-brand); color: var(--sap-brand); }
+.btn-sm { padding: 4px 10px; font-size: 0.75rem; }
+.btn-icon { padding: 6px 8px; }
+
+/* ─── Badges ──────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 0.7rem; font-weight: 600;
+}
+.bg-success { background: var(--sap-positive-bg); color: var(--sap-positive-text); }
+.bg-warning { background: var(--sap-warning-bg); color: var(--sap-warning); }
+.bg-critical { background: var(--sap-critical-bg); color: var(--sap-critical); }
+.bg-neutral  { background: var(--sap-neutral-bg); color: var(--sap-neutral); }
+.bg-plain    { background: var(--sap-page-bg); color: var(--sap-text-2); }
+
+/* ─── Table View ──────────────────────────────────────────── */
+.table-scroll { flex: 1; overflow-y: auto; padding: 0 1.25rem 1.25rem; }
+.table-wrap {
+  background: var(--sap-base-bg); border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg); overflow: hidden;
+  box-shadow: var(--sap-shadow-sm);
+}
+table.dt { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+table.dt thead th {
+  background: var(--sap-page-bg); padding: 10px 12px;
+  text-align: left; font-weight: 600; color: var(--sap-text-2);
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em;
+  border-bottom: 1px solid var(--sap-border); white-space: nowrap;
+  cursor: pointer; user-select: none;
+}
+table.dt thead th:hover { color: var(--sap-brand); }
+table.dt tbody tr {
+  border-bottom: 1px solid var(--sap-border);
+  transition: background var(--transition); cursor: pointer;
+}
+table.dt tbody tr:last-child { border-bottom: none; }
+table.dt tbody tr:hover { background: var(--sap-neutral-bg); }
+table.dt td { padding: 9px 12px; vertical-align: middle; }
+.av-chip { display: inline-flex; align-items: center; gap: 7px; }
+.av {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.58rem; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.link-cell { color: var(--sap-link); font-weight: 500; }
+.pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 16px; border-top: 1px solid var(--sap-border);
+  background: var(--sap-page-bg); font-size: 0.75rem; color: var(--sap-text-2);
+}
+.pg-btns { display: flex; gap: 3px; }
+.pg-btn {
+  min-width: 28px; height: 28px; display: flex; align-items: center;
+  justify-content: center; border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius); background: var(--sap-base-bg);
+  color: var(--sap-text-1); font-size: 0.75rem; cursor: pointer;
+  transition: all var(--transition);
+}
+.pg-btn:hover { border-color: var(--sap-brand); color: var(--sap-brand); }
+.pg-btn.act { background: var(--sap-brand); color: #fff; border-color: var(--sap-brand); }
+.pg-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+/* ─── Grid / Card View ────────────────────────────────────── */
+.grid-scroll { flex: 1; overflow-y: auto; padding: 0 1.25rem 1.25rem; }
+.emp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.75rem;
+}
+.emp-card {
+  background: var(--sap-base-bg); border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg); padding: 1.125rem;
+  text-align: center; cursor: pointer;
+  transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+  box-shadow: var(--sap-shadow-sm);
+}
+.emp-card:hover { box-shadow: var(--sap-shadow-md); transform: translateY(-2px); border-color: var(--sap-brand); }
+.emp-card-av {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; font-weight: 700; color: #fff;
+  margin: 0 auto 10px; border: 3px solid rgba(255,255,255,0.5);
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.emp-card-name { font-size: 0.82rem; font-weight: 600; color: var(--sap-text-1); margin-bottom: 2px; }
+.emp-card-title { font-size: 0.7rem; color: var(--sap-text-3); margin-bottom: 8px; line-height: 1.3; }
+.emp-card-tags { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+
+/* ─── Org Chart View ──────────────────────────────────────── */
+.org-view {
+  flex: 1; display: flex; overflow: hidden; position: relative;
+}
+.org-canvas-wrap {
+  flex: 1; overflow: hidden; cursor: grab; position: relative;
+  background: var(--sap-page-bg);
+  background-image: radial-gradient(circle, var(--sap-border) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.org-canvas-wrap.grabbing { cursor: grabbing; }
+#orgSVG {
+  position: absolute;
+  pointer-events: none;
+  top: 0; left: 0;
+}
+.org-nodes {
+  position: absolute; top: 0; left: 0;
+  transform-origin: 0 0;
+}
+
+/* ─── Org Node ────────────────────────────────────────────── */
+.org-node {
+  position: absolute;
+  width: 168px;
+  background: var(--sap-base-bg);
+  border: 1.5px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 10px 12px 10px;
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  box-shadow: var(--sap-shadow-sm);
+  user-select: none;
+}
+.org-node:hover {
+  border-color: var(--sap-brand);
+  box-shadow: var(--sap-shadow-md);
+  z-index: 10;
+}
+.org-node.focused {
+  border-color: var(--sap-brand);
+  border-width: 2px;
+  box-shadow: 0 0 0 3px rgba(0,112,242,0.2), var(--sap-shadow-md);
+  z-index: 20;
+}
+.org-node.dimmed { opacity: 0.35; }
+.org-node.on-path { border-color: var(--sap-positive); }
+.org-node-av {
+  width: 36px; height: 36px; border-radius: 50%;
+  margin: 0 auto 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700; color: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.org-node-name { font-size: 0.78rem; font-weight: 600; text-align: center; color: var(--sap-text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.org-node-title { font-size: 0.66rem; color: var(--sap-text-3); text-align: center; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.org-node-dept {
+  margin-top: 7px; padding-top: 7px;
+  border-top: 1px solid var(--sap-border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.org-node-dept-badge {
+  font-size: 0.62rem; font-weight: 600; padding: 1px 6px;
+  border-radius: 8px; white-space: nowrap;
+}
+.org-node-toggle {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--sap-brand); color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border: none; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+  transition: background var(--transition), transform var(--transition);
+}
+.org-node-toggle:hover { background: var(--sap-brand-hover); transform: scale(1.15); }
+.org-node-reports { font-size: 0.6rem; color: var(--sap-text-3); }
+
+/* ─── Zoom Controls ───────────────────────────────────────── */
+.zoom-controls {
+  position: absolute; bottom: 16px; right: 16px;
+  display: flex; flex-direction: column; gap: 4px;
+  z-index: 50;
+}
+.zoom-btn {
+  width: 32px; height: 32px;
+  background: var(--sap-base-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; color: var(--sap-text-1);
+  box-shadow: var(--sap-shadow-sm);
+  transition: all var(--transition);
+}
+.zoom-btn:hover { border-color: var(--sap-brand); color: var(--sap-brand); }
+
+/* ─── Org Mini Breadcrumb ─────────────────────────────────── */
+.org-breadcrumb {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; align-items: center; gap: 4px;
+  background: var(--sap-base-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: 20px;
+  padding: 5px 12px; font-size: 0.75rem;
+  box-shadow: var(--sap-shadow-sm);
+  z-index: 50;
+  max-width: 420px;
+  flex-wrap: wrap;
+}
+.org-bc-item { color: var(--sap-link); cursor: pointer; white-space: nowrap; }
+.org-bc-item:hover { text-decoration: underline; }
+.org-bc-sep { color: var(--sap-text-3); font-size: 0.7rem; }
+.org-bc-item.current { color: var(--sap-text-1); font-weight: 600; cursor: default; }
+.org-bc-item.current:hover { text-decoration: none; }
+
+/* ─── Org Legend / Dept Filter ────────────────────────────── */
+.org-legend {
+  position: absolute; bottom: 16px; left: 12px;
+  background: var(--sap-base-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 10px 12px;
+  box-shadow: var(--sap-shadow-sm);
+  z-index: 50; font-size: 0.7rem;
+}
+.org-legend-title { font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--sap-text-3); margin-bottom: 7px; }
+.legend-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; cursor: pointer; padding: 2px 4px; border-radius: var(--sap-radius); transition: background var(--transition); }
+.legend-row:hover { background: var(--sap-neutral-bg); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-row.dimmed { opacity: 0.4; }
+
+/* ─── Detail Panel ────────────────────────────────────────── */
+.detail-panel {
+  width: var(--detail-w);
+  background: var(--sap-base-bg);
+  border-left: 1px solid var(--sap-border);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  overflow: hidden;
+}
+.detail-panel.open { transform: translateX(0); }
+.detail-head {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--sap-border);
+  position: relative;
+}
+.detail-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--sap-border); background: transparent;
+  cursor: pointer; color: var(--sap-text-2);
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+  transition: all var(--transition);
+}
+.detail-close:hover { background: var(--sap-critical-bg); color: var(--sap-critical); border-color: var(--sap-critical); }
+.detail-av {
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 700; color: #fff;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.detail-name { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.detail-role { font-size: 0.78rem; color: var(--sap-text-2); margin-bottom: 8px; }
+.detail-body { flex: 1; overflow-y: auto; padding: 16px; }
+.detail-section { margin-bottom: 16px; }
+.detail-sec-title {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--sap-text-3);
+  margin-bottom: 8px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--sap-border);
+}
+.detail-field { margin-bottom: 10px; }
+.detail-field label { display: block; font-size: 0.67rem; color: var(--sap-text-3); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+.detail-field .val { font-size: 0.8rem; color: var(--sap-text-1); font-weight: 500; }
+.detail-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.org-mini-list { display: flex; flex-direction: column; gap: 6px; }
+.org-mini-person {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: var(--sap-radius);
+  background: var(--sap-page-bg); cursor: pointer;
+  transition: background var(--transition);
+  border: 1px solid transparent;
+}
+.org-mini-person:hover { background: var(--sap-neutral-bg); border-color: var(--sap-brand); }
+.org-mini-person .av { width: 28px; height: 28px; font-size: 0.62rem; }
+.org-mini-name { font-size: 0.78rem; font-weight: 600; color: var(--sap-link); }
+.org-mini-title { font-size: 0.66rem; color: var(--sap-text-3); }
+.detail-actions { padding: 12px 16px; border-top: 1px solid var(--sap-border); display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+
+/* ─── Stat bar inside detail ──────────────────────────────── */
+.stat-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.stat-pill {
+  background: var(--sap-page-bg); border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg); padding: 6px 10px; text-align: center; flex: 1;
+}
+.stat-pill-val { font-size: 1rem; font-weight: 300; }
+.stat-pill-lbl { font-size: 0.62rem; color: var(--sap-text-3); text-transform: uppercase; letter-spacing: .04em; }
+
+/* ─── Org Chart Toolbar ───────────────────────────────────── */
+.org-toolbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.75rem 1.25rem 0; flex-shrink: 0; flex-wrap: wrap;
+}
+.org-toolbar-sep {
+  width: 1px; height: 24px; background: var(--sap-border); margin: 0 2px;
+}
+.org-mode-toggle {
+  display: flex; border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius); overflow: hidden; flex-shrink: 0;
+}
+.org-mode-btn {
+  padding: 5px 12px; font-size: 0.78rem; font-weight: 500;
+  background: transparent; color: var(--sap-text-2);
+  border: none; cursor: pointer; transition: all var(--transition);
+  font-family: inherit;
+}
+.org-mode-btn.active { background: var(--sap-brand); color: #fff; }
+.org-mode-btn:not(.active):hover { background: var(--sap-neutral-bg); color: var(--sap-brand); }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--sap-border-strong); border-radius: 3px; }
+
+@media (max-width: 980px) {
+  .side-nav { display: none; }
+  .kpi-row { grid-template-columns: repeat(3, 1fr); }
+  .shell-search { display: none; }
+}
+@media (max-width: 700px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .detail-panel { width: 100%; position: absolute; right: 0; top: 0; bottom: 0; z-index: 100; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ SHELL BAR ══════════════════════════ -->
+<header class="shell-bar">
+  <div class="shell-logo">🩷</div>
+  <div class="shell-title">Lovely HR</div>
+  <div class="shell-subtitle">Employees</div>
+  <div class="shell-search">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <input type="text" placeholder="Search employees..." oninput="globalSearch(this.value)">
+  </div>
+  <div class="shell-spacer"></div>
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+  <button class="shell-btn">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <div class="notif-dot"></div>
+  </button>
+  <div class="avatar-btn">DM</div>
+</header>
+
+<!-- ══════════════════════ APP WRAP ═══════════════════════════ -->
+<div class="app-wrap">
+
+  <!-- Side Nav -->
+  <nav class="side-nav">
+    <div class="nav-section-label">Main</div>
+    <button class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item active">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>
+      Employees
+    </button>
+    <button class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Reports
+    </button>
+    <button class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      Projects
+    </button>
+    <div class="nav-divider"></div>
+    <div class="nav-section-label">People</div>
+    <button class="nav-item" onclick="switchView('org')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="2" width="6" height="4" rx="1"/><rect x="2" y="16" width="6" height="4" rx="1"/><rect x="9" y="16" width="6" height="4" rx="1"/><rect x="16" y="16" width="6" height="4" rx="1"/><path d="M12 6v4M5 16v-4h14v4"/></svg>
+      Org Chart
+    </button>
+    <button class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      WF Intelligence
+    </button>
+    <div style="flex:1"></div>
+    <div class="nav-divider"></div>
+    <button class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Settings
+    </button>
+    <button class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+      Help
+    </button>
+  </nav>
+
+  <!-- Main Area -->
+  <div class="main-area">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-top">
+        <div>
+          <h1>Employees</h1>
+          <div class="sub">30 people across 7 departments · 4 locations</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-ghost btn-sm">⬇️ Export</button>
+          <button class="btn btn-ghost btn-sm">🔍 Advanced Filter</button>
+          <button class="btn btn-primary btn-sm" onclick="showAddModal()">+ Add Employee</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-row">
+      <div class="kpi-tile blue">
+        <div class="kpi-val">30</div>
+        <div class="kpi-lbl">Total Headcount</div>
+        <div class="kpi-sub">↑ 4 from last quarter</div>
+      </div>
+      <div class="kpi-tile green">
+        <div class="kpi-val">27</div>
+        <div class="kpi-lbl">Full-Time</div>
+        <div class="kpi-sub">90% of workforce</div>
+      </div>
+      <div class="kpi-tile orange">
+        <div class="kpi-val">2</div>
+        <div class="kpi-lbl">Part-Time</div>
+        <div class="kpi-sub">↓ 1 from last month</div>
+      </div>
+      <div class="kpi-tile purple">
+        <div class="kpi-val">1</div>
+        <div class="kpi-lbl">Contractors</div>
+        <div class="kpi-sub">1 renewal pending</div>
+      </div>
+      <div class="kpi-tile teal">
+        <div class="kpi-val">4.2</div>
+        <div class="kpi-lbl">Avg Tenure (yrs)</div>
+        <div class="kpi-sub">Range: 0.5 – 8.8 yrs</div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <button class="tab active" id="tab-dir" onclick="switchView('dir')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1" fill="currentColor"/><circle cx="3" cy="12" r="1" fill="currentColor"/><circle cx="3" cy="18" r="1" fill="currentColor"/></svg>
+        Directory <span class="tab-badge" id="dir-badge">30</span>
+      </button>
+      <button class="tab" id="tab-org" onclick="switchView('org')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="2" width="6" height="4" rx="1"/><rect x="2" y="16" width="6" height="4" rx="1"/><rect x="9" y="16" width="6" height="4" rx="1"/><rect x="16" y="16" width="6" height="4" rx="1"/><path d="M12 6v4M5 16v-4h14v4"/></svg>
+        Org Chart Explorer
+      </button>
+      <button class="tab" id="tab-grid" onclick="switchView('grid')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        People Grid
+      </button>
+    </div>
+
+    <!-- Content Panels -->
+    <div class="content-panel">
+
+      <!-- ── DIRECTORY ──────────────────────────────────────── -->
+      <div class="tab-pane active" id="pane-dir">
+        <div class="toolbar">
+          <div class="search-field">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="var(--sap-text-3)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="var(--sap-text-3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Search by name, title, ID..." oninput="filterDir(this.value)" id="dir-search">
+          </div>
+          <select class="fsel" onchange="filterDirDept(this.value)">
+            <option value="">All Departments</option>
+            <option>Engineering</option><option>Marketing</option><option>Sales</option>
+            <option>HR</option><option>Finance</option><option>Operations</option><option>Executive</option>
+          </select>
+          <select class="fsel" onchange="filterDirLoc(this.value)">
+            <option value="">All Locations</option>
+            <option>Seattle</option><option>Chicago</option><option>New York</option><option>Remote</option>
+          </select>
+          <select class="fsel" onchange="filterDirStatus(this.value)">
+            <option value="">All Types</option>
+            <option>Full-time</option><option>Part-time</option><option>Contract</option>
+          </select>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="sortDir('name')">↕ Sort</button>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <div class="table-wrap">
+            <table class="dt">
+              <thead>
+                <tr>
+                  <th onclick="sortDir('id')">#ID</th>
+                  <th onclick="sortDir('name')">Employee</th>
+                  <th onclick="sortDir('department')">Department</th>
+                  <th onclick="sortDir('job_title')">Job Title</th>
+                  <th onclick="sortDir('location')">Location</th>
+                  <th onclick="sortDir('hire_date')">Hire Date</th>
+                  <th onclick="sortDir('salary')">Salary</th>
+                  <th>Type</th>
+                  <th>Manager</th>
+                </tr>
+              </thead>
+              <tbody id="dir-tbody"></tbody>
+            </table>
+            <div class="pagination">
+              <span id="dir-count"></span>
+              <div class="pg-btns" id="dir-pages"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ORG CHART EXPLORER ──────────────────────────────── -->
+      <div class="tab-pane" id="pane-org">
+        <div class="org-toolbar">
+          <div class="search-field" style="width:200px">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="var(--sap-text-3)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="var(--sap-text-3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Find person..." oninput="orgFindPerson(this.value)" id="org-search-input">
+          </div>
+          <select class="fsel" onchange="orgFilterDept(this.value)" id="org-dept-sel">
+            <option value="">All Departments</option>
+            <option>Engineering</option><option>Marketing</option><option>Sales</option>
+            <option>HR</option><option>Finance</option><option>Operations</option>
+          </select>
+          <div class="org-toolbar-sep"></div>
+          <div class="org-mode-toggle">
+            <button class="org-mode-btn active" id="mode-full" onclick="setOrgMode('full')">Full Tree</button>
+            <button class="org-mode-btn" id="mode-focus" onclick="setOrgMode('focus')">Focus Mode</button>
+          </div>
+          <div class="org-toolbar-sep"></div>
+          <button class="btn btn-ghost btn-sm" onclick="orgExpandAll()">⊕ Expand All</button>
+          <button class="btn btn-ghost btn-sm" onclick="orgCollapseAll()">⊖ Collapse</button>
+          <button class="btn btn-ghost btn-sm" onclick="orgFitToScreen()">⛶ Fit Screen</button>
+          <div style="flex:1"></div>
+          <span id="org-status-txt" style="font-size:0.75rem;color:var(--sap-text-3)"></span>
+        </div>
+
+        <div style="flex:1;display:flex;overflow:hidden;position:relative">
+          <!-- Canvas -->
+          <div class="org-canvas-wrap" id="orgCanvas"
+            onmousedown="orgDragStart(event)"
+            onmousemove="orgDragMove(event)"
+            onmouseup="orgDragEnd(event)"
+            onmouseleave="orgDragEnd(event)"
+            onwheel="orgWheel(event)">
+
+            <svg id="orgSVG" xmlns="http://www.w3.org/2000/svg"></svg>
+            <div class="org-nodes" id="orgNodes"></div>
+
+            <!-- Breadcrumb -->
+            <div class="org-breadcrumb" id="orgBreadcrumb" style="display:none"></div>
+
+            <!-- Zoom controls -->
+            <div class="zoom-controls">
+              <button class="zoom-btn" onclick="orgZoom(0.15)" title="Zoom in">+</button>
+              <button class="zoom-btn" style="font-size:12px;font-weight:600" id="zoomLabel" onclick="orgFitToScreen()">100%</button>
+              <button class="zoom-btn" onclick="orgZoom(-0.15)" title="Zoom out">−</button>
+            </div>
+
+            <!-- Department Legend -->
+            <div class="org-legend" id="orgLegend"></div>
+          </div>
+
+          <!-- Detail Panel -->
+          <div class="detail-panel" id="orgDetail">
+            <div class="detail-head">
+              <button class="detail-close" onclick="closeDetail()">✕</button>
+              <div class="detail-av" id="det-av"></div>
+              <div class="detail-name" id="det-name"></div>
+              <div class="detail-role" id="det-role"></div>
+              <div id="det-badges" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+            </div>
+            <div class="detail-body">
+              <div class="stat-pills" id="det-stats"></div>
+              <div class="detail-section">
+                <div class="detail-sec-title">Contact</div>
+                <div class="detail-field-row">
+                  <div class="detail-field"><label>Email</label><div class="val" id="det-email"></div></div>
+                  <div class="detail-field"><label>Phone</label><div class="val" id="det-phone"></div></div>
+                </div>
+                <div class="detail-field-row">
+                  <div class="detail-field"><label>Location</label><div class="val" id="det-location"></div></div>
+                  <div class="detail-field"><label>Employee ID</label><div class="val" id="det-id"></div></div>
+                </div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-sec-title">Employment</div>
+                <div class="detail-field-row">
+                  <div class="detail-field"><label>Hire Date</label><div class="val" id="det-hire"></div></div>
+                  <div class="detail-field"><label>Type</label><div class="val" id="det-type"></div></div>
+                </div>
+                <div class="detail-field-row">
+                  <div class="detail-field"><label>Salary</label><div class="val" id="det-salary"></div></div>
+                  <div class="detail-field"><label>Tenure</label><div class="val" id="det-tenure"></div></div>
+                </div>
+              </div>
+              <div class="detail-section" id="det-manager-sec">
+                <div class="detail-sec-title">Reports To</div>
+                <div class="org-mini-list" id="det-manager-list"></div>
+              </div>
+              <div class="detail-section" id="det-reports-sec">
+                <div class="detail-sec-title">Direct Reports <span id="det-reports-count" style="color:var(--sap-text-3);font-weight:400;font-size:0.7rem"></span></div>
+                <div class="org-mini-list" id="det-reports-list"></div>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="btn btn-primary" onclick="focusOnDetailPerson()">🎯 Focus on this person</button>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-ghost" style="flex:1">✏️ Edit</button>
+                <button class="btn btn-ghost" style="flex:1">📋 Performance</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PEOPLE GRID ─────────────────────────────────────── -->
+      <div class="tab-pane" id="pane-grid">
+        <div class="toolbar">
+          <div class="search-field">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="var(--sap-text-3)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="var(--sap-text-3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Search..." oninput="filterGrid(this.value)">
+          </div>
+          <select class="fsel" onchange="filterGridDept(this.value)">
+            <option value="">All Departments</option>
+            <option>Engineering</option><option>Marketing</option><option>Sales</option>
+            <option>HR</option><option>Finance</option><option>Operations</option><option>Executive</option>
+          </select>
+          <select class="fsel" onchange="filterGridLoc(this.value)">
+            <option value="">All Locations</option>
+            <option>Seattle</option><option>Chicago</option><option>New York</option><option>Remote</option>
+          </select>
+        </div>
+        <div class="grid-scroll">
+          <div class="emp-grid" id="grid-container"></div>
+        </div>
+      </div>
+
+    </div><!-- content-panel -->
+  </div><!-- main-area -->
+</div><!-- app-wrap -->
+
+<script>
+// ══════════════════════════════════════ DATA ════════════════════
+const EMPLOYEES = [
+  {id:1001,first_name:"John",last_name:"Smith",email:"john.smith@company.com",phone:"555-123-4567",department:"Engineering",job_title:"Software Engineer",hire_date:"2020-03-15",salary:85000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1002,first_name:"Emily",last_name:"Johnson",email:"emily.johnson@company.com",phone:"555-234-5678",department:"Marketing",job_title:"Marketing Specialist",hire_date:"2019-07-22",salary:65000,manager_id:1006,location:"Chicago",status:"Full-time"},
+  {id:1003,first_name:"Michael",last_name:"Williams",email:"michael.williams@company.com",phone:"555-345-6789",department:"Sales",job_title:"Sales Representative",hire_date:"2021-01-10",salary:72000,manager_id:1007,location:"New York",status:"Full-time"},
+  {id:1004,first_name:"Jessica",last_name:"Brown",email:"jessica.brown@company.com",phone:"555-456-7890",department:"HR",job_title:"HR Coordinator",hire_date:"2022-05-03",salary:58000,manager_id:1008,location:"Seattle",status:"Full-time"},
+  {id:1005,first_name:"David",last_name:"Miller",email:"david.miller@company.com",phone:"555-567-8901",department:"Engineering",job_title:"Engineering Manager",hire_date:"2018-09-14",salary:120000,manager_id:1015,location:"Seattle",status:"Full-time"},
+  {id:1006,first_name:"Jennifer",last_name:"Davis",email:"jennifer.davis@company.com",phone:"555-678-9012",department:"Marketing",job_title:"Marketing Director",hire_date:"2017-11-20",salary:110000,manager_id:1015,location:"Chicago",status:"Full-time"},
+  {id:1007,first_name:"Robert",last_name:"Garcia",email:"robert.garcia@company.com",phone:"555-789-0123",department:"Sales",job_title:"Sales Manager",hire_date:"2019-04-05",salary:105000,manager_id:1015,location:"New York",status:"Full-time"},
+  {id:1008,first_name:"Amanda",last_name:"Wilson",email:"amanda.wilson@company.com",phone:"555-890-1234",department:"HR",job_title:"HR Manager",hire_date:"2018-02-28",salary:98000,manager_id:1015,location:"Seattle",status:"Full-time"},
+  {id:1009,first_name:"James",last_name:"Anderson",email:"james.anderson@company.com",phone:"555-901-2345",department:"Engineering",job_title:"Senior Software Engineer",hire_date:"2019-08-12",salary:95000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1010,first_name:"Lisa",last_name:"Thomas",email:"lisa.thomas@company.com",phone:"555-012-3456",department:"Marketing",job_title:"Content Specialist",hire_date:"2020-06-15",salary:62000,manager_id:1006,location:"Remote",status:"Full-time"},
+  {id:1011,first_name:"Brian",last_name:"Jackson",email:"brian.jackson@company.com",phone:"555-123-4567",department:"Sales",job_title:"Account Executive",hire_date:"2021-03-18",salary:78000,manager_id:1007,location:"New York",status:"Full-time"},
+  {id:1012,first_name:"Karen",last_name:"White",email:"karen.white@company.com",phone:"555-234-5678",department:"Finance",job_title:"Financial Analyst",hire_date:"2022-01-10",salary:72000,manager_id:1013,location:"Chicago",status:"Full-time"},
+  {id:1013,first_name:"Paul",last_name:"Harris",email:"paul.harris@company.com",phone:"555-345-6789",department:"Finance",job_title:"Finance Manager",hire_date:"2018-07-22",salary:108000,manager_id:1015,location:"Chicago",status:"Full-time"},
+  {id:1014,first_name:"Michelle",last_name:"Martin",email:"michelle.martin@company.com",phone:"555-456-7890",department:"Operations",job_title:"Operations Coordinator",hire_date:"2021-09-15",salary:56000,manager_id:1016,location:"Seattle",status:"Full-time"},
+  {id:1015,first_name:"Christopher",last_name:"Thompson",email:"christopher.thompson@company.com",phone:"555-567-8901",department:"Executive",job_title:"CEO",hire_date:"2016-05-01",salary:220000,manager_id:null,location:"New York",status:"Full-time"},
+  {id:1016,first_name:"Elizabeth",last_name:"Rodriguez",email:"elizabeth.rodriguez@company.com",phone:"555-678-9012",department:"Operations",job_title:"Operations Director",hire_date:"2017-08-15",salary:115000,manager_id:1015,location:"Seattle",status:"Full-time"},
+  {id:1017,first_name:"Joseph",last_name:"Lewis",email:"joseph.lewis@company.com",phone:"555-789-0123",department:"Engineering",job_title:"QA Engineer",hire_date:"2020-11-09",salary:80000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1018,first_name:"Donna",last_name:"Lee",email:"donna.lee@company.com",phone:"555-890-1234",department:"Marketing",job_title:"Graphic Designer",hire_date:"2021-04-22",salary:64000,manager_id:1006,location:"Chicago",status:"Part-time"},
+  {id:1019,first_name:"Daniel",last_name:"Walker",email:"daniel.walker@company.com",phone:"555-901-2345",department:"Sales",job_title:"Sales Representative",hire_date:"2022-02-15",salary:71000,manager_id:1007,location:"New York",status:"Full-time"},
+  {id:1020,first_name:"Susan",last_name:"Hall",email:"susan.hall@company.com",phone:"555-012-3456",department:"HR",job_title:"Benefits Specialist",hire_date:"2021-08-03",salary:62000,manager_id:1008,location:"Remote",status:"Full-time"},
+  {id:1021,first_name:"Thomas",last_name:"Allen",email:"thomas.allen@company.com",phone:"555-123-4567",department:"Engineering",job_title:"DevOps Engineer",hire_date:"2019-10-12",salary:88000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1022,first_name:"Nancy",last_name:"Young",email:"nancy.young@company.com",phone:"555-234-5678",department:"Finance",job_title:"Accountant",hire_date:"2020-01-20",salary:67000,manager_id:1013,location:"Chicago",status:"Full-time"},
+  {id:1023,first_name:"Mark",last_name:"King",email:"mark.king@company.com",phone:"555-345-6789",department:"Operations",job_title:"Logistics Specialist",hire_date:"2022-03-14",salary:59000,manager_id:1016,location:"Seattle",status:"Full-time"},
+  {id:1024,first_name:"Patricia",last_name:"Wright",email:"patricia.wright@company.com",phone:"555-456-7890",department:"Engineering",job_title:"UI/UX Designer",hire_date:"2021-06-07",salary:78000,manager_id:1005,location:"Remote",status:"Contract"},
+  {id:1025,first_name:"Richard",last_name:"Lopez",email:"richard.lopez@company.com",phone:"555-567-8901",department:"Marketing",job_title:"SEO Specialist",hire_date:"2020-09-21",salary:66000,manager_id:1006,location:"Chicago",status:"Full-time"},
+  {id:1026,first_name:"Laura",last_name:"Hill",email:"laura.hill@company.com",phone:"555-678-9012",department:"Sales",job_title:"Business Development",hire_date:"2019-12-02",salary:76000,manager_id:1007,location:"New York",status:"Full-time"},
+  {id:1027,first_name:"Steven",last_name:"Scott",email:"steven.scott@company.com",phone:"555-789-0123",department:"Finance",job_title:"Payroll Specialist",hire_date:"2021-02-15",salary:64000,manager_id:1013,location:"Chicago",status:"Full-time"},
+  {id:1028,first_name:"Kimberly",last_name:"Green",email:"kimberly.green@company.com",phone:"555-890-1234",department:"HR",job_title:"Recruiting Coordinator",hire_date:"2022-04-11",salary:55000,manager_id:1008,location:"Seattle",status:"Part-time"},
+  {id:1029,first_name:"William",last_name:"Adams",email:"william.adams@company.com",phone:"555-901-2345",department:"Engineering",job_title:"Data Engineer",hire_date:"2019-05-20",salary:90000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1030,first_name:"Mary",last_name:"Baker",email:"mary.baker@company.com",phone:"555-012-3456",department:"Operations",job_title:"Administrative Assistant",hire_date:"2021-11-01",salary:52000,manager_id:1016,location:"New York",status:"Full-time"},
+];
+
+// ══════════════════════════════════════ HELPERS ════════════════════
+const DEPT_COLORS = {
+  Engineering: '#5BA0F2', Marketing: '#C0399F', Sales: '#107E3E',
+  HR: '#E9730C', Finance: '#BB0000', Operations: '#5899DA',
+  Executive: '#354A5E'
+};
+const AVATAR_COLORS = ['#5BA0F2','#C0399F','#107E3E','#E9730C','#BB0000','#5899DA','#354A5E','#8E44AD'];
+function initials(n) { return n.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2); }
+function avColor(e) { return DEPT_COLORS[e.department] || AVATAR_COLORS[e.id % AVATAR_COLORS.length]; }
+function fmtDate(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function tenure(d) { return ((new Date() - new Date(d))/(1000*60*60*24*365)).toFixed(1); }
+function statusBadge(s) {
+  const m = {'Full-time':'bg-success','Part-time':'bg-warning','Contract':'bg-neutral'};
+  return `<span class="badge ${m[s]||'bg-plain'}">${s}</span>`;
+}
+
+// ══════════════════════════════════════ THEME ══════════════════════
+let darkMode = false;
+function toggleTheme() {
+  darkMode = !darkMode;
+  document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : '');
+  document.getElementById('themeBtn').textContent = darkMode ? '☀️' : '🌙';
+  if (orgBuilt) drawOrgConnectors();
+}
+
+// ══════════════════════════════════════ VIEW SWITCHING ═════════════
+let currentView = 'dir';
+function switchView(v) {
+  currentView = v;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + v).classList.add('active');
+  document.getElementById('pane-' + v).classList.add('active');
+  if (v === 'org' && !orgBuilt) { setTimeout(buildOrgChart, 80); }
+  if (v === 'grid') renderGrid(gridFiltered);
+}
+
+function globalSearch(q) {
+  if (currentView === 'dir') { filterDir(q); }
+  if (currentView === 'org') { orgFindPerson(q); }
+  if (currentView === 'grid') { filterGrid(q); }
+}
+
+// ══════════════════════════════════════ DIRECTORY ══════════════════
+let dirFiltered = [...EMPLOYEES];
+let dirPage = 1, dirSort = {key:'name', asc:true};
+const DIR_PER = 10;
+let dirF = {q:'', dept:'', loc:'', status:''};
+
+function applyDirFilters() {
+  dirFiltered = EMPLOYEES.filter(e => {
+    const name = (e.first_name+' '+e.last_name).toLowerCase();
+    return (!dirF.q || name.includes(dirF.q)||e.job_title.toLowerCase().includes(dirF.q)||String(e.id).includes(dirF.q))
+      && (!dirF.dept   || e.department === dirF.dept)
+      && (!dirF.loc    || e.location   === dirF.loc)
+      && (!dirF.status || e.status     === dirF.status);
+  });
+  dirPage = 1; renderDir();
+  document.getElementById('dir-badge').textContent = dirFiltered.length;
+}
+function filterDir(q)      { dirF.q=q.toLowerCase();     applyDirFilters(); }
+function filterDirDept(d)  { dirF.dept=d;                applyDirFilters(); }
+function filterDirLoc(l)   { dirF.loc=l;                 applyDirFilters(); }
+function filterDirStatus(s){ dirF.status=s;              applyDirFilters(); }
+function sortDir(k) {
+  if(dirSort.key===k) dirSort.asc=!dirSort.asc; else { dirSort.key=k; dirSort.asc=true; }
+  dirFiltered.sort((a,b) => {
+    let av = k==='name'?(a.first_name+a.last_name):a[k];
+    let bv = k==='name'?(b.first_name+b.last_name):b[k];
+    return dirSort.asc?(av>bv?1:-1):(av<bv?1:-1);
+  });
+  renderDir();
+}
+
+function renderDir() {
+  const start = (dirPage-1)*DIR_PER;
+  const rows = dirFiltered.slice(start, start+DIR_PER);
+  const tbody = document.getElementById('dir-tbody');
+  if(!rows.length){
+    tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:3rem;color:var(--sap-text-3)">No employees match your filters</td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(e => {
+      const name = `${e.first_name} ${e.last_name}`;
+      const color = avColor(e);
+      const mgr = EMPLOYEES.find(x=>x.id===e.manager_id);
+      const dc = DEPT_COLORS[e.department]||'#89919A';
+      return `<tr onclick="openDetailPanel(${e.id})">
+        <td class="link-cell">#${e.id}</td>
+        <td><div class="av-chip"><div class="av" style="background:${color}">${initials(name)}</div>${name}</div></td>
+        <td><span class="badge" style="background:${dc}18;color:${dc};font-weight:600">${e.department}</span></td>
+        <td>${e.job_title}</td>
+        <td>📍 ${e.location}</td>
+        <td>${fmtDate(e.hire_date)}</td>
+        <td>$${e.salary.toLocaleString()}</td>
+        <td>${statusBadge(e.status)}</td>
+        <td style="color:var(--sap-text-2)">${mgr?mgr.first_name+' '+mgr.last_name:'—'}</td>
+      </tr>`;
+    }).join('');
+  }
+  document.getElementById('dir-count').textContent = `${dirFiltered.length} employee${dirFiltered.length!==1?'s':''}`;
+  // Pagination
+  const pages = Math.ceil(dirFiltered.length / DIR_PER);
+  const container = document.getElementById('dir-pages');
+  let html = `<button class="pg-btn" ${dirPage<=1?'disabled':''} onclick="goPage(${dirPage-1})">‹</button>`;
+  for(let i=1;i<=pages;i++) html+=`<button class="pg-btn${i===dirPage?' act':''}" onclick="goPage(${i})">${i}</button>`;
+  html += `<button class="pg-btn" ${dirPage>=pages?'disabled':''} onclick="goPage(${dirPage+1})">›</button>`;
+  container.innerHTML = html;
+}
+function goPage(p) { dirPage=p; renderDir(); }
+
+// ══════════════════════════════════════ GRID VIEW ══════════════════
+let gridFiltered = [...EMPLOYEES];
+let gridF = {q:'', dept:'', loc:''};
+function applyGridFilters() {
+  gridFiltered = EMPLOYEES.filter(e => {
+    const name = (e.first_name+' '+e.last_name).toLowerCase();
+    return (!gridF.q    || name.includes(gridF.q)||e.job_title.toLowerCase().includes(gridF.q))
+      && (!gridF.dept   || e.department === gridF.dept)
+      && (!gridF.loc    || e.location   === gridF.loc);
+  });
+  renderGrid(gridFiltered);
+}
+function filterGrid(q)     { gridF.q=q.toLowerCase();    applyGridFilters(); }
+function filterGridDept(d) { gridF.dept=d;               applyGridFilters(); }
+function filterGridLoc(l)  { gridF.loc=l;                applyGridFilters(); }
+
+function renderGrid(employees) {
+  const container = document.getElementById('grid-container');
+  if(!employees.length){ container.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--sap-text-3)">No employees found</div>`; return; }
+  const dc = DEPT_COLORS;
+  container.innerHTML = employees.map(e => {
+    const name = `${e.first_name} ${e.last_name}`;
+    const color = avColor(e);
+    const dcolor = dc[e.department]||'#89919A';
+    return `<div class="emp-card" onclick="openDetailPanel(${e.id})">
+      <div class="emp-card-av" style="background:${color}">${initials(name)}</div>
+      <div class="emp-card-name">${name}</div>
+      <div class="emp-card-title">${e.job_title}</div>
+      <div class="emp-card-tags">
+        <span class="badge" style="background:${dcolor}18;color:${dcolor};font-weight:600">${e.department}</span>
+        <span class="badge bg-plain">📍 ${e.location}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════ DETAIL PANEL ══════════════════
+let detailPersonId = null;
+function openDetailPanel(id) {
+  const e = EMPLOYEES.find(x=>x.id===id);
+  if(!e) return;
+  detailPersonId = id;
+  const name = `${e.first_name} ${e.last_name}`;
+  const color = avColor(e);
+  const dc = DEPT_COLORS[e.department]||'#89919A';
+
+  const av = document.getElementById('det-av');
+  av.textContent = initials(name);
+  av.style.background = color;
+  document.getElementById('det-name').textContent = name;
+  document.getElementById('det-role').textContent = `${e.job_title} · ${e.department}`;
+  const stBadge = {'Full-time':'bg-success','Part-time':'bg-warning','Contract':'bg-neutral'}[e.status]||'bg-plain';
+  document.getElementById('det-badges').innerHTML = `
+    <span class="badge ${stBadge}">${e.status}</span>
+    <span class="badge" style="background:${dc}18;color:${dc}">${e.department}</span>
+    <span class="badge bg-plain">📍 ${e.location}</span>
+  `;
+
+  // Stats
+  const reports = EMPLOYEES.filter(x=>x.manager_id===e.id).length;
+  document.getElementById('det-stats').innerHTML = `
+    <div class="stat-pill"><div class="stat-pill-val">${tenure(e.hire_date)}</div><div class="stat-pill-lbl">Yrs</div></div>
+    <div class="stat-pill"><div class="stat-pill-val">$${(e.salary/1000).toFixed(0)}K</div><div class="stat-pill-lbl">Salary</div></div>
+    <div class="stat-pill"><div class="stat-pill-val">${reports}</div><div class="stat-pill-lbl">Reports</div></div>
+  `;
+
+  // Fields
+  document.getElementById('det-email').textContent    = e.email;
+  document.getElementById('det-phone').textContent    = e.phone;
+  document.getElementById('det-location').textContent = e.location;
+  document.getElementById('det-id').textContent       = '#' + e.id;
+  document.getElementById('det-hire').textContent     = fmtDate(e.hire_date);
+  document.getElementById('det-type').textContent     = e.status;
+  document.getElementById('det-salary').textContent   = '$' + e.salary.toLocaleString();
+  document.getElementById('det-tenure').textContent   = tenure(e.hire_date) + ' years';
+
+  // Manager
+  const mgr = EMPLOYEES.find(x=>x.id===e.manager_id);
+  const mSec = document.getElementById('det-manager-sec');
+  const mList = document.getElementById('det-manager-list');
+  if(mgr) {
+    mSec.style.display='block';
+    const mc = avColor(mgr);
+    mList.innerHTML = `<div class="org-mini-person" onclick="openDetailPanel(${mgr.id})">
+      <div class="av org-mini-person .av" style="background:${mc};width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#fff;flex-shrink:0">${initials(mgr.first_name+' '+mgr.last_name)}</div>
+      <div><div class="org-mini-name">${mgr.first_name} ${mgr.last_name}</div><div class="org-mini-title">${mgr.job_title}</div></div>
+    </div>`;
+  } else {
+    mSec.style.display='none';
+  }
+
+  // Direct reports
+  const reps = EMPLOYEES.filter(x=>x.manager_id===e.id);
+  const rSec = document.getElementById('det-reports-sec');
+  const rList = document.getElementById('det-reports-list');
+  document.getElementById('det-reports-count').textContent = `(${reps.length})`;
+  if(reps.length) {
+    rSec.style.display='block';
+    rList.innerHTML = reps.map(r => {
+      const rc = avColor(r);
+      return `<div class="org-mini-person" onclick="openDetailPanel(${r.id})">
+        <div style="background:${rc};width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#fff;flex-shrink:0">${initials(r.first_name+' '+r.last_name)}</div>
+        <div><div class="org-mini-name">${r.first_name} ${r.last_name}</div><div class="org-mini-title">${r.job_title}</div></div>
+      </div>`;
+    }).join('');
+  } else {
+    rSec.style.display='none';
+  }
+
+  document.getElementById('orgDetail').classList.add('open');
+
+  // If in org view, highlight that node
+  if(currentView === 'org') {
+    document.querySelectorAll('.org-node').forEach(n => n.classList.remove('focused'));
+    const node = document.querySelector(`.org-node[data-id="${id}"]`);
+    if(node) node.classList.add('focused');
+  }
+}
+
+function closeDetail() {
+  document.getElementById('orgDetail').classList.remove('open');
+  document.querySelectorAll('.org-node').forEach(n => { n.classList.remove('focused'); n.classList.remove('dimmed'); });
+  detailPersonId = null;
+}
+
+function focusOnDetailPerson() {
+  if(detailPersonId) {
+    if(currentView !== 'org') switchView('org');
+    setTimeout(() => { orgFocusOn(detailPersonId); }, orgBuilt ? 0 : 200);
+  }
+}
+
+// ══════════════════════════════════════ ORG CHART ══════════════════
+let orgBuilt = false;
+let orgTransform = { x: 0, y: 0, scale: 1 };
+let orgDrag = { active: false, startX: 0, startY: 0, originX: 0, originY: 0 };
+let orgDeptFilter = '';
+let orgMode = 'full'; // 'full' | 'focus'
+let orgFocusId = null;
+let orgCollapsed = new Set();
+let orgPositions = {}; // id -> {x, y, w, h}
+
+// Layout constants
+const NODE_W = 168, NODE_H = 120;
+const H_GAP = 24,   V_GAP = 60;
+
+// Build adjacency
+function getChildren(id, filter) {
+  return EMPLOYEES.filter(e => e.manager_id === id && (!filter || e.department === filter || id === 1015));
+}
+
+// Subtree width calculation
+function subtreeWidth(id, filter) {
+  if(orgCollapsed.has(id)) return NODE_W;
+  const children = getChildren(id, filter);
+  if(!children.length) return NODE_W;
+  const total = children.reduce((sum, c) => sum + subtreeWidth(c.id, filter), 0)
+                + H_GAP * (children.length - 1);
+  return Math.max(NODE_W, total);
+}
+
+// Position nodes recursively
+function positionTree(id, cx, y, filter, positions) {
+  positions[id] = { x: cx - NODE_W/2, y, w: NODE_W, h: NODE_H };
+  if(orgCollapsed.has(id)) return;
+  const children = getChildren(id, filter);
+  if(!children.length) return;
+  const totalW = children.reduce((s, c) => s + subtreeWidth(c.id, filter), 0)
+                 + H_GAP * (children.length - 1);
+  let left = cx - totalW/2;
+  children.forEach(c => {
+    const cw = subtreeWidth(c.id, filter);
+    positionTree(c.id, left + cw/2, y + NODE_H + V_GAP, filter, positions);
+    left += cw + H_GAP;
+  });
+}
+
+function buildOrgChart() {
+  orgBuilt = true;
+  orgPositions = {};
+  const ceo = EMPLOYEES.find(e => !e.manager_id);
+  if(!ceo) return;
+
+  const filter = orgDeptFilter || null;
+  const rootId = (orgMode === 'focus' && orgFocusId) ? orgFocusId : ceo.id;
+
+  // Compute layout
+  positionTree(rootId, 0, 0, filter, orgPositions);
+
+  // Find bounding box
+  const xs = Object.values(orgPositions).map(p=>p.x);
+  const ys = Object.values(orgPositions).map(p=>p.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs) + NODE_W;
+  const minY = Math.min(...ys), maxY = Math.max(...ys) + NODE_H;
+  const treeW = maxX - minX, treeH = maxY - minY;
+
+  // Render nodes
+  const container = document.getElementById('orgNodes');
+  container.innerHTML = '';
+
+  const ids = Object.keys(orgPositions).map(Number);
+  ids.forEach(id => {
+    const e = EMPLOYEES.find(x=>x.id===id);
+    if(!e) return;
+    const pos = orgPositions[id];
+    const children = getChildren(id, filter);
+    const childCount = EMPLOYEES.filter(x=>x.manager_id===id).length;
+    const color = avColor(e);
+    const dc = DEPT_COLORS[e.department]||'#89919A';
+    const isCollapsed = orgCollapsed.has(id);
+
+    const div = document.createElement('div');
+    div.className = 'org-node';
+    div.dataset.id = id;
+    div.style.left = (pos.x - minX + 40) + 'px';
+    div.style.top  = (pos.y - minY + 40) + 'px';
+    div.style.width = NODE_W + 'px';
+
+    div.innerHTML = `
+      <div class="org-node-av" style="background:${color}">${initials(e.first_name+' '+e.last_name)}</div>
+      <div class="org-node-name">${e.first_name} ${e.last_name}</div>
+      <div class="org-node-title">${e.job_title}</div>
+      <div class="org-node-dept">
+        <span class="org-node-dept-badge" style="background:${dc}22;color:${dc}">${e.department}</span>
+        ${childCount > 0 ? `<div style="display:flex;align-items:center;gap:4px">
+          <span class="org-node-reports">${isCollapsed ? '▸ '+childCount : childCount}</span>
+          <button class="org-node-toggle" onclick="toggleCollapse(event, ${id})" title="${isCollapsed?'Expand':'Collapse'}">${isCollapsed?'+':'−'}</button>
+        </div>` : ''}
+      </div>
+    `;
+    div.addEventListener('click', () => openDetailPanel(id));
+    container.appendChild(div);
+  });
+
+  // SVG size
+  const svgW = treeW + 80, svgH = treeH + 80;
+  const svg = document.getElementById('orgSVG');
+  svg.setAttribute('width', svgW);
+  svg.setAttribute('height', svgH);
+  svg.style.width = svgW + 'px';
+  svg.style.height = svgH + 'px';
+
+  drawOrgConnectors(minX, minY, filter);
+  applyOrgTransform();
+  orgFitToScreen();
+  renderLegend();
+  updateBreadcrumb();
+}
+
+function drawOrgConnectors(minX, minY, filter) {
+  if(minX === undefined) {
+    const xs = Object.values(orgPositions).map(p=>p.x);
+    const ys = Object.values(orgPositions).map(p=>p.y);
+    minX = Math.min(...xs); minY = Math.min(...ys);
+    filter = orgDeptFilter || null;
+  }
+  const svg = document.getElementById('orgSVG');
+  svg.innerHTML = '';
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const lineColor = isDark ? '#3A4A5A' : '#C8CED2';
+
+  Object.keys(orgPositions).forEach(id => {
+    const e = EMPLOYEES.find(x=>x.id===Number(id));
+    if(!e || !e.manager_id || !orgPositions[e.manager_id]) return;
+    if(orgCollapsed.has(e.manager_id)) return;
+
+    const from = orgPositions[e.manager_id];
+    const to   = orgPositions[id];
+    const ox = from.x - minX + 40 + NODE_W/2;
+    const oy = from.y - minY + 40 + NODE_H;
+    const tx = to.x   - minX + 40 + NODE_W/2;
+    const ty = to.y   - minY + 40;
+    const midY = (oy + ty) / 2;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M ${ox} ${oy} C ${ox} ${midY}, ${tx} ${midY}, ${tx} ${ty}`);
+    path.setAttribute('stroke', lineColor);
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(path);
+  });
+}
+
+function applyOrgTransform() {
+  const nodes = document.getElementById('orgNodes');
+  const svg   = document.getElementById('orgSVG');
+  const t = orgTransform;
+  nodes.style.transform = `translate(${t.x}px, ${t.y}px) scale(${t.scale})`;
+  svg.style.transform   = `translate(${t.x}px, ${t.y}px) scale(${t.scale})`;
+  document.getElementById('zoomLabel').textContent = Math.round(t.scale * 100) + '%';
+}
+
+function orgFitToScreen() {
+  const canvas = document.getElementById('orgCanvas');
+  const svg    = document.getElementById('orgSVG');
+  const sw = parseFloat(svg.getAttribute('width')  || svg.style.width)  || 800;
+  const sh = parseFloat(svg.getAttribute('height') || svg.style.height) || 600;
+  const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+  const scaleX = (cw - 80) / sw, scaleY = (ch - 80) / sh;
+  const scale = Math.min(scaleX, scaleY, 1);
+  orgTransform.scale = Math.max(0.2, scale);
+  orgTransform.x = (cw - sw * orgTransform.scale) / 2;
+  orgTransform.y = (ch - sh * orgTransform.scale) / 2;
+  applyOrgTransform();
+}
+
+function orgZoom(delta) {
+  const canvas = document.getElementById('orgCanvas');
+  const cx = canvas.offsetWidth / 2, cy = canvas.offsetHeight / 2;
+  const newScale = Math.min(2, Math.max(0.15, orgTransform.scale + delta));
+  const ratio = newScale / orgTransform.scale;
+  orgTransform.x = cx - ratio * (cx - orgTransform.x);
+  orgTransform.y = cy - ratio * (cy - orgTransform.y);
+  orgTransform.scale = newScale;
+  applyOrgTransform();
+}
+
+// Pan
+function orgDragStart(e) {
+  if(e.target.closest('.org-node') || e.target.closest('.zoom-controls') || e.target.closest('.org-breadcrumb') || e.target.closest('.org-legend')) return;
+  orgDrag.active = true;
+  orgDrag.startX = e.clientX; orgDrag.startY = e.clientY;
+  orgDrag.originX = orgTransform.x; orgDrag.originY = orgTransform.y;
+  e.currentTarget.classList.add('grabbing');
+}
+function orgDragMove(e) {
+  if(!orgDrag.active) return;
+  orgTransform.x = orgDrag.originX + (e.clientX - orgDrag.startX);
+  orgTransform.y = orgDrag.originY + (e.clientY - orgDrag.startY);
+  applyOrgTransform();
+}
+function orgDragEnd(e) {
+  orgDrag.active = false;
+  e.currentTarget.classList.remove('grabbing');
+}
+function orgWheel(e) {
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? -0.08 : 0.08;
+  const canvas = e.currentTarget;
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const newScale = Math.min(2, Math.max(0.15, orgTransform.scale + delta));
+  const ratio = newScale / orgTransform.scale;
+  orgTransform.x = mx - ratio * (mx - orgTransform.x);
+  orgTransform.y = my - ratio * (my - orgTransform.y);
+  orgTransform.scale = newScale;
+  applyOrgTransform();
+}
+
+// Collapse / expand
+function toggleCollapse(evt, id) {
+  evt.stopPropagation();
+  if(orgCollapsed.has(id)) orgCollapsed.delete(id); else orgCollapsed.add(id);
+  buildOrgChart();
+}
+function orgExpandAll()   { orgCollapsed.clear(); buildOrgChart(); }
+function orgCollapseAll() {
+  EMPLOYEES.forEach(e => { if(EMPLOYEES.some(x=>x.manager_id===e.id)) orgCollapsed.add(e.id); });
+  // Keep CEO's immediate children visible
+  const ceo = EMPLOYEES.find(e=>!e.manager_id);
+  if(ceo) orgCollapsed.delete(ceo.id);
+  buildOrgChart();
+}
+
+// Focus mode
+function setOrgMode(mode) {
+  orgMode = mode;
+  document.getElementById('mode-full').classList.toggle('active', mode==='full');
+  document.getElementById('mode-focus').classList.toggle('active', mode==='focus');
+  if(mode==='full') { orgFocusId=null; orgCollapsed.clear(); }
+  buildOrgChart();
+}
+
+function orgFocusOn(id) {
+  orgMode = 'focus';
+  orgFocusId = id;
+  orgCollapsed.clear();
+  document.getElementById('mode-full').classList.remove('active');
+  document.getElementById('mode-focus').classList.add('active');
+  buildOrgChart();
+  setTimeout(() => {
+    // Center on the focused node
+    const node = document.querySelector(`.org-node[data-id="${id}"]`);
+    const canvas = document.getElementById('orgCanvas');
+    if(node) {
+      const nx = parseFloat(node.style.left) + NODE_W/2;
+      const ny = parseFloat(node.style.top)  + NODE_H/2;
+      const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+      orgTransform.x = cw/2 - nx * orgTransform.scale;
+      orgTransform.y = ch/2 - ny * orgTransform.scale - 60;
+      applyOrgTransform();
+    }
+  }, 80);
+}
+
+function orgFilterDept(dept) {
+  orgDeptFilter = dept;
+  buildOrgChart();
+}
+
+function orgFindPerson(q) {
+  if(!q){ orgFindHighlight(null); return; }
+  const match = EMPLOYEES.find(e =>
+    (e.first_name+' '+e.last_name).toLowerCase().includes(q.toLowerCase()) ||
+    e.job_title.toLowerCase().includes(q.toLowerCase())
+  );
+  if(match) {
+    orgFindHighlight(match.id);
+    // Ensure their ancestors aren't collapsed
+    let cur = EMPLOYEES.find(x=>x.id===match.id);
+    while(cur && cur.manager_id) {
+      orgCollapsed.delete(cur.manager_id);
+      cur = EMPLOYEES.find(x=>x.id===cur.manager_id);
+    }
+    buildOrgChart();
+    setTimeout(() => {
+      const node = document.querySelector(`.org-node[data-id="${match.id}"]`);
+      if(node) {
+        const nx = parseFloat(node.style.left) + NODE_W/2;
+        const ny = parseFloat(node.style.top)  + NODE_H/2;
+        const canvas = document.getElementById('orgCanvas');
+        const cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+        orgTransform.x = cw/2 - nx * orgTransform.scale;
+        orgTransform.y = ch/2 - ny * orgTransform.scale;
+        applyOrgTransform();
+      }
+    }, 80);
+  }
+}
+
+let highlightedOrgId = null;
+function orgFindHighlight(id) {
+  highlightedOrgId = id;
+  document.querySelectorAll('.org-node').forEach(n => {
+    if(id === null) { n.classList.remove('dimmed'); return; }
+    n.classList.toggle('dimmed', n.dataset.id != id);
+    n.classList.toggle('focused', n.dataset.id == id);
+  });
+  if(id) document.getElementById('org-status-txt').textContent = 'Showing: '+EMPLOYEES.find(e=>e.id===id)?.first_name || '';
+  else document.getElementById('org-status-txt').textContent = '';
+}
+
+// Breadcrumb (for focus mode)
+let focusPath = [];
+function updateBreadcrumb() {
+  const bc = document.getElementById('orgBreadcrumb');
+  if(orgMode !== 'focus' || !orgFocusId) { bc.style.display='none'; return; }
+  bc.style.display = 'flex';
+
+  // Build path from CEO to focused person
+  const path = [];
+  let cur = EMPLOYEES.find(e=>e.id===orgFocusId);
+  while(cur) {
+    path.unshift(cur);
+    cur = cur.manager_id ? EMPLOYEES.find(e=>e.id===cur.manager_id) : null;
+  }
+
+  bc.innerHTML = path.map((e,i) => {
+    const name = e.first_name + ' ' + e.last_name;
+    const isLast = i === path.length - 1;
+    return (i > 0 ? '<span class="org-bc-sep">›</span>' : '') +
+      `<span class="org-bc-item${isLast?' current':''}" onclick="${isLast?'':('orgFocusOn('+e.id+')')}">${name}</span>`;
+  }).join('');
+}
+
+// Legend
+function renderLegend() {
+  const depts = [...new Set(EMPLOYEES.map(e=>e.department))].filter(d=>d!=='Executive');
+  const legend = document.getElementById('orgLegend');
+  legend.innerHTML = `<div class="org-legend-title">Departments</div>` +
+    depts.map(d => {
+      const count = EMPLOYEES.filter(e=>e.department===d).length;
+      return `<div class="legend-row" onclick="orgFilterDept(orgDeptFilter===d?'':'${d}')" id="leg-${d.replace(/\s/g,'_')}">
+        <div class="legend-dot" style="background:${DEPT_COLORS[d]||'#89919A'}"></div>
+        <span style="flex:1">${d}</span>
+        <span style="color:var(--sap-text-3)">${count}</span>
+      </div>`;
+    }).join('');
+}
+
+function showAddModal() { alert('Add Employee form would open here in the full implementation.'); }
+
+// ══════════════════════════════════════ INIT ══════════════════════
+renderDir();
+renderGrid(EMPLOYEES);
+</script>
+</body>
+</html>
