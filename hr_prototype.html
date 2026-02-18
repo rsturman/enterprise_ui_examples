@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lovely HR – Workforce Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=72:wght@300;400;500;600;700&family=72+Condensed:wght@700&display=swap" rel="stylesheet">
+<style>
+/* ─── SAP Fiori Design Tokens ─────────────────────────────────── */
+:root {
+  --sap-brand:         #0070F2;
+  --sap-brand-hover:   #0064D9;
+  --sap-brand-active:  #0057BE;
+  --sap-shell-bg:      #354A5E;
+  --sap-shell-text:    #FFFFFF;
+  --sap-page-bg:       #F5F6F7;
+  --sap-base-bg:       #FFFFFF;
+  --sap-tile-bg:       #FFFFFF;
+  --sap-border:        #D9D9D9;
+  --sap-border-strong: #89919A;
+  --sap-text-1:        #32363A;
+  --sap-text-2:        #6A6D70;
+  --sap-text-3:        #89919A;
+  --sap-link:          #0070F2;
+  --sap-positive:      #107E3E;
+  --sap-positive-bg:   #F5FAF5;
+  --sap-positive-text: #107E3E;
+  --sap-warning:       #E9730C;
+  --sap-warning-bg:    #FEF7F1;
+  --sap-critical:      #BB0000;
+  --sap-critical-bg:   #FFEBEB;
+  --sap-neutral:       #5899DA;
+  --sap-neutral-bg:    #EBF3FD;
+  --sap-highlight:     #C0399F;
+  --sap-shadow-sm:     0 1px 4px rgba(0,0,0,.12);
+  --sap-shadow-md:     0 2px 8px rgba(0,0,0,.14);
+  --sap-radius:        4px;
+  --sap-radius-lg:     8px;
+  --nav-height:        44px;
+  --tab-h:             44px;
+  --chat-width:        380px;
+  --transition:        0.18s ease;
+}
+
+/* ─── Dark Theme ───────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --sap-shell-bg:      #1D2D3E;
+  --sap-page-bg:       #12171A;
+  --sap-base-bg:       #1C2228;
+  --sap-tile-bg:       #232C35;
+  --sap-border:        #3A4A5A;
+  --sap-border-strong: #5A7080;
+  --sap-text-1:        #E0E8F0;
+  --sap-text-2:        #AAB5C0;
+  --sap-text-3:        #7A8FA0;
+  --sap-link:          #5BA0F2;
+  --sap-positive-bg:   #0A2A15;
+  --sap-positive-text: #57C288;
+  --sap-warning-bg:    #2A1A06;
+  --sap-critical-bg:   #2A0808;
+  --sap-neutral-bg:    #0A1A2A;
+  --sap-shadow-sm:     0 1px 4px rgba(0,0,0,.4);
+  --sap-shadow-md:     0 2px 10px rgba(0,0,0,.5);
+}
+
+/* ─── Reset & Base ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  font-family: '72', 'Segoe UI', Arial, sans-serif;
+  background: var(--sap-page-bg);
+  color: var(--sap-text-1);
+  line-height: 1.5;
+  transition: background var(--transition), color var(--transition);
+  overflow-x: hidden;
+}
+a { color: var(--sap-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ─── Shell Bar ─────────────────────────────────────────────────── */
+.shell-bar {
+  background: var(--sap-shell-bg);
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 0.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: var(--sap-shadow-sm);
+}
+.shell-logo {
+  width: 32px; height: 32px;
+  background: var(--sap-brand);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; cursor: pointer;
+  flex-shrink: 0;
+}
+.shell-title {
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+.shell-spacer { flex: 1; }
+.shell-search {
+  display: flex; align-items: center;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--sap-radius);
+  padding: 4px 10px; gap: 6px;
+  width: 220px;
+}
+.shell-search input {
+  background: transparent;
+  border: none; outline: none;
+  color: #fff; font-size: 0.8rem;
+  width: 100%;
+}
+.shell-search input::placeholder { color: rgba(255,255,255,0.5); }
+.shell-icon-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; cursor: pointer; border-radius: var(--sap-radius);
+  border: none; background: transparent;
+  transition: background var(--transition);
+  position: relative;
+}
+.shell-icon-btn:hover { background: rgba(255,255,255,0.15); }
+.notif-badge {
+  position: absolute; top: 4px; right: 4px;
+  width: 14px; height: 14px;
+  background: #E03; color: #fff;
+  font-size: 9px; font-weight: 700;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.avatar-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--sap-brand);
+  border: 2px solid rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 0.7rem; font-weight: 700;
+  cursor: pointer; flex-shrink: 0;
+}
+
+/* ─── App Layout ────────────────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - var(--nav-height));
+}
+
+/* ─── Side Nav ──────────────────────────────────────────────────── */
+.side-nav {
+  width: 168px;
+  background: var(--sap-base-bg);
+  border-right: 1px solid var(--sap-border);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0.625rem 0.5rem;
+  gap: 1px;
+  flex-shrink: 0;
+  transition: background var(--transition), border-color var(--transition);
+}
+.nav-section-label {
+  font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--sap-text-3);
+  padding: 0.75rem 0.625rem 0.25rem;
+}
+.nav-item {
+  width: 100%;
+  height: 38px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  padding: 0 0.625rem;
+  border-radius: var(--sap-radius);
+  cursor: pointer; border: none;
+  background: transparent; color: var(--sap-text-2);
+  font-size: 0.8rem; font-weight: 500;
+  font-family: inherit;
+  transition: all var(--transition);
+  position: relative;
+  white-space: nowrap;
+  text-align: left;
+}
+.nav-item svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.nav-item:hover { background: var(--sap-neutral-bg); color: var(--sap-brand); }
+.nav-item:hover svg { opacity: 1; }
+.nav-item.active { background: var(--sap-neutral-bg); color: var(--sap-brand); font-weight: 600; }
+.nav-item.active svg { opacity: 1; }
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 6px; bottom: 6px;
+  width: 3px; background: var(--sap-brand);
+  border-radius: 0 3px 3px 0;
+}
+.nav-divider {
+  height: 1px; background: var(--sap-border);
+  margin: 0.5rem 0;
+}
+
+/* ─── Main Content ──────────────────────────────────────────────── */
+.main-content {
+  flex: 1;
+  overflow-x: hidden;
+  padding: 0 1.25rem 1.5rem;
+  min-width: 0;
+}
+
+/* ─── Page Header ───────────────────────────────────────────────── */
+.page-header {
+  padding: 1rem 0 0.75rem;
+  border-bottom: 1px solid var(--sap-border);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.page-header h1 {
+  font-size: 1.1rem; font-weight: 600;
+  color: var(--sap-text-1);
+}
+.page-header-actions {
+  margin-left: auto;
+  display: flex; gap: 0.5rem; align-items: center;
+}
+
+/* ─── KPI Tiles ─────────────────────────────────────────────────── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.kpi-tile {
+  background: var(--sap-tile-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 1rem 1.125rem;
+  cursor: pointer;
+  transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+  position: relative; overflow: hidden;
+}
+.kpi-tile::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; border-radius: var(--sap-radius-lg) var(--sap-radius-lg) 0 0;
+}
+.kpi-tile.blue::after   { background: var(--sap-brand); }
+.kpi-tile.green::after  { background: var(--sap-positive); }
+.kpi-tile.orange::after { background: var(--sap-warning); }
+.kpi-tile.purple::after { background: var(--sap-highlight); }
+.kpi-tile:hover {
+  box-shadow: var(--sap-shadow-md);
+  border-color: var(--sap-brand);
+  transform: translateY(-1px);
+}
+.kpi-tile.selected {
+  border-color: var(--sap-brand);
+  box-shadow: 0 0 0 2px var(--sap-brand);
+}
+.kpi-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--sap-radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 0.75rem;
+}
+.kpi-icon.blue   { background: var(--sap-neutral-bg); }
+.kpi-icon.green  { background: var(--sap-positive-bg); }
+.kpi-icon.orange { background: var(--sap-warning-bg); }
+.kpi-icon.purple { background: #F5E9F7; }
+[data-theme="dark"] .kpi-icon.purple { background: #2A0A2A; }
+.kpi-value {
+  font-size: 1.75rem; font-weight: 300;
+  color: var(--sap-text-1); line-height: 1;
+  margin-bottom: 4px;
+}
+.kpi-label {
+  font-size: 0.75rem; color: var(--sap-text-2);
+  font-weight: 500; text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.kpi-sub {
+  font-size: 0.7rem; color: var(--sap-text-3);
+  margin-top: 4px;
+}
+
+/* ─── Tab Bar ───────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--sap-border);
+  margin-bottom: 1rem;
+  gap: 0;
+}
+.tab {
+  padding: 0 1rem;
+  height: var(--tab-h);
+  display: flex; align-items: center;
+  font-size: 0.875rem; font-weight: 500;
+  color: var(--sap-text-2);
+  cursor: pointer; border: none; background: transparent;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all var(--transition); white-space: nowrap;
+}
+.tab:hover { color: var(--sap-brand); background: var(--sap-neutral-bg); }
+.tab.active { color: var(--sap-brand); border-bottom-color: var(--sap-brand); }
+.tab-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--sap-brand); color: #fff;
+  font-size: 0.65rem; font-weight: 700;
+  border-radius: 10px; padding: 1px 6px;
+  margin-left: 6px;
+}
+
+/* ─── Toolbar ───────────────────────────────────────────────────── */
+.toolbar {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.75rem; flex-wrap: wrap;
+}
+.search-field {
+  display: flex; align-items: center;
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius);
+  background: var(--sap-base-bg);
+  padding: 5px 10px; gap: 6px; width: 240px;
+}
+.search-field input {
+  border: none; outline: none; background: transparent;
+  font-size: 0.8rem; color: var(--sap-text-1); width: 100%;
+}
+.search-field:focus-within { border-color: var(--sap-brand); }
+
+/* ─── Buttons ───────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; font-size: 0.8rem; font-weight: 500;
+  border-radius: var(--sap-radius); cursor: pointer;
+  transition: all var(--transition); border: 1px solid;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--sap-brand); color: #fff;
+  border-color: var(--sap-brand);
+}
+.btn-primary:hover { background: var(--sap-brand-hover); }
+.btn-ghost {
+  background: transparent; color: var(--sap-text-1);
+  border-color: var(--sap-border);
+}
+.btn-ghost:hover { background: var(--sap-neutral-bg); border-color: var(--sap-brand); color: var(--sap-brand); }
+.btn-icon {
+  padding: 6px 8px;
+}
+.btn-sm { padding: 4px 10px; font-size: 0.75rem; }
+
+/* ─── Select / Filter ───────────────────────────────────────────── */
+select.filter-select {
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius);
+  background: var(--sap-base-bg);
+  color: var(--sap-text-1);
+  padding: 5px 28px 5px 10px;
+  font-size: 0.8rem; cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%236A6D70' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
+
+/* ─── Data Table ────────────────────────────────────────────────── */
+.table-wrapper {
+  background: var(--sap-base-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--sap-shadow-sm);
+}
+.data-table {
+  width: 100%; border-collapse: collapse; font-size: 0.8rem;
+}
+.data-table thead th {
+  background: var(--sap-page-bg);
+  padding: 10px 12px;
+  text-align: left; font-weight: 600;
+  color: var(--sap-text-2); font-size: 0.75rem;
+  text-transform: uppercase; letter-spacing: .04em;
+  border-bottom: 1px solid var(--sap-border);
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+.data-table thead th:hover { color: var(--sap-brand); }
+.data-table tbody tr {
+  border-bottom: 1px solid var(--sap-border);
+  transition: background var(--transition);
+  cursor: pointer;
+}
+.data-table tbody tr:last-child { border-bottom: none; }
+.data-table tbody tr:hover { background: var(--sap-neutral-bg); }
+.data-table td {
+  padding: 10px 12px; color: var(--sap-text-1);
+  vertical-align: middle;
+}
+.data-table td.link { color: var(--sap-link); font-weight: 500; }
+.data-table td.link:hover { text-decoration: underline; }
+
+/* ─── Status Badges ─────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 0.7rem; font-weight: 600;
+}
+.badge-success { background: var(--sap-positive-bg); color: var(--sap-positive-text); }
+.badge-warning { background: var(--sap-warning-bg); color: var(--sap-warning); }
+.badge-error   { background: var(--sap-critical-bg); color: var(--sap-critical); }
+.badge-info    { background: var(--sap-neutral-bg);  color: var(--sap-neutral); }
+.badge-neutral { background: var(--sap-page-bg);     color: var(--sap-text-2); }
+
+/* ─── Avatar chip ───────────────────────────────────────────────── */
+.avatar-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.av {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+
+/* ─── Pagination ────────────────────────────────────────────────── */
+.pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--sap-border);
+  background: var(--sap-page-bg);
+  font-size: 0.75rem; color: var(--sap-text-2);
+}
+.pagination-btns { display: flex; gap: 4px; }
+.pg-btn {
+  min-width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius);
+  background: var(--sap-base-bg); color: var(--sap-text-1);
+  font-size: 0.75rem; cursor: pointer;
+  transition: all var(--transition);
+}
+.pg-btn:hover { border-color: var(--sap-brand); color: var(--sap-brand); }
+.pg-btn.active { background: var(--sap-brand); color: #fff; border-color: var(--sap-brand); }
+.pg-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+/* ─── Page: Reports ─────────────────────────────────────────────── */
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+.report-card {
+  background: var(--sap-tile-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 1.125rem;
+  box-shadow: var(--sap-shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+.report-card:hover { box-shadow: var(--sap-shadow-md); transform: translateY(-1px); }
+.report-card-title {
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--sap-text-2);
+  margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px;
+}
+.chart-bar-group {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.chart-bar-item { display: flex; align-items: center; gap: 8px; }
+.chart-bar-label { font-size: 0.7rem; color: var(--sap-text-2); width: 80px; text-align: right; flex-shrink: 0; }
+.chart-bar-track {
+  flex: 1; height: 18px;
+  background: var(--sap-page-bg);
+  border-radius: 2px; overflow: hidden;
+}
+.chart-bar-fill {
+  height: 100%;
+  background: var(--sap-brand);
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 6px;
+  font-size: 0.65rem; color: #fff; font-weight: 700;
+  transition: width 0.6s ease;
+}
+.chart-bar-fill.green  { background: var(--sap-positive); }
+.chart-bar-fill.orange { background: var(--sap-warning); }
+.chart-bar-fill.purple { background: var(--sap-highlight); }
+
+.donut-wrap {
+  display: flex; align-items: center; gap: 16px;
+}
+.donut-legend { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.donut-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--sap-text-1); }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stat-cell {
+  background: var(--sap-page-bg);
+  border-radius: var(--sap-radius);
+  padding: 10px;
+  text-align: center;
+}
+.stat-cell-val { font-size: 1.3rem; font-weight: 300; color: var(--sap-text-1); }
+.stat-cell-lbl { font-size: 0.65rem; color: var(--sap-text-3); text-transform: uppercase; letter-spacing: .04em; }
+
+.trend-line {
+  display: flex; align-items: flex-end; gap: 4px;
+  height: 60px;
+}
+.trend-bar {
+  flex: 1; border-radius: 2px 2px 0 0;
+  background: var(--sap-brand);
+  min-height: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+.trend-bar:hover { opacity: 0.8; }
+.trend-bar.light { background: color-mix(in srgb, var(--sap-brand) 35%, transparent); }
+.trend-bar.green  { background: var(--sap-positive); }
+.trend-bar.green.light { background: color-mix(in srgb, var(--sap-positive) 35%, transparent); }
+.trend-labels {
+  display: flex; gap: 4px;
+  margin-top: 4px;
+}
+.trend-label { flex: 1; text-align: center; font-size: 0.6rem; color: var(--sap-text-3); }
+
+/* ─── Workforce Intelligence Chat ───────────────────────────────── */
+.wi-panel {
+  position: fixed;
+  right: 0; top: var(--nav-height); bottom: 0;
+  width: var(--chat-width);
+  background: var(--sap-base-bg);
+  border-left: 1px solid var(--sap-border);
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 150;
+  box-shadow: -4px 0 20px rgba(0,0,0,.15);
+}
+.wi-panel.open { transform: translateX(0); }
+.wi-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--sap-border);
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, var(--sap-brand) 0%, #5B4AE8 100%);
+  color: #fff;
+  flex-shrink: 0;
+}
+.wi-header h3 { font-size: 0.875rem; font-weight: 600; flex: 1; }
+.wi-close {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: none; color: #fff; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.wi-messages {
+  flex: 1; overflow-y: auto;
+  padding: 1rem; display: flex; flex-direction: column; gap: 10px;
+}
+.wi-msg {
+  max-width: 88%; display: flex; flex-direction: column; gap: 3px;
+}
+.wi-msg.user { align-self: flex-end; align-items: flex-end; }
+.wi-msg.assistant { align-self: flex-start; align-items: flex-start; }
+.wi-bubble {
+  padding: 8px 12px; border-radius: 12px;
+  font-size: 0.8rem; line-height: 1.5;
+}
+.wi-msg.user .wi-bubble {
+  background: var(--sap-brand); color: #fff;
+  border-bottom-right-radius: 3px;
+}
+.wi-msg.assistant .wi-bubble {
+  background: var(--sap-page-bg); color: var(--sap-text-1);
+  border: 1px solid var(--sap-border);
+  border-bottom-left-radius: 3px;
+}
+.wi-meta { font-size: 0.65rem; color: var(--sap-text-3); }
+.wi-suggestions {
+  padding: 0 1rem 0.75rem;
+  display: flex; flex-direction: column; gap: 6px;
+  flex-shrink: 0;
+}
+.wi-suggestion-label { font-size: 0.7rem; color: var(--sap-text-3); margin-bottom: 2px; }
+.wi-chip {
+  padding: 5px 10px; font-size: 0.75rem;
+  border: 1px solid var(--sap-border);
+  border-radius: 14px; cursor: pointer;
+  background: var(--sap-base-bg); color: var(--sap-text-1);
+  transition: all var(--transition);
+  text-align: left;
+}
+.wi-chip:hover { border-color: var(--sap-brand); color: var(--sap-brand); background: var(--sap-neutral-bg); }
+.wi-input-row {
+  display: flex; gap: 8px; padding: 12px 16px;
+  border-top: 1px solid var(--sap-border); flex-shrink: 0;
+}
+.wi-input {
+  flex: 1; padding: 7px 12px;
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius);
+  background: var(--sap-base-bg); color: var(--sap-text-1);
+  font-size: 0.8rem; font-family: inherit;
+  resize: none; outline: none;
+}
+.wi-input:focus { border-color: var(--sap-brand); }
+.wi-send {
+  width: 34px; height: 34px;
+  background: var(--sap-brand); color: #fff;
+  border: none; border-radius: var(--sap-radius);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition); flex-shrink: 0;
+}
+.wi-send:hover { background: var(--sap-brand-hover); }
+.wi-send:disabled { background: var(--sap-border); cursor: default; }
+.typing-dots span {
+  display: inline-block; width: 5px; height: 5px;
+  background: var(--sap-text-3); border-radius: 50%;
+  margin: 0 1px;
+  animation: bounce 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40%           { transform: translateY(-6px); }
+}
+
+/* ─── Employee Detail Panel ─────────────────────────────────────── */
+.detail-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4); z-index: 300;
+  display: flex; justify-content: flex-end;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+.detail-overlay.open { opacity: 1; pointer-events: all; }
+.detail-panel {
+  width: 440px; background: var(--sap-base-bg);
+  height: 100%; display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform 0.3s ease;
+  box-shadow: -8px 0 24px rgba(0,0,0,.2);
+}
+.detail-overlay.open .detail-panel { transform: translateX(0); }
+.detail-phead {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--sap-border);
+  display: flex; align-items: center; gap: 12px;
+}
+.detail-phead h2 { font-size: 1rem; font-weight: 600; }
+.detail-phead .sub { font-size: 0.75rem; color: var(--sap-text-2); margin-top: 2px; }
+.detail-close {
+  margin-left: auto; width: 32px; height: 32px;
+  border-radius: 50%; border: 1px solid var(--sap-border);
+  background: transparent; cursor: pointer; color: var(--sap-text-2);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.detail-body { flex: 1; overflow-y: auto; padding: 20px; }
+.detail-section { margin-bottom: 20px; }
+.detail-section-title {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--sap-text-3);
+  margin-bottom: 10px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--sap-border);
+}
+.detail-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.detail-field label { display: block; font-size: 0.7rem; color: var(--sap-text-3); margin-bottom: 2px; }
+.detail-field .val { font-size: 0.8rem; color: var(--sap-text-1); font-weight: 500; }
+
+/* ─── Misc ──────────────────────────────────────────────────────── */
+.empty-state {
+  padding: 3rem; text-align: center; color: var(--sap-text-3);
+  font-size: 0.875rem;
+}
+.empty-state .emo { font-size: 2rem; margin-bottom: 8px; }
+
+.wi-fab {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--sap-brand), #5B4AE8);
+  border: none; color: #fff; font-size: 20px; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,112,242,.4);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform var(--transition), box-shadow var(--transition);
+  z-index: 140;
+}
+.wi-fab:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,112,242,.5); }
+
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+.theme-btn {
+  border: none; cursor: pointer;
+  color: #fff; background: transparent;
+  font-size: 18px; width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--sap-radius);
+  transition: background var(--transition);
+}
+.theme-btn:hover { background: rgba(255,255,255,0.15); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--sap-border-strong); border-radius: 3px; }
+
+/* responsive */
+@media (max-width: 1200px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .report-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 1000px) {
+  .side-nav { display: none; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .shell-search { display: none; }
+}
+
+/* ─── Employee Profile Page ─────────────────────────────────────── */
+.profile-hero {
+  background: var(--sap-base-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--sap-shadow-sm);
+}
+.profile-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+  border: 3px solid rgba(255,255,255,0.6);
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+.profile-info { flex: 1; min-width: 0; }
+.profile-name { font-size: 1.25rem; font-weight: 700; margin-bottom: 2px; }
+.profile-role { font-size: 0.875rem; color: var(--sap-text-2); margin-bottom: 10px; }
+.profile-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.profile-actions { display: flex; gap: 8px; align-items: flex-start; flex-shrink: 0; }
+.profile-stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.profile-stat {
+  background: var(--sap-tile-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 1rem;
+  text-align: center;
+}
+.profile-stat-val { font-size: 1.3rem; font-weight: 300; color: var(--sap-text-1); }
+.profile-stat-lbl { font-size: 0.7rem; color: var(--sap-text-3); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+.profile-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.profile-card {
+  background: var(--sap-base-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 1.125rem;
+  box-shadow: var(--sap-shadow-sm);
+}
+.profile-card-title {
+  font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--sap-text-3); margin-bottom: 1rem;
+  padding-bottom: 8px; border-bottom: 1px solid var(--sap-border);
+}
+.profile-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.profile-field label { display: block; font-size: 0.68rem; color: var(--sap-text-3); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .04em; }
+.profile-field .val { font-size: 0.82rem; color: var(--sap-text-1); font-weight: 500; }
+
+/* breadcrumb */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.75rem; color: var(--sap-text-3);
+  margin-bottom: 0.75rem;
+}
+.breadcrumb a { color: var(--sap-link); cursor: pointer; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb-sep { color: var(--sap-text-3); }
+
+/* ─── Org Chart ──────────────────────────────────────────────────── */
+.org-chart-wrap {
+  overflow-x: auto; overflow-y: auto;
+  padding: 1.5rem 1rem;
+  min-height: 320px;
+}
+.org-level {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+  margin-bottom: 0;
+}
+.org-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.org-children-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.org-children-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  padding-top: 28px;
+}
+.org-children-row::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 28px;
+  background: var(--sap-border-strong);
+}
+.org-child-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.org-child-group::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 20px;
+  background: var(--sap-border-strong);
+}
+/* horizontal connector for siblings */
+.org-children-row.has-siblings::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--sap-border-strong);
+  margin: 0 40px;
+}
+.org-node {
+  background: var(--sap-base-bg);
+  border: 1px solid var(--sap-border);
+  border-radius: var(--sap-radius-lg);
+  padding: 10px 12px;
+  min-width: 140px;
+  max-width: 160px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  box-shadow: var(--sap-shadow-sm);
+}
+.org-node:hover { border-color: var(--sap-brand); box-shadow: var(--sap-shadow-md); }
+.org-node.highlighted { border-color: var(--sap-brand); border-width: 2px; box-shadow: 0 0 0 3px rgba(0,112,242,0.15); }
+.org-node.manager-node { border-color: var(--sap-positive); }
+.org-node-av {
+  width: 36px; height: 36px; border-radius: 50%;
+  margin: 0 auto 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; color: #fff;
+}
+.org-node-name { font-size: 0.75rem; font-weight: 600; color: var(--sap-text-1); margin-bottom: 2px; }
+.org-node-title { font-size: 0.65rem; color: var(--sap-text-3); line-height: 1.3; }
+
+/* org chart page layout */
+.org-page-filters {
+  display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ SHELL BAR ═════════════ -->
+<header class="shell-bar">
+  <div class="shell-logo" onclick="nav('dashboard')">🩷</div>
+  <div class="shell-title">Lovely HR</div>
+  <div class="shell-search">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <input type="text" placeholder="Search employees, tasks...">
+  </div>
+  <div class="shell-spacer"></div>
+  <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">🌙</button>
+  <button class="shell-icon-btn" onclick="toggleWI()" title="Workforce Intelligence">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="shell-icon-btn" title="Notifications">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <div class="notif-badge">3</div>
+  </button>
+  <div class="avatar-btn" title="David Miller">DM</div>
+</header>
+
+<!-- ═══════════════════════════════════════ APP LAYOUT ════════════ -->
+<div class="app-layout">
+
+  <!-- Side Nav -->
+  <nav class="side-nav">
+    <div class="nav-section-label">Main</div>
+    <button class="nav-item active" id="nav-dashboard" onclick="nav('dashboard')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" id="nav-employees" onclick="nav('employees')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>
+      Employees
+    </button>
+    <button class="nav-item" id="nav-reports" onclick="nav('reports')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Reports
+    </button>
+    <button class="nav-item" id="nav-projects" onclick="nav('projects')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      Projects
+    </button>
+    <div class="nav-divider"></div>
+    <div class="nav-section-label">People</div>
+    <button class="nav-item" id="nav-orgchart" onclick="nav('orgchart')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="2" width="6" height="4" rx="1"/><rect x="2" y="16" width="6" height="4" rx="1"/><rect x="9" y="16" width="6" height="4" rx="1"/><rect x="16" y="16" width="6" height="4" rx="1"/><path d="M12 6v4M5 16v-4h14v4"/></svg>
+      Org Chart
+    </button>
+    <button class="nav-item" onclick="toggleWI()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      WF Intelligence
+    </button>
+    <div style="flex:1"></div>
+    <div class="nav-divider"></div>
+    <button class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Settings
+    </button>
+    <button class="nav-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2.5"/></svg>
+      Help
+    </button>
+  </nav>
+
+  <!-- Main -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ DASHBOARD ━━━━━━━━━━━━━━━━ -->
+    <div class="page-section active" id="page-dashboard">
+      <div class="page-header">
+        <div>
+          <h1>My Workspace</h1>
+          <div style="font-size:0.75rem;color:var(--sap-text-3);margin-top:2px;">Welcome back, David. Here's your workforce overview.</div>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-ghost btn-sm" onclick="nav('reports')">📊 Reports</button>
+          <button class="btn btn-primary btn-sm" onclick="showAddEmployee()">+ New Employee</button>
+        </div>
+      </div>
+
+      <!-- KPI Tiles -->
+      <div class="kpi-row">
+        <div class="kpi-tile blue" onclick="filterByStatus('my-tasks')" id="tile-my-tasks">
+          <div class="kpi-icon blue">📝</div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-label">My Tasks</div>
+          <div class="kpi-sub">3 due today</div>
+        </div>
+        <div class="kpi-tile green" onclick="filterByStatus('team-tasks')" id="tile-team-tasks">
+          <div class="kpi-icon green">👥</div>
+          <div class="kpi-value">24</div>
+          <div class="kpi-label">My Team's Tasks</div>
+          <div class="kpi-sub">Engineering Dept.</div>
+        </div>
+        <div class="kpi-tile orange" onclick="filterByStatus('pending')" id="tile-pending">
+          <div class="kpi-icon orange">⏳</div>
+          <div class="kpi-value">12</div>
+          <div class="kpi-label">Pending Requests</div>
+          <div class="kpi-sub">4 awaiting approval</div>
+        </div>
+        <div class="kpi-tile purple" onclick="nav('reports')" id="tile-reports">
+          <div class="kpi-icon purple">📈</div>
+          <div class="kpi-value">8</div>
+          <div class="kpi-label">Reports</div>
+          <div class="kpi-sub">2 new this week</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar">
+        <button class="tab active" onclick="switchTab('pending-requests','dashboard')" id="tab-pending-requests">Pending Requests <span class="tab-badge">12</span></button>
+        <button class="tab" onclick="switchTab('all-employees','dashboard')" id="tab-all-employees">All Employees</button>
+        <button class="tab" onclick="switchTab('projects','dashboard')" id="tab-projects">Projects <span class="tab-badge" style="background:var(--sap-highlight)">5</span></button>
+      </div>
+
+      <!-- Tab: Pending Requests -->
+      <div id="tab-content-pending-requests">
+        <div class="toolbar">
+          <div class="search-field">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="var(--sap-text-3)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="var(--sap-text-3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Search requests..." oninput="filterPending(this.value)">
+          </div>
+          <select class="filter-select" onchange="filterPendingStatus(this.value)">
+            <option value="">All Statuses</option>
+            <option value="Awaiting Approval">Awaiting Approval</option>
+            <option value="In Review">In Review</option>
+            <option value="Escalated">Escalated</option>
+            <option value="On Hold">On Hold</option>
+          </select>
+          <select class="filter-select">
+            <option>All Types</option>
+            <option>Leave Request</option>
+            <option>Onboarding</option>
+            <option>Equipment</option>
+            <option>Transfer</option>
+          </select>
+          <div style="margin-left:auto">
+            <button class="btn btn-ghost btn-sm">⬇️ Export</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table" id="pending-table">
+            <thead>
+              <tr>
+                <th>Request ID</th>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Department</th>
+                <th>Submitted</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="pending-tbody"></tbody>
+          </table>
+          <div class="pagination">
+            <span id="pending-count-lbl">12 requests</span>
+            <div class="pagination-btns" id="pending-pages"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: All Employees -->
+      <div id="tab-content-all-employees" style="display:none">
+        <div class="toolbar">
+          <div class="search-field">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="var(--sap-text-3)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="var(--sap-text-3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Search employees..." oninput="filterEmployees(this.value)">
+          </div>
+          <select class="filter-select" onchange="filterByDept(this.value)">
+            <option value="">All Departments</option>
+            <option>Engineering</option>
+            <option>Marketing</option>
+            <option>Sales</option>
+            <option>HR</option>
+            <option>Finance</option>
+            <option>Operations</option>
+            <option>Executive</option>
+          </select>
+          <select class="filter-select" onchange="filterByLoc(this.value)">
+            <option value="">All Locations</option>
+            <option>Seattle</option>
+            <option>Chicago</option>
+            <option>New York</option>
+            <option>Remote</option>
+          </select>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm">⬇️ Export</button>
+            <button class="btn btn-primary btn-sm" onclick="showAddEmployee()">+ Add Employee</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th onclick="sortEmp('id')">ID ↕</th>
+                <th onclick="sortEmp('name')">Name ↕</th>
+                <th onclick="sortEmp('department')">Department ↕</th>
+                <th onclick="sortEmp('job_title')">Job Title ↕</th>
+                <th onclick="sortEmp('location')">Location ↕</th>
+                <th onclick="sortEmp('hire_date')">Hire Date ↕</th>
+                <th onclick="sortEmp('salary')">Salary ↕</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="emp-tbody"></tbody>
+          </table>
+          <div class="pagination">
+            <span id="emp-count-lbl">30 employees</span>
+            <div class="pagination-btns" id="emp-pages"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Projects -->
+      <div id="tab-content-projects" style="display:none">
+        <div class="toolbar">
+          <div class="search-field">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="var(--sap-text-3)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="var(--sap-text-3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" placeholder="Search projects...">
+          </div>
+          <select class="filter-select">
+            <option>All Statuses</option>
+            <option>Active</option>
+            <option>On Hold</option>
+            <option>Completed</option>
+          </select>
+          <div style="margin-left:auto">
+            <button class="btn btn-primary btn-sm">+ New Project</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Project</th>
+                <th>Lead</th>
+                <th>Department</th>
+                <th>Start Date</th>
+                <th>Due Date</th>
+                <th>Progress</th>
+                <th>Team Size</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="proj-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ REPORTS ━━━━━━━━━━━━━━━━━━ -->
+    <div class="page-section" id="page-reports">
+      <div class="page-header">
+        <h1>Workforce Reports</h1>
+        <div class="page-header-actions">
+          <select class="filter-select">
+            <option>Q1 2024</option>
+            <option>Q2 2024</option>
+            <option>Q3 2024</option>
+            <option selected>Q4 2024</option>
+          </select>
+          <button class="btn btn-ghost btn-sm">🖨️ Print</button>
+          <button class="btn btn-primary btn-sm">⬇️ Export All</button>
+        </div>
+      </div>
+
+      <!-- Summary stat row -->
+      <div class="kpi-row" style="margin-bottom:1.25rem">
+        <div class="kpi-tile blue"><div class="kpi-icon blue">👥</div><div class="kpi-value">30</div><div class="kpi-label">Total Headcount</div><div class="kpi-sub">↑ 4 from last quarter</div></div>
+        <div class="kpi-tile green"><div class="kpi-icon green">💰</div><div class="kpi-value">$2.4M</div><div class="kpi-label">Total Payroll</div><div class="kpi-sub">avg $80,267 / employee</div></div>
+        <div class="kpi-tile orange"><div class="kpi-icon orange">📅</div><div class="kpi-value">4.2</div><div class="kpi-label">Avg Tenure (yrs)</div><div class="kpi-sub">Engineering: 5.1 yrs</div></div>
+        <div class="kpi-tile purple"><div class="kpi-icon purple">🔄</div><div class="kpi-value">6.7%</div><div class="kpi-label">Turnover Rate</div><div class="kpi-sub">Industry avg: 11.2%</div></div>
+      </div>
+
+      <div class="report-grid">
+        <!-- Headcount by Dept -->
+        <div class="report-card">
+          <div class="report-card-title">🏢 Headcount by Department</div>
+          <div class="chart-bar-group">
+            <div class="chart-bar-item"><div class="chart-bar-label">Engineering</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:73%">8</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:45%">5</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:45%">5</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:36%">4</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:36%">4</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">HR</div><div class="chart-bar-track"><div class="chart-bar-fill purple" style="width:36%">4</div></div></div>
+          </div>
+        </div>
+
+        <!-- Employment Type Donut -->
+        <div class="report-card">
+          <div class="report-card-title">📑 Employment Type</div>
+          <div class="donut-wrap">
+            <svg width="90" height="90" viewBox="0 0 90 90">
+              <circle cx="45" cy="45" r="35" fill="none" stroke="var(--sap-border)" stroke-width="14"/>
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#0070F2" stroke-width="14"
+                stroke-dasharray="197 22" stroke-dashoffset="0" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#C0399F" stroke-width="14"
+                stroke-dasharray="13 206" stroke-dashoffset="-197" transform="rotate(-90 45 45)"/>
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#107E3E" stroke-width="14"
+                stroke-dasharray="9 210" stroke-dashoffset="-210" transform="rotate(-90 45 45)"/>
+              <text x="45" y="49" text-anchor="middle" font-size="11" font-weight="600" fill="var(--sap-text-1)">30</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="donut-legend-item"><div class="dot" style="background:#0070F2"></div>Full-time — 27</div>
+              <div class="donut-legend-item"><div class="dot" style="background:#C0399F"></div>Part-time — 2</div>
+              <div class="donut-legend-item"><div class="dot" style="background:#107E3E"></div>Contract — 1</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avg Salary by Dept -->
+        <div class="report-card">
+          <div class="report-card-title">💵 Avg Salary by Department</div>
+          <div class="chart-bar-group">
+            <div class="chart-bar-item"><div class="chart-bar-label">Executive</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%">$220K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Engineering</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:80%">$88.3K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:57%">$77.8K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:53%">$75.5K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill purple" style="width:51%">$74.2K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:45%">$65.4K</div></div></div>
+          </div>
+        </div>
+
+        <!-- Hiring Trend -->
+        <div class="report-card">
+          <div class="report-card-title">📈 Monthly Hiring Trend (2024)</div>
+          <div class="trend-line">
+            <div class="trend-bar" style="height:30%" title="Jan: 1"></div>
+            <div class="trend-bar light" style="height:15%" title="Feb: 0"></div>
+            <div class="trend-bar" style="height:60%" title="Mar: 3"></div>
+            <div class="trend-bar light" style="height:30%" title="Apr: 1"></div>
+            <div class="trend-bar" style="height:45%" title="May: 2"></div>
+            <div class="trend-bar" style="height:75%" title="Jun: 4"></div>
+            <div class="trend-bar light" style="height:15%" title="Jul: 0"></div>
+            <div class="trend-bar" style="height:60%" title="Aug: 3"></div>
+            <div class="trend-bar" style="height:30%" title="Sep: 1"></div>
+            <div class="trend-bar" style="height:90%" title="Oct: 5"></div>
+            <div class="trend-bar" style="height:45%" title="Nov: 2"></div>
+            <div class="trend-bar light" style="height:15%" title="Dec: 0"></div>
+          </div>
+          <div class="trend-labels">
+            <div class="trend-label">J</div><div class="trend-label">F</div>
+            <div class="trend-label">M</div><div class="trend-label">A</div>
+            <div class="trend-label">M</div><div class="trend-label">J</div>
+            <div class="trend-label">J</div><div class="trend-label">A</div>
+            <div class="trend-label">S</div><div class="trend-label">O</div>
+            <div class="trend-label">N</div><div class="trend-label">D</div>
+          </div>
+        </div>
+
+        <!-- Location breakdown -->
+        <div class="report-card">
+          <div class="report-card-title">📍 Location Distribution</div>
+          <div class="stat-grid">
+            <div class="stat-cell"><div class="stat-cell-val">13</div><div class="stat-cell-lbl">Seattle</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">8</div><div class="stat-cell-lbl">Chicago</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">6</div><div class="stat-cell-lbl">New York</div></div>
+            <div class="stat-cell"><div class="stat-cell-val">3</div><div class="stat-cell-lbl">Remote</div></div>
+          </div>
+          <div style="margin-top:10px">
+            <div class="chart-bar-item"><div class="chart-bar-label">Seattle</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%"></div></div></div>
+            <div style="height:4px"></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Chicago</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:62%"></div></div></div>
+            <div style="height:4px"></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">New York</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:46%"></div></div></div>
+            <div style="height:4px"></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Remote</div><div class="chart-bar-track"><div class="chart-bar-fill purple" style="width:23%"></div></div></div>
+          </div>
+        </div>
+
+        <!-- Onboarding Status -->
+        <div class="report-card">
+          <div class="report-card-title">🎯 Onboarding Pipeline</div>
+          <div class="chart-bar-group" style="margin-bottom:12px">
+            <div class="chart-bar-item"><div class="chart-bar-label">Completed</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:70%">21</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">In Progress</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:23%">7</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Not Started</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:7%">2</div></div></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            <span class="badge badge-success">✓ 70% completion rate</span>
+            <span class="badge badge-warning">⏳ Avg 14 days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report actions row -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="toggleWI()">🤖 Ask Workforce Intelligence</button>
+        <button class="btn btn-ghost">📋 Full Payroll Report</button>
+        <button class="btn btn-ghost">📊 Diversity & Inclusion Report</button>
+        <button class="btn btn-ghost">🎯 Performance Report</button>
+      </div>
+    </div>
+
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━ EMPLOYEE PROFILE ━━━━━━━━━━━━━━━ -->
+    <div class="page-section" id="page-profile">
+      <!-- Breadcrumb -->
+      <div class="page-header" style="margin-bottom:0.75rem">
+        <div>
+          <div class="breadcrumb">
+            <a onclick="nav('dashboard')">Dashboard</a>
+            <span class="breadcrumb-sep">/</span>
+            <a onclick="nav('dashboard');switchTab('all-employees','dashboard')">All Employees</a>
+            <span class="breadcrumb-sep">/</span>
+            <span id="profile-breadcrumb-name">Employee Profile</span>
+          </div>
+          <h1 id="profile-page-title">Employee Profile</h1>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-ghost btn-sm" onclick="goBack()">← Back</button>
+          <button class="btn btn-ghost btn-sm" onclick="showOrgForProfile()">🌳 View Org Chart</button>
+          <button class="btn btn-primary btn-sm">✏️ Edit Profile</button>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div class="profile-hero" id="profile-hero">
+        <div class="profile-avatar" id="profile-av"></div>
+        <div class="profile-info">
+          <div class="profile-name" id="profile-name"></div>
+          <div class="profile-role" id="profile-role"></div>
+          <div class="profile-tags" id="profile-tags"></div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn-ghost btn-sm">📨 Message</button>
+          <button class="btn btn-ghost btn-sm">📋 Performance</button>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="profile-stat-row">
+        <div class="profile-stat">
+          <div class="profile-stat-val" id="ps-tenure">—</div>
+          <div class="profile-stat-lbl">Years at Company</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-val" id="ps-salary">—</div>
+          <div class="profile-stat-lbl">Annual Salary</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-val" id="ps-reports">—</div>
+          <div class="profile-stat-lbl">Direct Reports</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-val" id="ps-tasks">3</div>
+          <div class="profile-stat-lbl">Open Tasks</div>
+        </div>
+      </div>
+
+      <!-- Detail cards -->
+      <div class="profile-body">
+        <!-- Contact -->
+        <div class="profile-card">
+          <div class="profile-card-title">Contact Information</div>
+          <div class="profile-field-grid">
+            <div class="profile-field"><label>Email</label><div class="val" id="pf-email"></div></div>
+            <div class="profile-field"><label>Phone</label><div class="val" id="pf-phone"></div></div>
+            <div class="profile-field"><label>Location</label><div class="val" id="pf-location"></div></div>
+            <div class="profile-field"><label>Employee ID</label><div class="val" id="pf-id"></div></div>
+          </div>
+        </div>
+        <!-- Employment -->
+        <div class="profile-card">
+          <div class="profile-card-title">Employment Details</div>
+          <div class="profile-field-grid">
+            <div class="profile-field"><label>Department</label><div class="val" id="pf-dept"></div></div>
+            <div class="profile-field"><label>Job Title</label><div class="val" id="pf-title"></div></div>
+            <div class="profile-field"><label>Hire Date</label><div class="val" id="pf-hire"></div></div>
+            <div class="profile-field"><label>Employment Type</label><div class="val" id="pf-type"></div></div>
+            <div class="profile-field"><label>Reports To</label><div class="val" id="pf-manager"></div></div>
+            <div class="profile-field"><label>Manager ID</label><div class="val" id="pf-mgrid"></div></div>
+          </div>
+        </div>
+        <!-- Org card — immediate team -->
+        <div class="profile-card">
+          <div class="profile-card-title">Reporting Structure</div>
+          <div id="pf-reports-list"></div>
+        </div>
+        <!-- Activity -->
+        <div class="profile-card">
+          <div class="profile-card-title">Recent Activity</div>
+          <div id="pf-activity"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ORG CHART ━━━━━━━━━━━━━━━━━ -->
+    <div class="page-section" id="page-orgchart">
+      <div class="page-header">
+        <div>
+          <h1>Org Chart</h1>
+          <div style="font-size:0.75rem;color:var(--sap-text-3);margin-top:2px;">Visual reporting structure across all departments.</div>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-ghost btn-sm" onclick="goBack()">← Back</button>
+          <button class="btn btn-ghost btn-sm">⬇️ Export</button>
+        </div>
+      </div>
+      <div class="org-page-filters">
+        <select class="filter-select" onchange="filterOrgByDept(this.value)" id="org-dept-filter">
+          <option value="">All Departments</option>
+          <option>Engineering</option>
+          <option>Marketing</option>
+          <option>Sales</option>
+          <option>HR</option>
+          <option>Finance</option>
+          <option>Operations</option>
+        </select>
+        <div class="search-field" style="width:200px">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5.5" stroke="var(--sap-text-3)" stroke-width="1.5"/><path d="M11 11l3 3" stroke="var(--sap-text-3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="text" placeholder="Search name..." oninput="orgSearch(this.value)" id="org-search">
+        </div>
+        <span id="org-legend" style="font-size:0.75rem;color:var(--sap-text-3);margin-left:6px"></span>
+      </div>
+      <div class="table-wrapper">
+        <div class="org-chart-wrap" id="orgChartContainer"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════════ EMPLOYEE DETAIL PANEL ══════════════════ -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-phead">
+      <div class="av" id="detail-av" style="width:44px;height:44px;font-size:1rem;font-weight:700;border-radius:50%"></div>
+      <div>
+        <h2 id="detail-name"></h2>
+        <div class="sub" id="detail-title-dept"></div>
+      </div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-body">
+      <div class="detail-section">
+        <div class="detail-section-title">Contact Information</div>
+        <div class="detail-fields">
+          <div class="detail-field"><label>Email</label><div class="val" id="d-email"></div></div>
+          <div class="detail-field"><label>Phone</label><div class="val" id="d-phone"></div></div>
+          <div class="detail-field"><label>Location</label><div class="val" id="d-loc"></div></div>
+          <div class="detail-field"><label>Employee ID</label><div class="val" id="d-id"></div></div>
+        </div>
+      </div>
+      <div class="detail-section">
+        <div class="detail-section-title">Employment Details</div>
+        <div class="detail-fields">
+          <div class="detail-field"><label>Department</label><div class="val" id="d-dept"></div></div>
+          <div class="detail-field"><label>Job Title</label><div class="val" id="d-jobtitle"></div></div>
+          <div class="detail-field"><label>Hire Date</label><div class="val" id="d-hire"></div></div>
+          <div class="detail-field"><label>Employment Type</label><div class="val" id="d-status"></div></div>
+          <div class="detail-field"><label>Salary</label><div class="val" id="d-salary"></div></div>
+          <div class="detail-field"><label>Manager ID</label><div class="val" id="d-mgr"></div></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-primary" style="flex:1">✏️ Edit Profile</button>
+        <button class="btn btn-ghost">📋 Performance</button>
+        <button class="btn btn-ghost">📨 Message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ WORKFORCE INTELLIGENCE PANEL ═══════════ -->
+<div class="wi-panel" id="wiPanel">
+  <div class="wi-header">
+    <span style="font-size:20px">🤖</span>
+    <h3>Workforce Intelligence</h3>
+    <button class="wi-close" onclick="toggleWI()">✕</button>
+  </div>
+  <div class="wi-messages" id="wiMessages">
+    <div class="wi-msg assistant">
+      <div class="wi-bubble">
+        👋 Hi David! I'm your Workforce Intelligence assistant. I can help you analyze your team data, answer HR questions, and generate insights about your workforce. What would you like to know?
+      </div>
+      <div class="wi-meta">Now</div>
+    </div>
+  </div>
+  <div class="wi-suggestions">
+    <div class="wi-suggestion-label">Suggested questions:</div>
+    <button class="wi-chip" onclick="sendSuggestion(this)">Who are the top earners by department?</button>
+    <button class="wi-chip" onclick="sendSuggestion(this)">How many employees are based in Seattle?</button>
+    <button class="wi-chip" onclick="sendSuggestion(this)">What's the average tenure in Engineering?</button>
+  </div>
+  <div class="wi-input-row">
+    <textarea class="wi-input" id="wiInput" rows="1" placeholder="Ask about your workforce..." onkeydown="wiKeyDown(event)"></textarea>
+    <button class="wi-send" id="wiSendBtn" onclick="sendWIMessage()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<button class="wi-fab" onclick="toggleWI()" id="wiFab" title="Workforce Intelligence">🤖</button>
+
+<script>
+// ═══════════════════════════════════════════════════════ DATA ══════
+const EMPLOYEES = [
+  {id:1001,first_name:"John",last_name:"Smith",email:"john.smith@company.com",phone:"555-123-4567",department:"Engineering",job_title:"Software Engineer",hire_date:"2020-03-15",salary:85000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1002,first_name:"Emily",last_name:"Johnson",email:"emily.johnson@company.com",phone:"555-234-5678",department:"Marketing",job_title:"Marketing Specialist",hire_date:"2019-07-22",salary:65000,manager_id:1006,location:"Chicago",status:"Full-time"},
+  {id:1003,first_name:"Michael",last_name:"Williams",email:"michael.williams@company.com",phone:"555-345-6789",department:"Sales",job_title:"Sales Representative",hire_date:"2021-01-10",salary:72000,manager_id:1007,location:"New York",status:"Full-time"},
+  {id:1004,first_name:"Jessica",last_name:"Brown",email:"jessica.brown@company.com",phone:"555-456-7890",department:"HR",job_title:"HR Coordinator",hire_date:"2022-05-03",salary:58000,manager_id:1008,location:"Seattle",status:"Full-time"},
+  {id:1005,first_name:"David",last_name:"Miller",email:"david.miller@company.com",phone:"555-567-8901",department:"Engineering",job_title:"Engineering Manager",hire_date:"2018-09-14",salary:120000,manager_id:1015,location:"Seattle",status:"Full-time"},
+  {id:1006,first_name:"Jennifer",last_name:"Davis",email:"jennifer.davis@company.com",phone:"555-678-9012",department:"Marketing",job_title:"Marketing Director",hire_date:"2017-11-20",salary:110000,manager_id:1015,location:"Chicago",status:"Full-time"},
+  {id:1007,first_name:"Robert",last_name:"Garcia",email:"robert.garcia@company.com",phone:"555-789-0123",department:"Sales",job_title:"Sales Manager",hire_date:"2019-04-05",salary:105000,manager_id:1015,location:"New York",status:"Full-time"},
+  {id:1008,first_name:"Amanda",last_name:"Wilson",email:"amanda.wilson@company.com",phone:"555-890-1234",department:"HR",job_title:"HR Manager",hire_date:"2018-02-28",salary:98000,manager_id:1015,location:"Seattle",status:"Full-time"},
+  {id:1009,first_name:"James",last_name:"Anderson",email:"james.anderson@company.com",phone:"555-901-2345",department:"Engineering",job_title:"Senior Software Engineer",hire_date:"2019-08-12",salary:95000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1010,first_name:"Lisa",last_name:"Thomas",email:"lisa.thomas@company.com",phone:"555-012-3456",department:"Marketing",job_title:"Content Specialist",hire_date:"2020-06-15",salary:62000,manager_id:1006,location:"Remote",status:"Full-time"},
+  {id:1011,first_name:"Brian",last_name:"Jackson",email:"brian.jackson@company.com",phone:"555-123-4567",department:"Sales",job_title:"Account Executive",hire_date:"2021-03-18",salary:78000,manager_id:1007,location:"New York",status:"Full-time"},
+  {id:1012,first_name:"Karen",last_name:"White",email:"karen.white@company.com",phone:"555-234-5678",department:"Finance",job_title:"Financial Analyst",hire_date:"2022-01-10",salary:72000,manager_id:1013,location:"Chicago",status:"Full-time"},
+  {id:1013,first_name:"Paul",last_name:"Harris",email:"paul.harris@company.com",phone:"555-345-6789",department:"Finance",job_title:"Finance Manager",hire_date:"2018-07-22",salary:108000,manager_id:1015,location:"Chicago",status:"Full-time"},
+  {id:1014,first_name:"Michelle",last_name:"Martin",email:"michelle.martin@company.com",phone:"555-456-7890",department:"Operations",job_title:"Operations Coordinator",hire_date:"2021-09-15",salary:56000,manager_id:1016,location:"Seattle",status:"Full-time"},
+  {id:1015,first_name:"Christopher",last_name:"Thompson",email:"christopher.thompson@company.com",phone:"555-567-8901",department:"Executive",job_title:"CEO",hire_date:"2016-05-01",salary:220000,manager_id:null,location:"New York",status:"Full-time"},
+  {id:1016,first_name:"Elizabeth",last_name:"Rodriguez",email:"elizabeth.rodriguez@company.com",phone:"555-678-9012",department:"Operations",job_title:"Operations Director",hire_date:"2017-08-15",salary:115000,manager_id:1015,location:"Seattle",status:"Full-time"},
+  {id:1017,first_name:"Joseph",last_name:"Lewis",email:"joseph.lewis@company.com",phone:"555-789-0123",department:"Engineering",job_title:"QA Engineer",hire_date:"2020-11-09",salary:80000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1018,first_name:"Donna",last_name:"Lee",email:"donna.lee@company.com",phone:"555-890-1234",department:"Marketing",job_title:"Graphic Designer",hire_date:"2021-04-22",salary:64000,manager_id:1006,location:"Chicago",status:"Part-time"},
+  {id:1019,first_name:"Daniel",last_name:"Walker",email:"daniel.walker@company.com",phone:"555-901-2345",department:"Sales",job_title:"Sales Representative",hire_date:"2022-02-15",salary:71000,manager_id:1007,location:"New York",status:"Full-time"},
+  {id:1020,first_name:"Susan",last_name:"Hall",email:"susan.hall@company.com",phone:"555-012-3456",department:"HR",job_title:"Benefits Specialist",hire_date:"2021-08-03",salary:62000,manager_id:1008,location:"Remote",status:"Full-time"},
+  {id:1021,first_name:"Thomas",last_name:"Allen",email:"thomas.allen@company.com",phone:"555-123-4567",department:"Engineering",job_title:"DevOps Engineer",hire_date:"2019-10-12",salary:88000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1022,first_name:"Nancy",last_name:"Young",email:"nancy.young@company.com",phone:"555-234-5678",department:"Finance",job_title:"Accountant",hire_date:"2020-01-20",salary:67000,manager_id:1013,location:"Chicago",status:"Full-time"},
+  {id:1023,first_name:"Mark",last_name:"King",email:"mark.king@company.com",phone:"555-345-6789",department:"Operations",job_title:"Logistics Specialist",hire_date:"2022-03-14",salary:59000,manager_id:1016,location:"Seattle",status:"Full-time"},
+  {id:1024,first_name:"Patricia",last_name:"Wright",email:"patricia.wright@company.com",phone:"555-456-7890",department:"Engineering",job_title:"UI/UX Designer",hire_date:"2021-06-07",salary:78000,manager_id:1005,location:"Remote",status:"Contract"},
+  {id:1025,first_name:"Richard",last_name:"Lopez",email:"richard.lopez@company.com",phone:"555-567-8901",department:"Marketing",job_title:"SEO Specialist",hire_date:"2020-09-21",salary:66000,manager_id:1006,location:"Chicago",status:"Full-time"},
+  {id:1026,first_name:"Laura",last_name:"Hill",email:"laura.hill@company.com",phone:"555-678-9012",department:"Sales",job_title:"Business Development",hire_date:"2019-12-02",salary:76000,manager_id:1007,location:"New York",status:"Full-time"},
+  {id:1027,first_name:"Steven",last_name:"Scott",email:"steven.scott@company.com",phone:"555-789-0123",department:"Finance",job_title:"Payroll Specialist",hire_date:"2021-02-15",salary:64000,manager_id:1013,location:"Chicago",status:"Full-time"},
+  {id:1028,first_name:"Kimberly",last_name:"Green",email:"kimberly.green@company.com",phone:"555-890-1234",department:"HR",job_title:"Recruiting Coordinator",hire_date:"2022-04-11",salary:55000,manager_id:1008,location:"Seattle",status:"Part-time"},
+  {id:1029,first_name:"William",last_name:"Adams",email:"william.adams@company.com",phone:"555-901-2345",department:"Engineering",job_title:"Data Engineer",hire_date:"2019-05-20",salary:90000,manager_id:1005,location:"Seattle",status:"Full-time"},
+  {id:1030,first_name:"Mary",last_name:"Baker",email:"mary.baker@company.com",phone:"555-012-3456",department:"Operations",job_title:"Administrative Assistant",hire_date:"2021-11-01",salary:52000,manager_id:1016,location:"New York",status:"Full-time"},
+];
+
+const PENDING = [
+  {id:"REQ-001",employee:"John Smith",type:"Leave Request",dept:"Engineering",submitted:"2024-12-01",priority:"High",status:"Awaiting Approval"},
+  {id:"REQ-002",employee:"Emily Johnson",type:"Equipment",dept:"Marketing",submitted:"2024-12-02",priority:"Medium",status:"In Review"},
+  {id:"REQ-003",employee:"Jessica Brown",type:"Onboarding",dept:"HR",submitted:"2024-11-28",priority:"High",status:"Escalated"},
+  {id:"REQ-004",employee:"James Anderson",type:"Transfer",dept:"Engineering",submitted:"2024-12-03",priority:"Low",status:"On Hold"},
+  {id:"REQ-005",employee:"Brian Jackson",type:"Leave Request",dept:"Sales",submitted:"2024-12-01",priority:"Medium",status:"Awaiting Approval"},
+  {id:"REQ-006",employee:"Karen White",type:"Equipment",dept:"Finance",submitted:"2024-11-29",priority:"Low",status:"In Review"},
+  {id:"REQ-007",employee:"Michelle Martin",type:"Onboarding",dept:"Operations",submitted:"2024-12-04",priority:"High",status:"Awaiting Approval"},
+  {id:"REQ-008",employee:"Daniel Walker",type:"Leave Request",dept:"Sales",submitted:"2024-11-30",priority:"Medium",status:"In Review"},
+  {id:"REQ-009",employee:"Susan Hall",type:"Transfer",dept:"HR",submitted:"2024-12-02",priority:"High",status:"Escalated"},
+  {id:"REQ-010",employee:"Thomas Allen",type:"Equipment",dept:"Engineering",submitted:"2024-12-01",priority:"Low",status:"Awaiting Approval"},
+  {id:"REQ-011",employee:"Nancy Young",type:"Leave Request",dept:"Finance",submitted:"2024-12-03",priority:"Medium",status:"On Hold"},
+  {id:"REQ-012",employee:"Kimberly Green",type:"Onboarding",dept:"HR",submitted:"2024-11-27",priority:"High",status:"In Review"},
+];
+
+const PROJECTS = [
+  {name:"HR Digital Transformation",lead:"Amanda Wilson",dept:"HR",start:"2024-01-15",due:"2024-06-30",progress:78,team:8,status:"Active"},
+  {name:"Q4 Talent Acquisition Drive",lead:"Kimberly Green",dept:"HR",start:"2024-10-01",due:"2024-12-31",progress:45,team:4,status:"Active"},
+  {name:"Engineering Org Restructure",lead:"David Miller",dept:"Engineering",start:"2024-09-01",due:"2025-02-28",progress:32,team:6,status:"Active"},
+  {name:"Marketing Analytics Platform",lead:"Jennifer Davis",dept:"Marketing",start:"2024-08-01",due:"2024-11-30",progress:95,team:5,status:"Active"},
+  {name:"Payroll System Migration",lead:"Paul Harris",dept:"Finance",start:"2024-07-01",due:"2025-03-31",progress:20,team:3,status:"On Hold"},
+];
+
+// ═════════════════════════════════ NAVIGATION ══════════════════
+let currentPage = 'dashboard';
+let navHistory = ['dashboard'];
+
+function nav(page) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  if (currentPage !== page) navHistory.push(page);
+  currentPage = page;
+  // Highlight matching nav-item by id
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  // Auto-render org chart when navigating to it
+  if (page === 'orgchart') {
+    setTimeout(() => renderOrgChart(null, orgHighlight), 10);
+  }
+}
+
+function goBack() {
+  if (navHistory.length > 1) {
+    navHistory.pop();
+    const prev = navHistory[navHistory.length - 1];
+    nav(prev);
+  } else {
+    nav('dashboard');
+  }
+}
+
+function switchTab(tab, page) {
+  document.querySelectorAll(`#page-${page} .tab`).forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  ['pending-requests','all-employees','projects'].forEach(t => {
+    const el = document.getElementById('tab-content-' + t);
+    if(el) el.style.display = (t === tab) ? 'block' : 'none';
+  });
+}
+
+// ═════════════════════════════════ THEME ═══════════════════════
+let dark = false;
+function toggleTheme() {
+  dark = !dark;
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
+  document.getElementById('themeBtn').textContent = dark ? '☀️' : '🌙';
+}
+
+// ═════════════════════════════════ PENDING TABLE ═══════════════
+let filteredPending = [...PENDING];
+let pendingPage = 1;
+const PENDING_PER_PAGE = 8;
+
+function statusBadge(s) {
+  const m = {
+    'Awaiting Approval':'badge-warning',
+    'In Review':'badge-info',
+    'Escalated':'badge-error',
+    'On Hold':'badge-neutral'
+  };
+  return `<span class="badge ${m[s]||'badge-neutral'}">${s}</span>`;
+}
+function priorityBadge(p) {
+  const m = {'High':'badge-error','Medium':'badge-warning','Low':'badge-success'};
+  return `<span class="badge ${m[p]||'badge-neutral'}">${p}</span>`;
+}
+
+function renderPending() {
+  const start = (pendingPage-1)*PENDING_PER_PAGE;
+  const page = filteredPending.slice(start, start+PENDING_PER_PAGE);
+  const tbody = document.getElementById('pending-tbody');
+  if(!page.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="emo">📭</div>No requests found</div></td></tr>`;
+    document.getElementById('pending-count-lbl').textContent = '0 requests';
+    document.getElementById('pending-pages').innerHTML = '';
+    return;
+  }
+  tbody.innerHTML = page.map(r => `
+    <tr>
+      <td class="link">${r.id}</td>
+      <td><div class="avatar-chip"><div class="av" style="background:${avatarColor(r.employee)}">${initials(r.employee)}</div>${r.employee}</div></td>
+      <td>${r.type}</td>
+      <td>${r.dept}</td>
+      <td>${r.submitted}</td>
+      <td>${priorityBadge(r.priority)}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-primary btn-sm">Approve</button>
+        <button class="btn btn-ghost btn-sm">Review</button>
+      </td>
+    </tr>
+  `).join('');
+  document.getElementById('pending-count-lbl').textContent = `${filteredPending.length} request${filteredPending.length!==1?'s':''}`;
+  renderPages('pending-pages', filteredPending.length, PENDING_PER_PAGE, pendingPage, (p)=>{pendingPage=p;renderPending();});
+}
+
+function filterPending(q) {
+  const lq = q.toLowerCase();
+  filteredPending = PENDING.filter(r =>
+    r.id.toLowerCase().includes(lq) || r.employee.toLowerCase().includes(lq) ||
+    r.type.toLowerCase().includes(lq) || r.dept.toLowerCase().includes(lq)
+  );
+  pendingPage = 1; renderPending();
+}
+
+function filterPendingStatus(s) {
+  filteredPending = s ? PENDING.filter(r => r.status === s) : [...PENDING];
+  pendingPage = 1; renderPending();
+}
+
+// ═════════════════════════════════ EMPLOYEE TABLE ══════════════
+let filteredEmps = [...EMPLOYEES];
+let empPage = 1;
+const EMP_PER_PAGE = 10;
+let empSort = {key:null,asc:true};
+let empFilters = {search:'',dept:'',loc:''};
+
+function depColor(d) {
+  const m = {Engineering:'#5BA0F2',Marketing:'#C0399F',Sales:'#107E3E',HR:'#E9730C',Finance:'#BB0000',Operations:'#5899DA',Executive:'#354A5E'};
+  return m[d] || '#89919A';
+}
+
+function renderEmployees() {
+  const start = (empPage-1)*EMP_PER_PAGE;
+  const page = filteredEmps.slice(start, start+EMP_PER_PAGE);
+  const tbody = document.getElementById('emp-tbody');
+  if(!page.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="emo">👤</div>No employees found</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = page.map(e => {
+    const name = e.first_name + ' ' + e.last_name;
+    const stBadge = e.status==='Full-time' ? 'badge-success' : e.status==='Part-time' ? 'badge-warning' : 'badge-info';
+    return `<tr onclick="showDetail(${e.id})">
+      <td class="link">#${e.id}</td>
+      <td><div class="avatar-chip"><div class="av" style="background:${depColor(e.department)}">${initials(name)}</div>${name}</div></td>
+      <td><span class="badge badge-info" style="background:${depColor(e.department)}18;color:${depColor(e.department)}">${e.department}</span></td>
+      <td>${e.job_title}</td>
+      <td>${e.location}</td>
+      <td>${fmtDate(e.hire_date)}</td>
+      <td>$${e.salary.toLocaleString()}</td>
+      <td><span class="badge ${stBadge}">${e.status}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('emp-count-lbl').textContent = `${filteredEmps.length} employee${filteredEmps.length!==1?'s':''}`;
+  renderPages('emp-pages', filteredEmps.length, EMP_PER_PAGE, empPage, (p)=>{empPage=p;renderEmployees();});
+}
+
+function applyEmpFilters() {
+  filteredEmps = EMPLOYEES.filter(e => {
+    const name = (e.first_name+' '+e.last_name).toLowerCase();
+    const q = empFilters.search.toLowerCase();
+    return (!q || name.includes(q) || e.department.toLowerCase().includes(q) || e.job_title.toLowerCase().includes(q))
+      && (!empFilters.dept || e.department === empFilters.dept)
+      && (!empFilters.loc  || e.location  === empFilters.loc);
+  });
+  empPage = 1; renderEmployees();
+}
+
+function filterEmployees(q) { empFilters.search=q; applyEmpFilters(); }
+function filterByDept(d)    { empFilters.dept=d;   applyEmpFilters(); }
+function filterByLoc(l)     { empFilters.loc=l;    applyEmpFilters(); }
+
+function sortEmp(key) {
+  if(empSort.key===key) empSort.asc=!empSort.asc; else {empSort.key=key;empSort.asc=true;}
+  filteredEmps.sort((a,b)=>{
+    let av = key==='name'?(a.first_name+a.last_name):a[key];
+    let bv = key==='name'?(b.first_name+b.last_name):b[key];
+    return empSort.asc ? (av>bv?1:-1) : (av<bv?1:-1);
+  });
+  renderEmployees();
+}
+
+function filterByStatus(mode) {
+  document.querySelectorAll('.kpi-tile').forEach(t => t.classList.remove('selected'));
+  if(mode==='pending') {
+    document.getElementById('tile-pending').classList.add('selected');
+    switchTab('pending-requests','dashboard');
+    filterPendingStatus('Awaiting Approval');
+  } else if(mode==='my-tasks') {
+    document.getElementById('tile-my-tasks').classList.add('selected');
+    switchTab('pending-requests','dashboard');
+  } else if(mode==='team-tasks') {
+    document.getElementById('tile-team-tasks').classList.add('selected');
+    switchTab('all-employees','dashboard');
+    filterByDept('Engineering');
+  }
+}
+
+// ═════════════════════════════════ PROJECTS TABLE ══════════════
+function renderProjects() {
+  const tbody = document.getElementById('proj-tbody');
+  tbody.innerHTML = PROJECTS.map(p => {
+    const s = p.status==='Active'?'badge-success':'p.status==="On Hold"'?'badge-warning':'badge-neutral';
+    return `<tr>
+      <td class="link" style="font-weight:600">${p.name}</td>
+      <td>${p.lead}</td>
+      <td>${p.dept}</td>
+      <td>${p.start}</td>
+      <td>${p.due}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="flex:1;height:6px;background:var(--sap-border);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${p.progress}%;background:${p.progress>80?'var(--sap-positive)':p.progress>50?'var(--sap-brand)':'var(--sap-warning)'};border-radius:3px"></div>
+          </div>
+          <span style="font-size:0.7rem;color:var(--sap-text-2);white-space:nowrap">${p.progress}%</span>
+        </div>
+      </td>
+      <td style="text-align:center">${p.team}</td>
+      <td><span class="badge ${p.status==='Active'?'badge-success':p.status==='On Hold'?'badge-warning':'badge-info'}">${p.status}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ═════════════════════════════════ PAGINATION ══════════════════
+function renderPages(containerId, total, perPage, current, onPage) {
+  const pages = Math.ceil(total / perPage);
+  const c = document.getElementById(containerId);
+  let html = `<button class="pg-btn" ${current<=1?'disabled':''} onclick="(${onPage.toString()})(${current-1})">‹</button>`;
+  for(let i=1;i<=pages;i++) {
+    html += `<button class="pg-btn${i===current?' active':''}" onclick="(${onPage.toString()})(${i})">${i}</button>`;
+  }
+  html += `<button class="pg-btn" ${current>=pages?'disabled':''} onclick="(${onPage.toString()})(${current+1})">›</button>`;
+  c.innerHTML = html;
+}
+
+// ═════════════════════════════════ EMPLOYEE PROFILE PAGE ══════════
+function showDetail(id) {
+  const e = EMPLOYEES.find(x => x.id === id);
+  if (!e) return;
+  const name = e.first_name + ' ' + e.last_name;
+  const color = depColor(e.department);
+
+  // Breadcrumb + page title
+  document.getElementById('profile-breadcrumb-name').textContent = name;
+  document.getElementById('profile-page-title').textContent = name;
+
+  // Hero
+  const av = document.getElementById('profile-av');
+  av.textContent = initials(name);
+  av.style.background = color;
+  document.getElementById('profile-name').textContent = name;
+  document.getElementById('profile-role').textContent = `${e.job_title} · ${e.department}`;
+
+  const tags = document.getElementById('profile-tags');
+  const stBadge = e.status==='Full-time'?'badge-success':e.status==='Part-time'?'badge-warning':'badge-info';
+  tags.innerHTML = `
+    <span class="badge ${stBadge}">${e.status}</span>
+    <span class="badge badge-info" style="background:${color}18;color:${color}">${e.department}</span>
+    <span class="badge badge-neutral">📍 ${e.location}</span>
+  `;
+
+  // Stats
+  const tenure = ((new Date() - new Date(e.hire_date)) / (1000*60*60*24*365)).toFixed(1);
+  document.getElementById('ps-tenure').textContent = tenure;
+  document.getElementById('ps-salary').textContent = '$' + (e.salary/1000).toFixed(0) + 'K';
+  const reports = EMPLOYEES.filter(x => x.manager_id === e.id).length;
+  document.getElementById('ps-reports').textContent = reports;
+
+  // Contact fields
+  document.getElementById('pf-email').textContent    = e.email;
+  document.getElementById('pf-phone').textContent    = e.phone;
+  document.getElementById('pf-location').textContent = e.location;
+  document.getElementById('pf-id').textContent       = '#' + e.id;
+
+  // Employment fields
+  document.getElementById('pf-dept').textContent  = e.department;
+  document.getElementById('pf-title').textContent = e.job_title;
+  document.getElementById('pf-hire').textContent  = fmtDate(e.hire_date);
+  document.getElementById('pf-type').textContent  = e.status;
+  const mgr = EMPLOYEES.find(x => x.id === e.manager_id);
+  document.getElementById('pf-manager').textContent = mgr ? `${mgr.first_name} ${mgr.last_name}` : 'None (CEO)';
+  document.getElementById('pf-mgrid').textContent   = e.manager_id ? '#' + e.manager_id : '—';
+
+  // Reporting structure
+  const dirReports = EMPLOYEES.filter(x => x.manager_id === e.id);
+  const rList = document.getElementById('pf-reports-list');
+  if (dirReports.length === 0) {
+    rList.innerHTML = `<div style="font-size:0.8rem;color:var(--sap-text-3);padding:8px 0">No direct reports</div>`;
+  } else {
+    rList.innerHTML = dirReports.map(r => `
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--sap-border);cursor:pointer" onclick="showDetail(${r.id})">
+        <div class="av" style="background:${depColor(r.department)};width:28px;height:28px;font-size:0.6rem;border-radius:50%">${initials(r.first_name+' '+r.last_name)}</div>
+        <div>
+          <div style="font-size:0.8rem;font-weight:600;color:var(--sap-link)">${r.first_name} ${r.last_name}</div>
+          <div style="font-size:0.7rem;color:var(--sap-text-3)">${r.job_title}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Activity feed (mock)
+  document.getElementById('pf-activity').innerHTML = [
+    {icon:'✅', text:`Completed onboarding task`, time:'2 days ago'},
+    {icon:'📋', text:`Submitted leave request REQ-007`, time:'4 days ago'},
+    {icon:'💬', text:`Added to Q4 Talent Acquisition project`, time:'1 week ago'},
+    {icon:'📊', text:`Performance review scheduled`, time:'2 weeks ago'},
+  ].map(a => `
+    <div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--sap-border)">
+      <div style="font-size:16px;width:20px;text-align:center;flex-shrink:0">${a.icon}</div>
+      <div style="flex:1">
+        <div style="font-size:0.78rem;color:var(--sap-text-1)">${a.text}</div>
+        <div style="font-size:0.68rem;color:var(--sap-text-3)">${a.time}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Store current employee for org chart button
+  window._currentProfileId = e.id;
+
+  nav('profile');
+}
+
+function showOrgForProfile() {
+  const id = window._currentProfileId;
+  nav('orgchart');
+  setTimeout(() => {
+    document.getElementById('org-search').value = '';
+    renderOrgChart(null, id);
+  }, 50);
+}
+
+function closeDetail(e) {
+  if(!e || e.target===document.getElementById('detailOverlay') || e.currentTarget===document.querySelector('.detail-close'))
+    document.getElementById('detailOverlay').classList.remove('open');
+}
+
+// ═════════════════════════════════ ORG CHART ══════════════════════
+let orgHighlight = null;
+
+function filterOrgByDept(dept) {
+  renderOrgChart(dept || null, orgHighlight);
+}
+
+function orgSearch(q) {
+  if (!q) { renderOrgChart(null, null); return; }
+  const match = EMPLOYEES.find(e =>
+    (e.first_name + ' ' + e.last_name).toLowerCase().includes(q.toLowerCase())
+  );
+  if (match) renderOrgChart(null, match.id);
+}
+
+function renderOrgChart(deptFilter, highlightId) {
+  orgHighlight = highlightId;
+  const container = document.getElementById('orgChartContainer');
+
+  // Build tree from CEO down
+  const ceo = EMPLOYEES.find(e => !e.manager_id);
+  if (!ceo) { container.innerHTML = '<div class="empty-state">No org data</div>'; return; }
+
+  // Filter employees if dept selected
+  const visible = deptFilter
+    ? EMPLOYEES.filter(e => e.department === deptFilter || !e.manager_id)
+    : EMPLOYEES;
+
+  function buildNode(emp, depth) {
+    const name = emp.first_name + ' ' + emp.last_name;
+    const color = depColor(emp.department);
+    const isHL = emp.id === highlightId;
+    const children = visible.filter(e => e.manager_id === emp.id);
+
+    const nodeEl = document.createElement('div');
+    nodeEl.className = 'org-tree';
+
+    const card = document.createElement('div');
+    card.className = 'org-node' + (isHL ? ' highlighted' : '');
+    card.innerHTML = `
+      <div class="org-node-av" style="background:${color}">${initials(name)}</div>
+      <div class="org-node-name">${name}</div>
+      <div class="org-node-title">${emp.job_title}</div>
+    `;
+    card.onclick = () => showDetail(emp.id);
+    nodeEl.appendChild(card);
+
+    if (children.length > 0 && depth < 3) {
+      const childWrap = document.createElement('div');
+      childWrap.className = 'org-children-wrap';
+
+      const connector = document.createElement('div');
+      connector.style.cssText = 'width:1px;height:24px;background:var(--sap-border-strong);margin:0 auto';
+      childWrap.appendChild(connector);
+
+      const row = document.createElement('div');
+      row.className = 'org-children-row';
+      if (children.length > 1) row.classList.add('has-siblings');
+
+      children.forEach((child, i) => {
+        const childGroup = document.createElement('div');
+        childGroup.className = 'org-child-group';
+
+        if (children.length > 1) {
+          const vLine = document.createElement('div');
+          vLine.style.cssText = 'width:1px;height:20px;background:var(--sap-border-strong);margin:0 auto';
+          childGroup.appendChild(vLine);
+        }
+
+        childGroup.appendChild(buildNode(child, depth + 1));
+        row.appendChild(childGroup);
+      });
+
+      // Horizontal line connector
+      if (children.length > 1) {
+        const hLine = document.createElement('div');
+        hLine.style.cssText = `position:absolute;top:0;height:1px;background:var(--sap-border-strong)`;
+        // We'll rely on CSS for this
+      }
+
+      childWrap.appendChild(row);
+      nodeEl.appendChild(childWrap);
+    }
+
+    return nodeEl;
+  }
+
+  container.innerHTML = '';
+  container.appendChild(buildNode(ceo, 0));
+
+  const legend = document.getElementById('org-legend');
+  legend.textContent = highlightId ? `Highlighted: ${EMPLOYEES.find(e=>e.id===highlightId)?.first_name || ''}` : '';
+}
+
+// ═════════════════════════════════ WORKFORCE INTELLIGENCE ══════
+let wiOpen = false;
+let wiHistory = [];
+
+function toggleWI() {
+  wiOpen = !wiOpen;
+  document.getElementById('wiPanel').classList.toggle('open', wiOpen);
+  document.getElementById('wiFab').style.display = wiOpen ? 'none' : 'flex';
+}
+
+function wiKeyDown(e) {
+  if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendWIMessage(); }
+}
+
+function sendSuggestion(btn) {
+  document.getElementById('wiInput').value = btn.textContent;
+  sendWIMessage();
+}
+
+function appendWIMsg(role, text, timestamp) {
+  const msgs = document.getElementById('wiMessages');
+  const time = timestamp || new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const div = document.createElement('div');
+  div.className = `wi-msg ${role}`;
+  div.innerHTML = `<div class="wi-bubble">${text.replace(/\n/g,'<br>')}</div><div class="wi-meta">${time}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function appendTyping() {
+  const msgs = document.getElementById('wiMessages');
+  const div = document.createElement('div');
+  div.className = 'wi-msg assistant';
+  div.id = 'wi-typing';
+  div.innerHTML = `<div class="wi-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendWIMessage() {
+  const input = document.getElementById('wiInput');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  document.getElementById('wiSendBtn').disabled = true;
+
+  appendWIMsg('user', text);
+  wiHistory.push({role:'user', content: text});
+
+  appendTyping();
+
+  const systemPrompt = `You are a Workforce Intelligence assistant for "Lovely HR". You have access to the following employee data:
+
+${JSON.stringify(EMPLOYEES, null, 2)}
+
+Answer questions about the workforce analytically and helpfully. Provide specific numbers, names, and insights where possible. Keep responses concise (2-4 sentences or a short list). Format with simple text — no markdown headers.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: wiHistory
+      })
+    });
+    const data = await resp.json();
+    const typing = document.getElementById('wi-typing');
+    if(typing) typing.remove();
+
+    if(data.content && data.content[0]) {
+      const reply = data.content[0].text;
+      wiHistory.push({role:'assistant', content: reply});
+      appendWIMsg('assistant', reply);
+    } else {
+      appendWIMsg('assistant', '⚠️ I couldn\'t process that. Please try again.');
+    }
+  } catch(err) {
+    const typing = document.getElementById('wi-typing');
+    if(typing) typing.remove();
+    // Fallback local responses
+    const reply = generateLocalReply(text);
+    wiHistory.push({role:'assistant', content: reply});
+    appendWIMsg('assistant', reply);
+  }
+
+  document.getElementById('wiSendBtn').disabled = false;
+}
+
+function generateLocalReply(q) {
+  const lq = q.toLowerCase();
+  if(lq.includes('seattle')) {
+    const count = EMPLOYEES.filter(e=>e.location==='Seattle').length;
+    return `📍 There are ${count} employees based in Seattle. They span departments including Engineering, HR, and Operations.`;
+  }
+  if(lq.includes('salary') || lq.includes('earn') || lq.includes('top')) {
+    const sorted = [...EMPLOYEES].sort((a,b)=>b.salary-a.salary).slice(0,3);
+    return `💰 Top earners:\n1. ${sorted[0].first_name} ${sorted[0].last_name} (${sorted[0].job_title}) — $${sorted[0].salary.toLocaleString()}\n2. ${sorted[1].first_name} ${sorted[1].last_name} (${sorted[1].job_title}) — $${sorted[1].salary.toLocaleString()}\n3. ${sorted[2].first_name} ${sorted[2].last_name} (${sorted[2].job_title}) — $${sorted[2].salary.toLocaleString()}`;
+  }
+  if(lq.includes('engineering') && (lq.includes('tenure')||lq.includes('average'))) {
+    const eng = EMPLOYEES.filter(e=>e.department==='Engineering');
+    const avgYrs = eng.reduce((sum,e)=>{
+      const diff = (new Date() - new Date(e.hire_date)) / (1000*60*60*24*365);
+      return sum+diff;
+    },0)/eng.length;
+    return `⏱️ The average tenure in Engineering is approximately ${avgYrs.toFixed(1)} years across ${eng.length} employees.`;
+  }
+  if(lq.includes('department') || lq.includes('headcount')) {
+    const counts = {};
+    EMPLOYEES.forEach(e => counts[e.department]=(counts[e.department]||0)+1);
+    return `📊 Headcount by department:\n${Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([d,c])=>`${d}: ${c}`).join('\n')}`;
+  }
+  return `🤖 I can help you analyze your workforce of ${EMPLOYEES.length} employees across 7 departments. Try asking about headcount, salaries, tenure, or specific departments!`;
+}
+
+// ═════════════════════════════════ HELPERS ═════════════════════
+function initials(name) {
+  return name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+}
+const COLORS = ['#5BA0F2','#C0399F','#107E3E','#E9730C','#BB0000','#5899DA','#354A5E','#8E44AD'];
+function avatarColor(name) { return COLORS[name.charCodeAt(0)%COLORS.length]; }
+function fmtDate(d) {
+  if(!d) return '';
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+function showAddEmployee() { alert('Add Employee form would open here.'); }
+
+// ═════════════════════════════════ INIT ═══════════════════════
+renderPending();
+renderEmployees();
+renderProjects();
+// Org chart is rendered on demand when navigating to that page
+document.getElementById('page-orgchart') && setTimeout(() => {
+  // Pre-render org chart in background so it's ready
+  const orig = currentPage;
+  document.getElementById('page-orgchart').style.visibility = 'hidden';
+  renderOrgChart(null, null);
+  document.getElementById('page-orgchart').style.visibility = '';
+}, 300);
+</script>
+</body>
+</html>
