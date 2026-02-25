@@ -41,17 +41,27 @@
   --chat-width:        380px;
   --transition:        0.18s ease;
 
-  /* Tableau 10 Palette */
-  --t10-blue:    #4E79A7;
-  --t10-orange:  #F28E2B;
-  --t10-red:     #E15759;
-  --t10-teal:    #76B7B2;
-  --t10-green:   #59A14F;
-  --t10-yellow:  #EDC948;
-  --t10-purple:  #B07AA1;
-  --t10-pink:    #FF9DA7;
-  --t10-brown:   #9C755F;
-  --t10-gray:    #BAB0AC;
+  /* Tableau 20 Palette */
+  --t20-blue:       #4E79A7;
+  --t20-lt-blue:    #A0CBE8;
+  --t20-orange:     #F28E2B;
+  --t20-lt-orange:  #FFBE7D;
+  --t20-green:      #59A14F;
+  --t20-lt-green:   #8CD17D;
+  --t20-olive:      #B6992D;
+  --t20-yellow:     #F1CE63;
+  --t20-teal:       #499894;
+  --t20-lt-teal:    #86BCB6;
+  --t20-red:        #E15759;
+  --t20-lt-red:     #FF9D9A;
+  --t20-dk-gray:    #79706E;
+  --t20-lt-gray:    #BAB0AC;
+  --t20-pink:       #D37295;
+  --t20-lt-pink:    #FABFD2;
+  --t20-purple:     #B07AA1;
+  --t20-lt-purple:  #D4A6C8;
+  --t20-brown:      #9D7660;
+  --t20-lt-brown:   #D7B5A6;
 }
 
 /* ─── Dark Theme ───────────────────────────────────────────────── */
@@ -515,18 +525,24 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
 .chart-bar-fill.orange { background: var(--sap-warning); }
 .chart-bar-fill.purple { background: var(--sap-highlight); }
 
-/* ─── Tableau 10 overrides for Reports page ──────────────────── */
-#page-reports .chart-bar-fill          { background: var(--t10-blue); }
-#page-reports .chart-bar-fill.orange   { background: var(--t10-orange); }
-#page-reports .chart-bar-fill.red      { background: var(--t10-red); }
-#page-reports .chart-bar-fill.teal     { background: var(--t10-teal); }
-#page-reports .chart-bar-fill.green    { background: var(--t10-green); }
-#page-reports .chart-bar-fill.yellow   { background: var(--t10-yellow); }
-#page-reports .chart-bar-fill.purple   { background: var(--t10-purple); }
-#page-reports .chart-bar-fill.pink     { background: var(--t10-pink); }
-#page-reports .chart-bar-fill.brown    { background: var(--t10-brown); }
-#page-reports .trend-bar               { background: var(--t10-blue); }
-#page-reports .trend-bar.light         { background: color-mix(in srgb, var(--t10-blue) 35%, transparent); }
+/* ─── Tableau 20 overrides for Reports page ──────────────────── */
+/* Department colors (consistent hue-to-dept mapping) */
+#page-reports .chart-bar-fill.dept-eng  { background: var(--t20-orange); }
+#page-reports .chart-bar-fill.dept-mkt  { background: var(--t20-purple); }
+#page-reports .chart-bar-fill.dept-sal  { background: var(--t20-teal); }
+#page-reports .chart-bar-fill.dept-hr   { background: var(--t20-pink); }
+#page-reports .chart-bar-fill.dept-fin  { background: var(--t20-olive); }
+#page-reports .chart-bar-fill.dept-ops  { background: var(--t20-brown); }
+#page-reports .chart-bar-fill.dept-exec { background: var(--t20-dk-gray); }
+/* City colors (avoid blue & dept hues) */
+#page-reports .chart-bar-fill.city-sea  { background: var(--t20-lt-green); }
+#page-reports .chart-bar-fill.city-chi  { background: var(--t20-lt-red); }
+#page-reports .chart-bar-fill.city-nyc  { background: var(--t20-lt-purple); }
+#page-reports .chart-bar-fill.city-rem  { background: var(--t20-lt-orange); }
+/* Onboarding status */
+#page-reports .chart-bar-fill.ob-done   { background: var(--t20-green); }
+#page-reports .chart-bar-fill.ob-wip    { background: var(--t20-red); }
+#page-reports .chart-bar-fill.ob-todo   { background: var(--t20-yellow); color: var(--sap-text-1); }
 
 .donut-wrap {
   display: flex; align-items: center; gap: 16px;
@@ -566,6 +582,32 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
   margin-top: 4px;
 }
 .trend-label { flex: 1; text-align: center; font-size: 0.6rem; color: var(--sap-text-3); }
+
+/* Stacked trend bar (hiring breakdown) */
+.trend-stack {
+  flex: 1; display: flex; flex-direction: column-reverse;
+  border-radius: 2px 2px 0 0; overflow: hidden;
+  min-height: 4px; cursor: pointer;
+  transition: opacity var(--transition);
+}
+.trend-stack:hover { opacity: 0.8; }
+.trend-stack.empty {
+  background: color-mix(in srgb, var(--t20-blue) 15%, transparent);
+}
+.trend-seg { min-height: 0; }
+.trend-seg.ft { background: var(--t20-blue); }
+.trend-seg.pt { background: color-mix(in srgb, var(--t20-blue) 50%, var(--t20-lt-blue)); }
+.trend-seg.ct { background: var(--t20-lt-blue); }
+.trend-legend {
+  display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;
+}
+.trend-legend-item {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.6rem; color: var(--sap-text-2);
+}
+.trend-legend-swatch {
+  width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
+}
 
 /* ─── Workforce Intelligence Chat ───────────────────────────────── */
 .wi-panel {
@@ -1353,12 +1395,12 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
         <div class="report-card">
           <div class="report-card-title">🏢 Headcount by Department</div>
           <div class="chart-bar-group">
-            <div class="chart-bar-item"><div class="chart-bar-label">Engineering</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:73%">8</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:45%">5</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill red" style="width:45%">5</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill teal" style="width:36%">4</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:36%">4</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">HR</div><div class="chart-bar-track"><div class="chart-bar-fill purple" style="width:36%">4</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Engineering</div><div class="chart-bar-track"><div class="chart-bar-fill dept-eng" style="width:73%">8</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill dept-mkt" style="width:45%">5</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill dept-sal" style="width:45%">5</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill dept-fin" style="width:36%">4</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill dept-ops" style="width:36%">4</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">HR</div><div class="chart-bar-track"><div class="chart-bar-fill dept-hr" style="width:36%">4</div></div></div>
           </div>
         </div>
 
@@ -1368,18 +1410,18 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
           <div class="donut-wrap">
             <svg width="90" height="90" viewBox="0 0 90 90">
               <circle cx="45" cy="45" r="35" fill="none" stroke="var(--sap-border)" stroke-width="14"/>
-              <circle cx="45" cy="45" r="35" fill="none" stroke="#4E79A7" stroke-width="14"
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#86BCB6" stroke-width="14"
                 stroke-dasharray="197 22" stroke-dashoffset="0" transform="rotate(-90 45 45)"/>
-              <circle cx="45" cy="45" r="35" fill="none" stroke="#F28E2B" stroke-width="14"
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#FABFD2" stroke-width="14"
                 stroke-dasharray="13 206" stroke-dashoffset="-197" transform="rotate(-90 45 45)"/>
-              <circle cx="45" cy="45" r="35" fill="none" stroke="#59A14F" stroke-width="14"
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#D7B5A6" stroke-width="14"
                 stroke-dasharray="9 210" stroke-dashoffset="-210" transform="rotate(-90 45 45)"/>
               <text x="45" y="49" text-anchor="middle" font-size="11" font-weight="600" fill="var(--sap-text-1)">30</text>
             </svg>
             <div class="donut-legend">
-              <div class="donut-legend-item"><div class="dot" style="background:#4E79A7"></div>Full-time — 27</div>
-              <div class="donut-legend-item"><div class="dot" style="background:#F28E2B"></div>Part-time — 2</div>
-              <div class="donut-legend-item"><div class="dot" style="background:#59A14F"></div>Contract — 1</div>
+              <div class="donut-legend-item"><div class="dot" style="background:#86BCB6"></div>Full-time — 27</div>
+              <div class="donut-legend-item"><div class="dot" style="background:#FABFD2"></div>Part-time — 2</div>
+              <div class="donut-legend-item"><div class="dot" style="background:#D7B5A6"></div>Contract — 1</div>
             </div>
           </div>
         </div>
@@ -1388,31 +1430,53 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
         <div class="report-card">
           <div class="report-card-title">💵 Avg Salary by Department</div>
           <div class="chart-bar-group">
-            <div class="chart-bar-item"><div class="chart-bar-label">Executive</div><div class="chart-bar-track"><div class="chart-bar-fill brown" style="width:100%">$220K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Engineering</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:80%">$88.3K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill teal" style="width:57%">$77.8K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:53%">$75.5K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill red" style="width:51%">$74.2K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:45%">$65.4K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Executive</div><div class="chart-bar-track"><div class="chart-bar-fill dept-exec" style="width:100%">$220K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Engineering</div><div class="chart-bar-track"><div class="chart-bar-fill dept-eng" style="width:80%">$88.3K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill dept-fin" style="width:57%">$77.8K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill dept-ops" style="width:53%">$75.5K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill dept-sal" style="width:51%">$74.2K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill dept-mkt" style="width:45%">$65.4K</div></div></div>
           </div>
         </div>
 
-        <!-- Hiring Trend -->
+        <!-- Hiring Trend (stacked: FT / PT / CT) -->
         <div class="report-card">
           <div class="report-card-title">📈 Monthly Hiring Trend (2024)</div>
           <div class="trend-line">
-            <div class="trend-bar" style="height:30%" title="Jan: 1"></div>
-            <div class="trend-bar light" style="height:15%" title="Feb: 0"></div>
-            <div class="trend-bar" style="height:60%" title="Mar: 3"></div>
-            <div class="trend-bar light" style="height:30%" title="Apr: 1"></div>
-            <div class="trend-bar" style="height:45%" title="May: 2"></div>
-            <div class="trend-bar" style="height:75%" title="Jun: 4"></div>
-            <div class="trend-bar light" style="height:15%" title="Jul: 0"></div>
-            <div class="trend-bar" style="height:60%" title="Aug: 3"></div>
-            <div class="trend-bar" style="height:30%" title="Sep: 1"></div>
-            <div class="trend-bar" style="height:90%" title="Oct: 5"></div>
-            <div class="trend-bar" style="height:45%" title="Nov: 2"></div>
-            <div class="trend-bar light" style="height:15%" title="Dec: 0"></div>
+            <div class="trend-stack" style="height:18%" title="Jan: 1 FT">
+              <div class="trend-seg ft" style="flex:1"></div>
+            </div>
+            <div class="trend-stack empty" style="min-height:4px;height:4px" title="Feb: 0"></div>
+            <div class="trend-stack" style="height:54%" title="Mar: 3 FT">
+              <div class="trend-seg ft" style="flex:1"></div>
+            </div>
+            <div class="trend-stack" style="height:18%" title="Apr: 1 FT">
+              <div class="trend-seg ft" style="flex:1"></div>
+            </div>
+            <div class="trend-stack" style="height:36%" title="May: 1 FT, 1 PT">
+              <div class="trend-seg ft" style="flex:1"></div>
+              <div class="trend-seg pt" style="flex:1"></div>
+            </div>
+            <div class="trend-stack" style="height:72%" title="Jun: 3 FT, 1 CT">
+              <div class="trend-seg ft" style="flex:3"></div>
+              <div class="trend-seg ct" style="flex:1"></div>
+            </div>
+            <div class="trend-stack empty" style="min-height:4px;height:4px" title="Jul: 0"></div>
+            <div class="trend-stack" style="height:54%" title="Aug: 2 FT, 1 PT">
+              <div class="trend-seg ft" style="flex:2"></div>
+              <div class="trend-seg pt" style="flex:1"></div>
+            </div>
+            <div class="trend-stack" style="height:18%" title="Sep: 1 FT">
+              <div class="trend-seg ft" style="flex:1"></div>
+            </div>
+            <div class="trend-stack" style="height:90%" title="Oct: 4 FT, 1 PT">
+              <div class="trend-seg ft" style="flex:4"></div>
+              <div class="trend-seg pt" style="flex:1"></div>
+            </div>
+            <div class="trend-stack" style="height:36%" title="Nov: 2 FT">
+              <div class="trend-seg ft" style="flex:1"></div>
+            </div>
+            <div class="trend-stack empty" style="min-height:4px;height:4px" title="Dec: 0"></div>
           </div>
           <div class="trend-labels">
             <div class="trend-label">J</div><div class="trend-label">F</div>
@@ -1421,6 +1485,11 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
             <div class="trend-label">J</div><div class="trend-label">A</div>
             <div class="trend-label">S</div><div class="trend-label">O</div>
             <div class="trend-label">N</div><div class="trend-label">D</div>
+          </div>
+          <div class="trend-legend">
+            <div class="trend-legend-item"><div class="trend-legend-swatch" style="background:var(--t20-blue)"></div>Full-time</div>
+            <div class="trend-legend-item"><div class="trend-legend-swatch" style="background:color-mix(in srgb, var(--t20-blue) 50%, var(--t20-lt-blue))"></div>Part-time</div>
+            <div class="trend-legend-item"><div class="trend-legend-swatch" style="background:var(--t20-lt-blue)"></div>Contract</div>
           </div>
         </div>
 
@@ -1434,13 +1503,13 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
             <div class="stat-cell"><div class="stat-cell-val">3</div><div class="stat-cell-lbl">Remote</div></div>
           </div>
           <div style="margin-top:10px">
-            <div class="chart-bar-item"><div class="chart-bar-label">Seattle</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%"></div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Seattle</div><div class="chart-bar-track"><div class="chart-bar-fill city-sea" style="width:100%"></div></div></div>
             <div style="height:4px"></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Chicago</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:62%"></div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Chicago</div><div class="chart-bar-track"><div class="chart-bar-fill city-chi" style="width:62%"></div></div></div>
             <div style="height:4px"></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">New York</div><div class="chart-bar-track"><div class="chart-bar-fill red" style="width:46%"></div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">New York</div><div class="chart-bar-track"><div class="chart-bar-fill city-nyc" style="width:46%"></div></div></div>
             <div style="height:4px"></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Remote</div><div class="chart-bar-track"><div class="chart-bar-fill teal" style="width:23%"></div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Remote</div><div class="chart-bar-track"><div class="chart-bar-fill city-rem" style="width:23%"></div></div></div>
           </div>
         </div>
 
@@ -1448,9 +1517,9 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
         <div class="report-card">
           <div class="report-card-title">🎯 Onboarding Pipeline</div>
           <div class="chart-bar-group" style="margin-bottom:12px">
-            <div class="chart-bar-item"><div class="chart-bar-label">Completed</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:70%">21</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">In Progress</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:23%">7</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Not Started</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:7%">2</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Completed</div><div class="chart-bar-track"><div class="chart-bar-fill ob-done" style="width:70%">21</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">In Progress</div><div class="chart-bar-track"><div class="chart-bar-fill ob-wip" style="width:23%">7</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Not Started</div><div class="chart-bar-track"><div class="chart-bar-fill ob-todo" style="width:7%">2</div></div></div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
             <span class="badge badge-success">✓ 70% completion rate</span>
@@ -1844,8 +1913,8 @@ let empSort = {key:null,asc:true};
 let empFilters = {search:'',dept:'',loc:''};
 
 function depColor(d) {
-  const m = {Engineering:'#5BA0F2',Marketing:'#C0399F',Sales:'#107E3E',HR:'#E9730C',Finance:'#BB0000',Operations:'#5899DA',Executive:'#354A5E'};
-  return m[d] || '#89919A';
+  const m = {Engineering:'#F28E2B',Marketing:'#B07AA1',Sales:'#499894',HR:'#D37295',Finance:'#B6992D',Operations:'#9D7660',Executive:'#79706E'};
+  return m[d] || '#BAB0AC';
 }
 
 function renderEmployees() {
@@ -2269,7 +2338,7 @@ function generateLocalReply(q) {
 function initials(name) {
   return name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
 }
-const COLORS = ['#5BA0F2','#C0399F','#107E3E','#E9730C','#BB0000','#5899DA','#354A5E','#8E44AD'];
+const COLORS = ['#F28E2B','#B07AA1','#499894','#D37295','#B6992D','#9D7660','#79706E','#4E79A7'];
 function avatarColor(name) { return COLORS[name.charCodeAt(0)%COLORS.length]; }
 function fmtDate(d) {
   if(!d) return '';
