@@ -40,6 +40,18 @@
   --tab-h:             44px;
   --chat-width:        380px;
   --transition:        0.18s ease;
+
+  /* Tableau 10 Palette */
+  --t10-blue:    #4E79A7;
+  --t10-orange:  #F28E2B;
+  --t10-red:     #E15759;
+  --t10-teal:    #76B7B2;
+  --t10-green:   #59A14F;
+  --t10-yellow:  #EDC948;
+  --t10-purple:  #B07AA1;
+  --t10-pink:    #FF9DA7;
+  --t10-brown:   #9C755F;
+  --t10-gray:    #BAB0AC;
 }
 
 /* ─── Dark Theme ───────────────────────────────────────────────── */
@@ -502,6 +514,19 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
 .chart-bar-fill.green  { background: var(--sap-positive); }
 .chart-bar-fill.orange { background: var(--sap-warning); }
 .chart-bar-fill.purple { background: var(--sap-highlight); }
+
+/* ─── Tableau 10 overrides for Reports page ──────────────────── */
+#page-reports .chart-bar-fill          { background: var(--t10-blue); }
+#page-reports .chart-bar-fill.orange   { background: var(--t10-orange); }
+#page-reports .chart-bar-fill.red      { background: var(--t10-red); }
+#page-reports .chart-bar-fill.teal     { background: var(--t10-teal); }
+#page-reports .chart-bar-fill.green    { background: var(--t10-green); }
+#page-reports .chart-bar-fill.yellow   { background: var(--t10-yellow); }
+#page-reports .chart-bar-fill.purple   { background: var(--t10-purple); }
+#page-reports .chart-bar-fill.pink     { background: var(--t10-pink); }
+#page-reports .chart-bar-fill.brown    { background: var(--t10-brown); }
+#page-reports .trend-bar               { background: var(--t10-blue); }
+#page-reports .trend-bar.light         { background: color-mix(in srgb, var(--t10-blue) 35%, transparent); }
 
 .donut-wrap {
   display: flex; align-items: center; gap: 16px;
@@ -1329,10 +1354,10 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
           <div class="report-card-title">🏢 Headcount by Department</div>
           <div class="chart-bar-group">
             <div class="chart-bar-item"><div class="chart-bar-label">Engineering</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:73%">8</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:45%">5</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:45%">5</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:36%">4</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:36%">4</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:45%">5</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill red" style="width:45%">5</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill teal" style="width:36%">4</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:36%">4</div></div></div>
             <div class="chart-bar-item"><div class="chart-bar-label">HR</div><div class="chart-bar-track"><div class="chart-bar-fill purple" style="width:36%">4</div></div></div>
           </div>
         </div>
@@ -1343,18 +1368,18 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
           <div class="donut-wrap">
             <svg width="90" height="90" viewBox="0 0 90 90">
               <circle cx="45" cy="45" r="35" fill="none" stroke="var(--sap-border)" stroke-width="14"/>
-              <circle cx="45" cy="45" r="35" fill="none" stroke="#0070F2" stroke-width="14"
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#4E79A7" stroke-width="14"
                 stroke-dasharray="197 22" stroke-dashoffset="0" transform="rotate(-90 45 45)"/>
-              <circle cx="45" cy="45" r="35" fill="none" stroke="#C0399F" stroke-width="14"
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#F28E2B" stroke-width="14"
                 stroke-dasharray="13 206" stroke-dashoffset="-197" transform="rotate(-90 45 45)"/>
-              <circle cx="45" cy="45" r="35" fill="none" stroke="#107E3E" stroke-width="14"
+              <circle cx="45" cy="45" r="35" fill="none" stroke="#59A14F" stroke-width="14"
                 stroke-dasharray="9 210" stroke-dashoffset="-210" transform="rotate(-90 45 45)"/>
               <text x="45" y="49" text-anchor="middle" font-size="11" font-weight="600" fill="var(--sap-text-1)">30</text>
             </svg>
             <div class="donut-legend">
-              <div class="donut-legend-item"><div class="dot" style="background:#0070F2"></div>Full-time — 27</div>
-              <div class="donut-legend-item"><div class="dot" style="background:#C0399F"></div>Part-time — 2</div>
-              <div class="donut-legend-item"><div class="dot" style="background:#107E3E"></div>Contract — 1</div>
+              <div class="donut-legend-item"><div class="dot" style="background:#4E79A7"></div>Full-time — 27</div>
+              <div class="donut-legend-item"><div class="dot" style="background:#F28E2B"></div>Part-time — 2</div>
+              <div class="donut-legend-item"><div class="dot" style="background:#59A14F"></div>Contract — 1</div>
             </div>
           </div>
         </div>
@@ -1363,12 +1388,12 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
         <div class="report-card">
           <div class="report-card-title">💵 Avg Salary by Department</div>
           <div class="chart-bar-group">
-            <div class="chart-bar-item"><div class="chart-bar-label">Executive</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%">$220K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Executive</div><div class="chart-bar-track"><div class="chart-bar-fill brown" style="width:100%">$220K</div></div></div>
             <div class="chart-bar-item"><div class="chart-bar-label">Engineering</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:80%">$88.3K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:57%">$77.8K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:53%">$75.5K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill purple" style="width:51%">$74.2K</div></div></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:45%">$65.4K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Finance</div><div class="chart-bar-track"><div class="chart-bar-fill teal" style="width:57%">$77.8K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Operations</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:53%">$75.5K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Sales</div><div class="chart-bar-track"><div class="chart-bar-fill red" style="width:51%">$74.2K</div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Marketing</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:45%">$65.4K</div></div></div>
           </div>
         </div>
 
@@ -1411,11 +1436,11 @@ select.filter-select:focus { outline: none; border-color: var(--sap-brand); }
           <div style="margin-top:10px">
             <div class="chart-bar-item"><div class="chart-bar-label">Seattle</div><div class="chart-bar-track"><div class="chart-bar-fill" style="width:100%"></div></div></div>
             <div style="height:4px"></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Chicago</div><div class="chart-bar-track"><div class="chart-bar-fill green" style="width:62%"></div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Chicago</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:62%"></div></div></div>
             <div style="height:4px"></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">New York</div><div class="chart-bar-track"><div class="chart-bar-fill orange" style="width:46%"></div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">New York</div><div class="chart-bar-track"><div class="chart-bar-fill red" style="width:46%"></div></div></div>
             <div style="height:4px"></div>
-            <div class="chart-bar-item"><div class="chart-bar-label">Remote</div><div class="chart-bar-track"><div class="chart-bar-fill purple" style="width:23%"></div></div></div>
+            <div class="chart-bar-item"><div class="chart-bar-label">Remote</div><div class="chart-bar-track"><div class="chart-bar-fill teal" style="width:23%"></div></div></div>
           </div>
         </div>
 
