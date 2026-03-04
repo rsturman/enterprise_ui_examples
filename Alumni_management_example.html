@@ -1,0 +1,1875 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DubConnect — Alumni Outreach Workflow (Prototype)</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#101a2f;
+      --panel2:#0e1730;
+      --text:#e7eefc;
+      --muted:#a8b6d6;
+      --line:rgba(231,238,252,.12);
+      --chip:rgba(231,238,252,.10);
+      --ok: #34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --brand:#7c3aed;
+      --brand2:#22c55e;
+      --shadow: 0 12px 32px rgba(0,0,0,.35);
+      --radius: 14px;
+      --radius2: 10px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background:
+        radial-gradient(1100px 500px at 20% -10%, rgba(124,58,237,.35), transparent 55%),
+        radial-gradient(900px 600px at 85% 0%, rgba(34,197,94,.20), transparent 50%),
+        linear-gradient(180deg, #070c16 0%, #081024 55%, #060b14 100%);
+      color:var(--text);
+    }
+    a{color:inherit}
+    .app{min-height:100%; display:flex; flex-direction:column;}
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(10px);
+      background: rgba(7,12,22,.65);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{
+      max-width:1220px;
+      margin:0 auto;
+      padding:16px 18px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .logo{
+      width:34px; height:34px; border-radius:10px;
+      background: linear-gradient(135deg, rgba(124,58,237,1), rgba(34,197,94,1));
+      box-shadow: 0 10px 24px rgba(124,58,237,.25);
+    }
+    .title-wrap{display:flex; flex-direction:column; gap:2px}
+    .title{font-weight:750; letter-spacing:.2px}
+    .subtitle{color:var(--muted); font-size:12.5px}
+    .spacer{flex:1}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(231,238,252,.06);
+      color:var(--muted);
+      font-size:12.5px;
+      white-space:nowrap;
+    }
+    .pill strong{color:var(--text); font-weight:700}
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(231,238,252,.06);
+      color:var(--text);
+      padding:9px 11px;
+      border-radius:10px;
+      cursor:pointer;
+      transition: transform .05s ease, background .15s ease, border-color .15s ease;
+      font-weight:650;
+      font-size:13px;
+      display:inline-flex; align-items:center; gap:8px;
+      user-select:none;
+    }
+    .btn:hover{background: rgba(231,238,252,.10); border-color: rgba(231,238,252,.18);}
+    .btn:active{transform: translateY(1px);}
+    .btn.primary{
+      background: rgba(124,58,237,.20);
+      border-color: rgba(124,58,237,.35);
+    }
+    .btn.primary:hover{background: rgba(124,58,237,.26)}
+    .btn.good{
+      background: rgba(34,197,94,.18);
+      border-color: rgba(34,197,94,.35);
+    }
+    .btn.warn{
+      background: rgba(251,191,36,.14);
+      border-color: rgba(251,191,36,.28);
+    }
+    .btn.bad{
+      background: rgba(251,113,133,.14);
+      border-color: rgba(251,113,133,.28);
+    }
+    .btn.ghost{
+      background: transparent;
+      border-color: rgba(231,238,252,.14);
+    }
+    .icon{
+      width:16px; height:16px; display:inline-block;
+      vertical-align:middle;
+    }
+
+    .container{
+      max-width:1220px;
+      margin:0 auto;
+      padding:18px;
+      width:100%;
+      display:grid;
+      gap:16px;
+    }
+    .hero{
+      display:flex;
+      gap:16px;
+      align-items:stretch;
+      flex-wrap:wrap;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(16,26,47,.96), rgba(11,18,32,.92));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .card.pad{padding:16px}
+    .card-header{
+      padding:14px 16px 10px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .card-title{
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .card-title h2{
+      margin:0;
+      font-size:14.5px;
+      letter-spacing:.2px;
+    }
+    .card-title p{
+      margin:0;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.35;
+    }
+    .card-body{padding:16px}
+    .grid2{display:grid; grid-template-columns: 1.3fr .7fr; gap:16px}
+    @media (max-width: 980px){
+      .grid2{grid-template-columns: 1fr}
+    }
+
+    /* Tabs */
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:10px 10px 0;
+    }
+    .tab{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(231,238,252,.05);
+      cursor:pointer;
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+      display:flex; align-items:center; gap:8px;
+      user-select:none;
+    }
+    .tab.active{
+      background: rgba(124,58,237,.22);
+      border-color: rgba(124,58,237,.35);
+      color: var(--text);
+    }
+    .badge{
+      font-family:var(--mono);
+      font-size:11px;
+      padding:2px 7px;
+      border-radius:999px;
+      background: rgba(231,238,252,.08);
+      border:1px solid rgba(231,238,252,.12);
+      color: var(--muted);
+    }
+    .tab.active .badge{
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.16);
+      color: var(--text);
+    }
+
+    /* Forms */
+    .row{display:flex; gap:10px; flex-wrap:wrap;}
+    .field{
+      display:flex; flex-direction:column;
+      gap:6px;
+      min-width: 180px;
+      flex:1;
+    }
+    label{font-size:12px; color:var(--muted); font-weight:700;}
+    input, select, textarea{
+      width:100%;
+      padding:10px 11px;
+      border-radius:10px;
+      border:1px solid rgba(231,238,252,.14);
+      background: rgba(6,10,18,.55);
+      color: var(--text);
+      outline:none;
+      font-size:13px;
+    }
+    input::placeholder, textarea::placeholder{color: rgba(168,182,214,.75)}
+    textarea{min-height:92px; resize:vertical; line-height:1.35}
+    .help{
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.35;
+    }
+    .toolbar{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:flex-end;
+    }
+    .toolbar .btn{height:38px}
+    .divider{height:1px; background:var(--line); margin:14px 0;}
+
+    /* Table */
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(6,10,18,.35);
+    }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(231,238,252,.08);
+      text-align:left;
+      vertical-align:top;
+      font-size:12.8px;
+      line-height:1.25;
+    }
+    th{
+      position:sticky; top:0;
+      background: rgba(10,16,30,.85);
+      backdrop-filter: blur(8px);
+      color: var(--muted);
+      font-size:12px;
+      letter-spacing:.2px;
+      text-transform: none;
+      z-index:1;
+    }
+    tr:hover td{background: rgba(231,238,252,.03)}
+    .actions{
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .mini{
+      padding:6px 9px;
+      border-radius:10px;
+      font-size:12px;
+      border:1px solid rgba(231,238,252,.14);
+      background: rgba(231,238,252,.06);
+      color: var(--text);
+      cursor:pointer;
+      font-weight:750;
+    }
+    .mini:hover{background: rgba(231,238,252,.10)}
+    .mini.bad{border-color: rgba(251,113,133,.30); background: rgba(251,113,133,.12)}
+    .mini.good{border-color: rgba(34,197,94,.30); background: rgba(34,197,94,.14)}
+    .mini.warn{border-color: rgba(251,191,36,.30); background: rgba(251,191,36,.12)}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(231,238,252,.14);
+      background: var(--chip);
+      color: var(--muted);
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .chip strong{color:var(--text)}
+    .status{
+      font-family: var(--mono);
+      font-size:11.5px;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid rgba(231,238,252,.16);
+      background: rgba(231,238,252,.08);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .status.ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.12); color: rgba(195,255,222,.9)}
+    .status.warn{border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.12); color: rgba(255,243,198,.95)}
+    .status.bad{border-color: rgba(251,113,133,.35); background: rgba(251,113,133,.12); color: rgba(255,214,221,.95)}
+    .muted{color:var(--muted)}
+    .kpi-grid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      padding:0 10px 10px;
+    }
+    @media (max-width: 980px){
+      .kpi-grid{grid-template-columns: 1fr 1fr}
+    }
+    @media (max-width: 560px){
+      .kpi-grid{grid-template-columns: 1fr}
+    }
+    .kpi{
+      padding:12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(231,238,252,.05);
+      cursor:pointer;
+      user-select:none;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+    }
+    .kpi:hover{background: rgba(231,238,252,.08); border-color: rgba(231,238,252,.18)}
+    .kpi:active{transform: translateY(1px)}
+    .kpi .top{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .kpi .label{font-size:12px; color:var(--muted); font-weight:750}
+    .kpi .value{font-size:18px; font-weight:850; letter-spacing:.2px; margin-top:6px}
+    .kpi.active{
+      border-color: rgba(124,58,237,.45);
+      background: rgba(124,58,237,.18);
+    }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+    .modal{
+      width:min(860px, 100%);
+      border-radius: 16px;
+      border:1px solid rgba(231,238,252,.14);
+      background: linear-gradient(180deg, rgba(16,26,47,.98), rgba(9,14,24,.96));
+      box-shadow: 0 30px 80px rgba(0,0,0,.55);
+      overflow:hidden;
+    }
+    .modal-header{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .modal-header h3{margin:0; font-size:14.5px}
+    .modal-header p{margin:4px 0 0; color:var(--muted); font-size:12.5px; line-height:1.35}
+    .modal-body{padding:16px}
+    .modal-footer{
+      padding:14px 16px;
+      border-top:1px solid var(--line);
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .close-x{
+      border:1px solid rgba(231,238,252,.14);
+      background: rgba(231,238,252,.05);
+      color:var(--text);
+      border-radius: 12px;
+      padding:6px 10px;
+      cursor:pointer;
+      font-weight:850;
+      line-height:1;
+    }
+
+    /* Footer note */
+    .note{
+      padding:14px 16px;
+      border-top:1px dashed rgba(231,238,252,.18);
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.4;
+    }
+    .mono{font-family:var(--mono)}
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="title-wrap">
+          <div class="title">DubConnect — Alumni Outreach Workflow</div>
+          <div class="subtitle">Prototype: build audience → draft & approve content → schedule delivery → review results</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="pill" title="Prototype only — data is stored in-memory">
+          <span class="mono">LOCAL</span> <span>Data Store:</span> <strong>In-memory</strong>
+        </div>
+        <button class="btn ghost" id="btnReset">
+          <span class="icon" aria-hidden="true">↺</span> Reset demo data
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <h2>Why this workflow matters</h2>
+            <p>
+              Today, targeted lists + campaign coordination happen across multiple tools and people, making outreach slow and error-prone.
+              DubConnect consolidates list building, content approval, scheduling, and engagement reporting into one flow.
+            </p>
+          </div>
+          <div class="row" style="align-items:center; gap:10px;">
+            <span class="chip"><span>Owner:</span> <strong>Affiliate Program</strong></span>
+            <span class="chip"><span>Priority:</span> <strong>High</strong></span>
+          </div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Workflow tabs">
+          <div class="tab active" data-tab="audience" role="tab" aria-selected="true">
+            1) Target Audience <span class="badge" id="audienceCountBadge">0</span>
+          </div>
+          <div class="tab" data-tab="content" role="tab" aria-selected="false">
+            2) Draft & Approve <span class="badge" id="draftCountBadge">0</span>
+          </div>
+          <div class="tab" data-tab="delivery" role="tab" aria-selected="false">
+            3) Schedule & Results <span class="badge" id="sentCountBadge">0</span>
+          </div>
+        </div>
+
+        <div class="kpi-grid" aria-label="Quick filters">
+          <div class="kpi" id="kpiAll" data-kpi="all" title="Show all alumni (ignores quick filter)">
+            <div class="top"><div class="label">All Alumni</div><div class="status" id="kpiAllStatus">VIEW</div></div>
+            <div class="value" id="kpiAllValue">0</div>
+          </div>
+          <div class="kpi" id="kpiCurrent" data-kpi="current" title="Quick filter: Current_Student = Yes">
+            <div class="top"><div class="label">Current Students</div><div class="status warn">FILTER</div></div>
+            <div class="value" id="kpiCurrentValue">0</div>
+          </div>
+          <div class="kpi" id="kpiClassRecent" data-kpi="recent" title="Quick filter: Graduation_Year >= 2020">
+            <div class="top"><div class="label">Recent Grads (2020+)</div><div class="status warn">FILTER</div></div>
+            <div class="value" id="kpiRecentValue">0</div>
+          </div>
+          <div class="kpi" id="kpiNonUS" data-kpi="nonus" title="Quick filter: Country ≠ United States">
+            <div class="top"><div class="label">Non-US</div><div class="status warn">FILTER</div></div>
+            <div class="value" id="kpiNonUSValue">0</div>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <!-- TAB: Audience -->
+          <section id="tab-audience" class="tab-panel">
+            <div class="grid2">
+              <div class="card pad">
+                <div class="card-title" style="margin-bottom:10px">
+                  <h2>Build the target audience</h2>
+                  <p>Select, search, and filter alumni records to generate a targeted contact list.</p>
+                </div>
+
+                <div class="toolbar">
+                  <div class="field" style="min-width: 260px;">
+                    <label for="q">Search</label>
+                    <input id="q" placeholder="Search across name, email, company, job title, city, country…" />
+                  </div>
+
+                  <div class="field">
+                    <label for="fGrad">Graduation_Year</label>
+                    <select id="fGrad">
+                      <option value="">All</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="fCity">City</label>
+                    <select id="fCity">
+                      <option value="">All</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="fCountry">Country</label>
+                    <select id="fCountry">
+                      <option value="">All</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="fCurrent">Current_Student</label>
+                    <select id="fCurrent">
+                      <option value="">All</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+
+                  <button class="btn" id="btnClearFilters" title="Clear search and filters">Clear</button>
+                  <button class="btn primary" id="btnNewAlum" title="Add a new alumni record">+ New record</button>
+                  <button class="btn" id="btnExport" title="Export current filtered view">Export CSV</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="row" style="justify-content:space-between; align-items:center;">
+                  <div class="row" style="gap:8px; align-items:center;">
+                    <span class="chip">Showing <strong id="viewCount">0</strong> of <strong id="totalCount">0</strong></span>
+                    <span class="chip">Selected for campaign: <strong id="selectedCount">0</strong></span>
+                  </div>
+                  <div class="row" style="gap:8px; align-items:center;">
+                    <button class="btn good" id="btnCreateDraft" title="Create a new campaign draft using selected alumni">
+                      Create campaign draft from selection
+                    </button>
+                  </div>
+                </div>
+
+                <div style="height:10px"></div>
+
+                <div class="table-wrap" aria-label="Alumni table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th style="width:44px;">Pick</th>
+                        <th>Email</th>
+                        <th>First_Name</th>
+                        <th>Second_Name</th>
+                        <th>City</th>
+                        <th>Country</th>
+                        <th>Company</th>
+                        <th>Job_Title</th>
+                        <th>Graduation_Year</th>
+                        <th>Current_Student</th>
+                        <th style="width:160px;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="alumniTbody"></tbody>
+                  </table>
+                </div>
+
+                <div class="note">
+                  Tip: use <span class="mono">Pick</span> to create a target list; filters + search update the “current view”.
+                  Export downloads only what you see (the current filtered view).
+                </div>
+              </div>
+
+              <div class="card pad">
+                <div class="card-title" style="margin-bottom:10px">
+                  <h2>Current campaign selection</h2>
+                  <p>Preview the contact list you’re building before drafting content.</p>
+                </div>
+
+                <div class="row" style="justify-content:space-between; align-items:center;">
+                  <span class="chip">Selected: <strong id="selectionPreviewCount">0</strong></span>
+                  <button class="btn bad" id="btnClearSelection">Clear selection</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="table-wrap" style="min-height:220px; max-height:420px;">
+                  <table style="min-width: 520px;">
+                    <thead>
+                      <tr>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Grad</th>
+                        <th>City</th>
+                      </tr>
+                    </thead>
+                    <tbody id="selectionTbody"></tbody>
+                  </table>
+                </div>
+
+                <div class="note">
+                  In the full system, “program” and “engagement history” would be additional filters.
+                  This prototype focuses on the provided fields.
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB: Content -->
+          <section id="tab-content" class="tab-panel" style="display:none;">
+            <div class="grid2">
+              <div class="card pad">
+                <div class="card-title" style="margin-bottom:10px">
+                  <h2>Draft campaign content</h2>
+                  <p>Marketing & Communications creates email + social content. Then route to University Advancement leadership for review.</p>
+                </div>
+
+                <div class="toolbar">
+                  <div class="field" style="min-width:240px;">
+                    <label for="draftTitle">Campaign Title</label>
+                    <input id="draftTitle" placeholder="e.g., Spring Alumni Networking Night" />
+                  </div>
+                  <div class="field">
+                    <label for="channel">Channel</label>
+                    <select id="channel">
+                      <option value="Email">Email</option>
+                      <option value="Social">Social</option>
+                      <option value="Email + Social">Email + Social</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="owner">Owner</label>
+                    <select id="owner">
+                      <option value="Marketing & Communications">Marketing & Communications</option>
+                      <option value="Alumni Relations Management">Alumni Relations Management</option>
+                    </select>
+                  </div>
+                  <button class="btn primary" id="btnSaveDraft">Save draft</button>
+                </div>
+
+                <div class="row" style="margin-top:10px;">
+                  <div class="field" style="flex:1; min-width:280px;">
+                    <label for="emailBody">Email content</label>
+                    <textarea id="emailBody" placeholder="Write the email copy here…"></textarea>
+                  </div>
+                  <div class="field" style="flex:1; min-width:280px;">
+                    <label for="socialBody">Social content</label>
+                    <textarea id="socialBody" placeholder="Write the social post copy here…"></textarea>
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="row" style="justify-content:space-between; align-items:center;">
+                  <span class="chip">Target list size (from Audience tab): <strong id="draftAudienceSize">0</strong></span>
+                  <button class="btn warn" id="btnRouteForApproval" title="Route the latest draft for approval">
+                    Route latest draft for approval
+                  </button>
+                </div>
+
+                <div class="note">
+                  Approval actions: <span class="mono">Approve</span>, <span class="mono">Request changes</span>, <span class="mono">Comment</span>.
+                  The system tracks status + logs actions and would send reminders in a full build.
+                </div>
+              </div>
+
+              <div class="card pad">
+                <div class="card-title" style="margin-bottom:10px">
+                  <h2>Drafts & approval queue</h2>
+                  <p>University Advancement leadership reviews routed drafts and updates status.</p>
+                </div>
+
+                <div class="table-wrap" style="max-height:520px;">
+                  <table style="min-width: 820px;">
+                    <thead>
+                      <tr>
+                        <th>Campaign</th>
+                        <th>Channel</th>
+                        <th>Owner</th>
+                        <th>Audience</th>
+                        <th>Status</th>
+                        <th>Last action</th>
+                        <th style="width: 230px;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="draftsTbody"></tbody>
+                  </table>
+                </div>
+
+                <div class="note">
+                  Once a draft is <span class="mono">Approved</span>, it becomes eligible for scheduling and delivery (Marketo + social integrations).
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TAB: Delivery -->
+          <section id="tab-delivery" class="tab-panel" style="display:none;">
+            <div class="grid2">
+              <div class="card pad">
+                <div class="card-title" style="margin-bottom:10px">
+                  <h2>Schedule delivery</h2>
+                  <p>Schedule approved campaigns for automated delivery. (Prototype simulates Marketo + social posting.)</p>
+                </div>
+
+                <div class="toolbar">
+                  <div class="field" style="min-width:320px;">
+                    <label for="scheduleCampaign">Approved campaign</label>
+                    <select id="scheduleCampaign">
+                      <option value="">— Select an approved campaign —</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="scheduleDate">Schedule date</label>
+                    <input id="scheduleDate" type="date" />
+                  </div>
+                  <div class="field">
+                    <label for="scheduleTime">Schedule time</label>
+                    <input id="scheduleTime" type="time" />
+                  </div>
+                  <button class="btn good" id="btnSchedule">Schedule</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="card-title" style="margin-bottom:8px">
+                  <h2>Scheduled queue</h2>
+                  <p class="muted">Click “Send now” to simulate delivery and generate engagement metrics.</p>
+                </div>
+
+                <div class="table-wrap" style="max-height:520px;">
+                  <table style="min-width: 920px;">
+                    <thead>
+                      <tr>
+                        <th>Campaign</th>
+                        <th>Channel</th>
+                        <th>Audience</th>
+                        <th>Scheduled</th>
+                        <th>Status</th>
+                        <th style="width: 250px;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="scheduledTbody"></tbody>
+                  </table>
+                </div>
+
+                <div class="note">
+                  In a full implementation, delivery would be handled by integrations (e.g., Marketo), and results (opens, clicks, RSVPs)
+                  would be written back to alumni records for reporting.
+                </div>
+              </div>
+
+              <div class="card pad">
+                <div class="card-title" style="margin-bottom:10px">
+                  <h2>Engagement analytics</h2>
+                  <p>After delivery, engagement metrics are captured and linked to alumni records for reporting.</p>
+                </div>
+
+                <div class="row" style="gap:10px;">
+                  <span class="chip">Sent campaigns: <strong id="analyticsSent">0</strong></span>
+                  <span class="chip">Total opens: <strong id="analyticsOpens">0</strong></span>
+                  <span class="chip">Total clicks: <strong id="analyticsClicks">0</strong></span>
+                  <span class="chip">Total RSVPs: <strong id="analyticsRsvps">0</strong></span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="table-wrap" style="max-height:520px;">
+                  <table style="min-width: 860px;">
+                    <thead>
+                      <tr>
+                        <th>Campaign</th>
+                        <th>Channel</th>
+                        <th>Audience</th>
+                        <th>Delivered</th>
+                        <th>Opens</th>
+                        <th>Clicks</th>
+                        <th>RSVPs</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody id="resultsTbody"></tbody>
+                  </table>
+                </div>
+
+                <div class="note">
+                  Prototype note: results are randomly generated on “Send now”. Replace with real event tracking + ETL.
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal: Alumni CRUD -->
+    <div class="modal-backdrop" id="alumModalBackdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="alumModalTitle">
+        <div class="modal-header">
+          <div>
+            <h3 id="alumModalTitle">Edit alumni record</h3>
+            <p id="alumModalDesc">Update fields and save changes.</p>
+          </div>
+          <button class="close-x" id="alumModalClose" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="field">
+              <label for="mEmail">Email</label>
+              <input id="mEmail" placeholder="name@example.com" />
+            </div>
+            <div class="field">
+              <label for="mFirst">First_Name</label>
+              <input id="mFirst" placeholder="First" />
+            </div>
+            <div class="field">
+              <label for="mSecond">Second_Name</label>
+              <input id="mSecond" placeholder="Last" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+            <div class="field">
+              <label for="mCity">City</label>
+              <input id="mCity" placeholder="City" />
+            </div>
+            <div class="field">
+              <label for="mCountry">Country</label>
+              <input id="mCountry" placeholder="Country" />
+            </div>
+            <div class="field">
+              <label for="mCompany">Company</label>
+              <input id="mCompany" placeholder="Company" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+            <div class="field">
+              <label for="mJob">Job_Title</label>
+              <input id="mJob" placeholder="Job title" />
+            </div>
+            <div class="field">
+              <label for="mGrad">Graduation_Year</label>
+              <input id="mGrad" type="number" min="1950" max="2100" placeholder="e.g., 2022" />
+            </div>
+            <div class="field">
+              <label for="mCurrent">Current_Student</label>
+              <select id="mCurrent">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="help">
+            Validation is lightweight in this prototype (e.g., email format is not strictly enforced). Replace with real form validation + audit logging.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="alumModalCancel">Cancel</button>
+          <button class="btn primary" id="alumModalSave">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Draft Review -->
+    <div class="modal-backdrop" id="reviewModalBackdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+        <div class="modal-header">
+          <div>
+            <h3 id="reviewModalTitle">Review campaign draft</h3>
+            <p id="reviewModalDesc">Approve, request changes, or add comments. Actions are logged.</p>
+          </div>
+          <button class="close-x" id="reviewModalClose" aria-label="Close">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <span class="chip">Campaign: <strong id="rCampaign">—</strong></span>
+            <span class="chip">Status: <strong id="rStatus">—</strong></span>
+            <span class="chip">Audience: <strong id="rAudience">0</strong></span>
+          </div>
+          <div class="divider"></div>
+
+          <div class="row">
+            <div class="field" style="flex:1; min-width:280px;">
+              <label>Email content (read-only preview)</label>
+              <textarea id="rEmail" readonly></textarea>
+            </div>
+            <div class="field" style="flex:1; min-width:280px;">
+              <label>Social content (read-only preview)</label>
+              <textarea id="rSocial" readonly></textarea>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+            <div class="field" style="flex:1; min-width:280px;">
+              <label for="rComment">Reviewer comments</label>
+              <textarea id="rComment" placeholder="Add comments, requested changes, or approval notes…"></textarea>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="table-wrap" style="max-height:200px;">
+            <table style="min-width: 820px;">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Actor</th>
+                  <th>Action</th>
+                  <th>Comment</th>
+                </tr>
+              </thead>
+              <tbody id="auditTbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" id="reviewCancel">Close</button>
+          <button class="btn warn" id="reviewRequestChanges">Request changes</button>
+          <button class="btn good" id="reviewApprove">Approve</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /***********************
+     * Demo data + state
+     ***********************/
+    const FIELDS = [
+      "Email","First_Name","Second_Name","City","Country","Company","Job_Title","Graduation_Year","Current_Student"
+    ];
+
+    const seedAlumni = () => ([
+      { id: uid(), Email:"alex.chen@alumni.edu", First_Name:"Alex", Second_Name:"Chen", City:"Seattle", Country:"United States", Company:"Amazon", Job_Title:"Product Manager", Graduation_Year:2018, Current_Student:"No" },
+      { id: uid(), Email:"maya.patel@alumni.edu", First_Name:"Maya", Second_Name:"Patel", City:"Vancouver", Country:"Canada", Company:"Shopify", Job_Title:"Data Analyst", Graduation_Year:2021, Current_Student:"No" },
+      { id: uid(), Email:"jordan.kim@alumni.edu", First_Name:"Jordan", Second_Name:"Kim", City:"San Francisco", Country:"United States", Company:"Google", Job_Title:"UX Researcher", Graduation_Year:2016, Current_Student:"No" },
+      { id: uid(), Email:"sam.lee@alumni.edu", First_Name:"Sam", Second_Name:"Lee", City:"Seoul", Country:"South Korea", Company:"Naver", Job_Title:"Software Engineer", Graduation_Year:2023, Current_Student:"No" },
+      { id: uid(), Email:"riley.nguyen@alumni.edu", First_Name:"Riley", Second_Name:"Nguyen", City:"New York", Country:"United States", Company:"Deloitte", Job_Title:"Consultant", Graduation_Year:2019, Current_Student:"No" },
+      { id: uid(), Email:"sofia.garcia@alumni.edu", First_Name:"Sofia", Second_Name:"Garcia", City:"Mexico City", Country:"Mexico", Company:"BBVA", Job_Title:"Marketing Lead", Graduation_Year:2017, Current_Student:"No" },
+      { id: uid(), Email:"noah.wilson@alumni.edu", First_Name:"Noah", Second_Name:"Wilson", City:"London", Country:"United Kingdom", Company:"Microsoft", Job_Title:"Customer Success", Graduation_Year:2015, Current_Student:"No" },
+      { id: uid(), Email:"amina.hassan@alumni.edu", First_Name:"Amina", Second_Name:"Hassan", City:"Dubai", Country:"United Arab Emirates", Company:"Emirates", Job_Title:"Program Manager", Graduation_Year:2020, Current_Student:"No" },
+      { id: uid(), Email:"liam.brown@alumni.edu", First_Name:"Liam", Second_Name:"Brown", City:"Seattle", Country:"United States", Company:"UW", Job_Title:"Graduate Assistant", Graduation_Year:2026, Current_Student:"Yes" },
+      { id: uid(), Email:"zoe.martin@alumni.edu", First_Name:"Zoe", Second_Name:"Martin", City:"Berlin", Country:"Germany", Company:"SAP", Job_Title:"Business Analyst", Graduation_Year:2022, Current_Student:"No" },
+      { id: uid(), Email:"priya.shah@alumni.edu", First_Name:"Priya", Second_Name:"Shah", City:"Mumbai", Country:"India", Company:"Infosys", Job_Title:"Data Engineer", Graduation_Year:2024, Current_Student:"Yes" },
+      { id: uid(), Email:"diego.santos@alumni.edu", First_Name:"Diego", Second_Name:"Santos", City:"São Paulo", Country:"Brazil", Company:"Nubank", Job_Title:"Growth Analyst", Graduation_Year:2020, Current_Student:"No" }
+    ]);
+
+    let state = {
+      alumni: seedAlumni(),
+      selectedIds: new Set(),
+      quickKpi: "all", // all | current | recent | nonus
+      drafts: [],      // {id,title,channel,owner,audienceIds,status,emailBody,socialBody,audit[]}
+      scheduled: [],   // {id,draftId,scheduledAt,status} status: Scheduled | Sent
+      results: []      // {id,draftId,deliveredAt,opens,clicks,rsvps,notes}
+    };
+
+    /***********************
+     * Utilities
+     ***********************/
+    function uid(){ return Math.random().toString(16).slice(2) + Date.now().toString(16); }
+
+    function esc(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function nowStamp(){
+      const d = new Date();
+      const pad = n => String(n).padStart(2,"0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function download(filename, text){
+      const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 500);
+    }
+
+    function toCSV(rows, headers){
+      const q = v => `"${String(v ?? "").replaceAll('"','""')}"`;
+      const lines = [];
+      lines.push(headers.map(q).join(","));
+      for(const r of rows){
+        lines.push(headers.map(h => q(r[h])).join(","));
+      }
+      return lines.join("\n");
+    }
+
+    function uniqueSorted(arr){
+      return [...new Set(arr.filter(x => x !== "" && x != null))].sort((a,b)=>{
+        // numbers vs strings
+        const na = Number(a), nb = Number(b);
+        const aIsNum = !Number.isNaN(na) && String(a).trim() !== "";
+        const bIsNum = !Number.isNaN(nb) && String(b).trim() !== "";
+        if(aIsNum && bIsNum) return na - nb;
+        return String(a).localeCompare(String(b));
+      });
+    }
+
+    function applyQuickKpi(rows){
+      if(state.quickKpi === "current") return rows.filter(r => r.Current_Student === "Yes");
+      if(state.quickKpi === "recent") return rows.filter(r => Number(r.Graduation_Year) >= 2020);
+      if(state.quickKpi === "nonus")  return rows.filter(r => String(r.Country).toLowerCase() !== "united states");
+      return rows;
+    }
+
+    function matchesSearch(r, q){
+      if(!q) return true;
+      const hay = [
+        r.Email, r.First_Name, r.Second_Name, r.City, r.Country, r.Company, r.Job_Title, r.Graduation_Year, r.Current_Student
+      ].join(" ").toLowerCase();
+      return hay.includes(q.toLowerCase().trim());
+    }
+
+    function logDraftAction(draft, actor, action, comment){
+      draft.audit = draft.audit || [];
+      draft.audit.unshift({
+        time: nowStamp(),
+        actor,
+        action,
+        comment: comment || ""
+      });
+    }
+
+    /***********************
+     * DOM refs
+     ***********************/
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => [...document.querySelectorAll(sel)];
+
+    // Tabs
+    const tabs = $$(".tab");
+    const panels = {
+      audience: $("#tab-audience"),
+      content: $("#tab-content"),
+      delivery: $("#tab-delivery")
+    };
+
+    // Filters/search
+    const q = $("#q");
+    const fGrad = $("#fGrad");
+    const fCity = $("#fCity");
+    const fCountry = $("#fCountry");
+    const fCurrent = $("#fCurrent");
+
+    // Tables
+    const alumniTbody = $("#alumniTbody");
+    const selectionTbody = $("#selectionTbody");
+    const draftsTbody = $("#draftsTbody");
+    const scheduledTbody = $("#scheduledTbody");
+    const resultsTbody = $("#resultsTbody");
+
+    // Count UI
+    const viewCount = $("#viewCount");
+    const totalCount = $("#totalCount");
+    const selectedCount = $("#selectedCount");
+    const selectionPreviewCount = $("#selectionPreviewCount");
+
+    const audienceCountBadge = $("#audienceCountBadge");
+    const draftCountBadge = $("#draftCountBadge");
+    const sentCountBadge = $("#sentCountBadge");
+
+    // KPIs
+    const kpiAll = $("#kpiAll");
+    const kpiCurrent = $("#kpiCurrent");
+    const kpiClassRecent = $("#kpiClassRecent");
+    const kpiNonUS = $("#kpiNonUS");
+    const kpiAllValue = $("#kpiAllValue");
+    const kpiCurrentValue = $("#kpiCurrentValue");
+    const kpiRecentValue = $("#kpiRecentValue");
+    const kpiNonUSValue = $("#kpiNonUSValue");
+
+    // Draft form
+    const draftTitle = $("#draftTitle");
+    const channel = $("#channel");
+    const owner = $("#owner");
+    const emailBody = $("#emailBody");
+    const socialBody = $("#socialBody");
+    const draftAudienceSize = $("#draftAudienceSize");
+
+    // Scheduling
+    const scheduleCampaign = $("#scheduleCampaign");
+    const scheduleDate = $("#scheduleDate");
+    const scheduleTime = $("#scheduleTime");
+
+    // Analytics totals
+    const analyticsSent = $("#analyticsSent");
+    const analyticsOpens = $("#analyticsOpens");
+    const analyticsClicks = $("#analyticsClicks");
+    const analyticsRsvps = $("#analyticsRsvps");
+
+    /***********************
+     * Alumni CRUD Modal
+     ***********************/
+    const alumModalBackdrop = $("#alumModalBackdrop");
+    const alumModalTitle = $("#alumModalTitle");
+    const alumModalDesc = $("#alumModalDesc");
+    const alumModalClose = $("#alumModalClose");
+    const alumModalCancel = $("#alumModalCancel");
+    const alumModalSave = $("#alumModalSave");
+
+    const mEmail = $("#mEmail");
+    const mFirst = $("#mFirst");
+    const mSecond = $("#mSecond");
+    const mCity = $("#mCity");
+    const mCountry = $("#mCountry");
+    const mCompany = $("#mCompany");
+    const mJob = $("#mJob");
+    const mGrad = $("#mGrad");
+    const mCurrent = $("#mCurrent");
+
+    let editingAlumId = null;
+
+    function openAlumModal(mode, alum){
+      editingAlumId = alum?.id || null;
+      const isNew = mode === "new";
+      alumModalTitle.textContent = isNew ? "New alumni record" : "Edit alumni record";
+      alumModalDesc.textContent = isNew ? "Add a record to the alumni table." : "Update fields and save changes.";
+
+      mEmail.value = alum?.Email || "";
+      mFirst.value = alum?.First_Name || "";
+      mSecond.value = alum?.Second_Name || "";
+      mCity.value = alum?.City || "";
+      mCountry.value = alum?.Country || "";
+      mCompany.value = alum?.Company || "";
+      mJob.value = alum?.Job_Title || "";
+      mGrad.value = alum?.Graduation_Year || "";
+      mCurrent.value = alum?.Current_Student || "No";
+
+      alumModalBackdrop.style.display = "flex";
+      alumModalBackdrop.setAttribute("aria-hidden","false");
+      mEmail.focus();
+    }
+
+    function closeAlumModal(){
+      alumModalBackdrop.style.display = "none";
+      alumModalBackdrop.setAttribute("aria-hidden","true");
+      editingAlumId = null;
+    }
+
+    alumModalClose.addEventListener("click", closeAlumModal);
+    alumModalCancel.addEventListener("click", closeAlumModal);
+    alumModalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === alumModalBackdrop) closeAlumModal();
+    });
+
+    alumModalSave.addEventListener("click", ()=>{
+      const payload = {
+        Email: mEmail.value.trim(),
+        First_Name: mFirst.value.trim(),
+        Second_Name: mSecond.value.trim(),
+        City: mCity.value.trim(),
+        Country: mCountry.value.trim(),
+        Company: mCompany.value.trim(),
+        Job_Title: mJob.value.trim(),
+        Graduation_Year: Number(mGrad.value) || "",
+        Current_Student: mCurrent.value
+      };
+
+      // Minimal guardrails for prototype
+      if(!payload.Email){
+        alert("Email is required.");
+        mEmail.focus();
+        return;
+      }
+
+      if(editingAlumId){
+        const idx = state.alumni.findIndex(a => a.id === editingAlumId);
+        if(idx >= 0){
+          state.alumni[idx] = { ...state.alumni[idx], ...payload };
+        }
+      }else{
+        state.alumni.unshift({ id: uid(), ...payload });
+      }
+
+      closeAlumModal();
+      rebuildFilterOptions();
+      renderAll();
+    });
+
+    /***********************
+     * Review Modal (Draft approval)
+     ***********************/
+    const reviewModalBackdrop = $("#reviewModalBackdrop");
+    const reviewModalClose = $("#reviewModalClose");
+    const reviewCancel = $("#reviewCancel");
+    const reviewApprove = $("#reviewApprove");
+    const reviewRequestChanges = $("#reviewRequestChanges");
+
+    const rCampaign = $("#rCampaign");
+    const rStatus = $("#rStatus");
+    const rAudience = $("#rAudience");
+    const rEmail = $("#rEmail");
+    const rSocial = $("#rSocial");
+    const rComment = $("#rComment");
+    const auditTbody = $("#auditTbody");
+
+    let reviewingDraftId = null;
+
+    function openReviewModal(draft){
+      reviewingDraftId = draft.id;
+      rCampaign.textContent = draft.title;
+      rStatus.textContent = draft.status;
+      rAudience.textContent = (draft.audienceIds?.length || 0);
+      rEmail.value = draft.emailBody || "";
+      rSocial.value = draft.socialBody || "";
+      rComment.value = "";
+
+      renderAudit(draft);
+      reviewModalBackdrop.style.display = "flex";
+      reviewModalBackdrop.setAttribute("aria-hidden","false");
+      rComment.focus();
+    }
+
+    function closeReviewModal(){
+      reviewModalBackdrop.style.display = "none";
+      reviewModalBackdrop.setAttribute("aria-hidden","true");
+      reviewingDraftId = null;
+    }
+
+    function renderAudit(draft){
+      const rows = (draft.audit || []);
+      auditTbody.innerHTML = rows.length ? rows.map(a => `
+        <tr>
+          <td class="mono">${esc(a.time)}</td>
+          <td>${esc(a.actor)}</td>
+          <td><span class="status">${esc(a.action)}</span></td>
+          <td>${esc(a.comment)}</td>
+        </tr>
+      `).join("") : `
+        <tr><td colspan="4" class="muted">No actions yet.</td></tr>
+      `;
+    }
+
+    reviewModalClose.addEventListener("click", closeReviewModal);
+    reviewCancel.addEventListener("click", closeReviewModal);
+    reviewModalBackdrop.addEventListener("click", (e)=>{
+      if(e.target === reviewModalBackdrop) closeReviewModal();
+    });
+
+    reviewApprove.addEventListener("click", ()=>{
+      const draft = state.drafts.find(d => d.id === reviewingDraftId);
+      if(!draft) return;
+      draft.status = "Approved";
+      logDraftAction(draft, "University Advancement", "Approved", rComment.value.trim());
+      closeReviewModal();
+      renderAll();
+    });
+
+    reviewRequestChanges.addEventListener("click", ()=>{
+      const draft = state.drafts.find(d => d.id === reviewingDraftId);
+      if(!draft) return;
+      draft.status = "Changes Requested";
+      logDraftAction(draft, "University Advancement", "Requested changes", rComment.value.trim());
+      closeReviewModal();
+      renderAll();
+    });
+
+    /***********************
+     * Filtering + rendering
+     ***********************/
+    function currentFilteredRows(){
+      const base = applyQuickKpi(state.alumni);
+
+      const qv = q.value.trim();
+      const grad = fGrad.value;
+      const city = fCity.value;
+      const country = fCountry.value;
+      const cur = fCurrent.value;
+
+      return base.filter(r => {
+        if(!matchesSearch(r, qv)) return false;
+        if(grad && String(r.Graduation_Year) !== grad) return false;
+        if(city && String(r.City) !== city) return false;
+        if(country && String(r.Country) !== country) return false;
+        if(cur && String(r.Current_Student) !== cur) return false;
+        return true;
+      });
+    }
+
+    function rebuildFilterOptions(){
+      const rows = state.alumni;
+
+      // Graduation years
+      const years = uniqueSorted(rows.map(r => String(r.Graduation_Year ?? "")));
+      fGrad.innerHTML = `<option value="">All</option>` + years.map(y => `<option value="${esc(y)}">${esc(y)}</option>`).join("");
+
+      const cities = uniqueSorted(rows.map(r => r.City));
+      fCity.innerHTML = `<option value="">All</option>` + cities.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
+
+      const countries = uniqueSorted(rows.map(r => r.Country));
+      fCountry.innerHTML = `<option value="">All</option>` + countries.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
+    }
+
+    function renderAlumniTable(){
+      const rows = currentFilteredRows();
+      const total = state.alumni.length;
+
+      viewCount.textContent = rows.length;
+      totalCount.textContent = total;
+
+      // badges
+      audienceCountBadge.textContent = rows.length;
+
+      alumniTbody.innerHTML = rows.map(r => {
+        const checked = state.selectedIds.has(r.id) ? "checked" : "";
+        return `
+          <tr>
+            <td>
+              <input type="checkbox" data-pick="${esc(r.id)}" ${checked} aria-label="Select record"/>
+            </td>
+            <td class="mono">${esc(r.Email)}</td>
+            <td>${esc(r.First_Name)}</td>
+            <td>${esc(r.Second_Name)}</td>
+            <td>${esc(r.City)}</td>
+            <td>${esc(r.Country)}</td>
+            <td>${esc(r.Company)}</td>
+            <td>${esc(r.Job_Title)}</td>
+            <td class="mono">${esc(r.Graduation_Year)}</td>
+            <td>${esc(r.Current_Student)}</td>
+            <td>
+              <div class="actions">
+                <button class="mini" data-edit="${esc(r.id)}">Edit</button>
+                <button class="mini bad" data-del="${esc(r.id)}">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("") || `
+        <tr><td colspan="11" class="muted">No records match your current filters.</td></tr>
+      `;
+
+      // wire up table actions
+      alumniTbody.querySelectorAll("[data-pick]").forEach(cb=>{
+        cb.addEventListener("change", (e)=>{
+          const id = e.target.getAttribute("data-pick");
+          if(e.target.checked) state.selectedIds.add(id);
+          else state.selectedIds.delete(id);
+          renderSelectionPreview();
+          selectedCount.textContent = state.selectedIds.size;
+          draftAudienceSize.textContent = state.selectedIds.size;
+        });
+      });
+
+      alumniTbody.querySelectorAll("[data-edit]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.getAttribute("data-edit");
+          const alum = state.alumni.find(a => a.id === id);
+          openAlumModal("edit", alum);
+        });
+      });
+
+      alumniTbody.querySelectorAll("[data-del]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.getAttribute("data-del");
+          const alum = state.alumni.find(a => a.id === id);
+          if(!alum) return;
+          const ok = confirm(`Delete record for ${alum.Email}?`);
+          if(!ok) return;
+
+          state.alumni = state.alumni.filter(a => a.id !== id);
+          state.selectedIds.delete(id);
+          rebuildFilterOptions();
+          renderAll();
+        });
+      });
+
+      selectedCount.textContent = state.selectedIds.size;
+      draftAudienceSize.textContent = state.selectedIds.size;
+    }
+
+    function renderSelectionPreview(){
+      const selected = state.alumni.filter(a => state.selectedIds.has(a.id));
+      selectionPreviewCount.textContent = selected.length;
+
+      selectionTbody.innerHTML = selected.map(a => `
+        <tr>
+          <td class="mono">${esc(a.Email)}</td>
+          <td>${esc(a.First_Name)} ${esc(a.Second_Name)}</td>
+          <td class="mono">${esc(a.Graduation_Year)}</td>
+          <td>${esc(a.City)}</td>
+        </tr>
+      `).join("") || `<tr><td colspan="4" class="muted">No alumni selected yet. Use “Pick” in the table.</td></tr>`;
+    }
+
+    function renderKPIs(){
+      const all = state.alumni;
+      kpiAllValue.textContent = all.length;
+      kpiCurrentValue.textContent = all.filter(r=>r.Current_Student==="Yes").length;
+      kpiRecentValue.textContent = all.filter(r=>Number(r.Graduation_Year)>=2020).length;
+      kpiNonUSValue.textContent = all.filter(r=>String(r.Country).toLowerCase()!=="united states").length;
+
+      // active state
+      [kpiAll,kpiCurrent,kpiClassRecent,kpiNonUS].forEach(el=>el.classList.remove("active"));
+      if(state.quickKpi==="all") kpiAll.classList.add("active");
+      if(state.quickKpi==="current") kpiCurrent.classList.add("active");
+      if(state.quickKpi==="recent") kpiClassRecent.classList.add("active");
+      if(state.quickKpi==="nonus") kpiNonUS.classList.add("active");
+    }
+
+    function renderDrafts(){
+      draftCountBadge.textContent = state.drafts.length;
+
+      draftsTbody.innerHTML = state.drafts.map(d => `
+        <tr>
+          <td>
+            <div style="font-weight:850">${esc(d.title)}</div>
+            <div class="muted" style="font-size:12px;">${esc(d.id.slice(0,8))}</div>
+          </td>
+          <td>${esc(d.channel)}</td>
+          <td>${esc(d.owner)}</td>
+          <td class="mono">${esc((d.audienceIds||[]).length)}</td>
+          <td>${statusPill(d.status)}</td>
+          <td class="muted">${esc(d.lastAction || "—")}</td>
+          <td>
+            <div class="actions">
+              <button class="mini" data-review="${esc(d.id)}">Review</button>
+              <button class="mini" data-editdraft="${esc(d.id)}">Load</button>
+              <button class="mini bad" data-deldraft="${esc(d.id)}">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="7" class="muted">No drafts yet. Create one from your selected audience.</td></tr>`;
+
+      draftsTbody.querySelectorAll("[data-review]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.getAttribute("data-review");
+          const draft = state.drafts.find(x => x.id === id);
+          if(draft) openReviewModal(draft);
+        });
+      });
+
+      draftsTbody.querySelectorAll("[data-editdraft]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.getAttribute("data-editdraft");
+          const draft = state.drafts.find(x => x.id === id);
+          if(!draft) return;
+
+          draftTitle.value = draft.title;
+          channel.value = draft.channel;
+          owner.value = draft.owner;
+          emailBody.value = draft.emailBody || "";
+          socialBody.value = draft.socialBody || "";
+          draftAudienceSize.textContent = (draft.audienceIds||[]).length;
+
+          // jump to content tab
+          setActiveTab("content");
+        });
+      });
+
+      draftsTbody.querySelectorAll("[data-deldraft]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.getAttribute("data-deldraft");
+          const d = state.drafts.find(x => x.id === id);
+          if(!d) return;
+          const ok = confirm(`Delete draft "${d.title}"?`);
+          if(!ok) return;
+
+          state.drafts = state.drafts.filter(x => x.id !== id);
+          // remove any scheduled/results linked
+          state.scheduled = state.scheduled.filter(s => s.draftId !== id);
+          state.results = state.results.filter(r => r.draftId !== id);
+          renderAll();
+        });
+      });
+    }
+
+    function statusPill(status){
+      const s = String(status || "");
+      if(s === "Approved") return `<span class="status ok">Approved</span>`;
+      if(s === "In Review") return `<span class="status warn">In Review</span>`;
+      if(s === "Changes Requested") return `<span class="status bad">Changes Requested</span>`;
+      if(s === "Draft") return `<span class="status">Draft</span>`;
+      return `<span class="status">${esc(s)}</span>`;
+    }
+
+    function refreshApprovedCampaignOptions(){
+      const approved = state.drafts.filter(d => d.status === "Approved");
+      scheduleCampaign.innerHTML = `<option value="">— Select an approved campaign —</option>` + approved.map(d => `
+        <option value="${esc(d.id)}">${esc(d.title)} (${(d.audienceIds||[]).length} recipients)</option>
+      `).join("");
+    }
+
+    function renderScheduled(){
+      scheduledTbody.innerHTML = state.scheduled.map(s => {
+        const d = state.drafts.find(x => x.id === s.draftId);
+        const title = d?.title || "(Missing draft)";
+        const channel = d?.channel || "—";
+        const audience = (d?.audienceIds || []).length;
+        const when = s.scheduledAt || "—";
+        const status = s.status || "Scheduled";
+        return `
+          <tr>
+            <td><div style="font-weight:850">${esc(title)}</div></td>
+            <td>${esc(channel)}</td>
+            <td class="mono">${esc(audience)}</td>
+            <td class="mono">${esc(when)}</td>
+            <td>${status === "Sent" ? `<span class="status ok">Sent</span>` : `<span class="status warn">Scheduled</span>`}</td>
+            <td>
+              <div class="actions">
+                ${status === "Sent"
+                  ? `<button class="mini" data-viewres="${esc(s.id)}">View result</button>`
+                  : `<button class="mini good" data-send="${esc(s.id)}">Send now</button>`
+                }
+                <button class="mini bad" data-delsched="${esc(s.id)}">Remove</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("") || `<tr><td colspan="6" class="muted">Nothing scheduled yet. Approve a draft, then schedule it.</td></tr>`;
+
+      scheduledTbody.querySelectorAll("[data-send]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.getAttribute("data-send");
+          const s = state.scheduled.find(x => x.id === id);
+          if(!s) return;
+          sendNow(s);
+        });
+      });
+
+      scheduledTbody.querySelectorAll("[data-delsched]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const id = btn.getAttribute("data-delsched");
+          const ok = confirm("Remove this scheduled item?");
+          if(!ok) return;
+          const sched = state.scheduled.find(x => x.id === id);
+          if(!sched) return;
+          state.scheduled = state.scheduled.filter(x => x.id !== id);
+          renderAll();
+        });
+      });
+
+      scheduledTbody.querySelectorAll("[data-viewres]").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          setActiveTab("delivery");
+          const sid = btn.getAttribute("data-viewres");
+          const sched = state.scheduled.find(x => x.id === sid);
+          if(!sched) return;
+          const res = state.results.find(r => r.draftId === sched.draftId);
+          if(res) alert(`Result for "${(state.drafts.find(d=>d.id===res.draftId)?.title)||"Campaign"}":\n\nOpens: ${res.opens}\nClicks: ${res.clicks}\nRSVPs: ${res.rsvps}\n\nNotes: ${res.notes}`);
+        });
+      });
+    }
+
+    function sendNow(sched){
+      const draft = state.drafts.find(d => d.id === sched.draftId);
+      if(!draft) return;
+
+      sched.status = "Sent";
+      const deliveredAt = nowStamp();
+
+      // Generate plausible metrics based on audience size
+      const n = (draft.audienceIds || []).length || 0;
+      const opens = Math.max(0, Math.round(n * randBetween(.28,.62)));
+      const clicks = Math.max(0, Math.round(opens * randBetween(.18,.44)));
+      const rsvps = Math.max(0, Math.round(clicks * randBetween(.06,.22)));
+
+      const notes = draft.channel.includes("Email")
+        ? "Email delivered via Marketo (simulated)."
+        : "Social post published (simulated).";
+
+      // upsert result
+      const existing = state.results.find(r => r.draftId === draft.id);
+      if(existing){
+        existing.deliveredAt = deliveredAt;
+        existing.opens = opens; existing.clicks = clicks; existing.rsvps = rsvps;
+        existing.notes = notes;
+      }else{
+        state.results.unshift({ id: uid(), draftId: draft.id, deliveredAt, opens, clicks, rsvps, notes });
+      }
+
+      logDraftAction(draft, "DubConnect", "Delivered", `Delivery simulated at ${deliveredAt}`);
+      renderAll();
+    }
+
+    function randBetween(a,b){ return a + Math.random()*(b-a); }
+
+    function renderResults(){
+      const rows = state.results.map(r => {
+        const d = state.drafts.find(x => x.id === r.draftId);
+        const title = d?.title || "(Missing draft)";
+        const channel = d?.channel || "—";
+        const audience = (d?.audienceIds || []).length;
+        return `
+          <tr>
+            <td><div style="font-weight:850">${esc(title)}</div></td>
+            <td>${esc(channel)}</td>
+            <td class="mono">${esc(audience)}</td>
+            <td class="mono">${esc(r.deliveredAt || "—")}</td>
+            <td class="mono">${esc(r.opens)}</td>
+            <td class="mono">${esc(r.clicks)}</td>
+            <td class="mono">${esc(r.rsvps)}</td>
+            <td class="muted">${esc(r.notes)}</td>
+          </tr>
+        `;
+      });
+
+      resultsTbody.innerHTML = rows.join("") || `<tr><td colspan="8" class="muted">No deliveries yet. Use “Send now” on a scheduled item.</td></tr>`;
+
+      // Totals
+      const sent = state.results.length;
+      const opens = state.results.reduce((s,r)=>s+(Number(r.opens)||0),0);
+      const clicks = state.results.reduce((s,r)=>s+(Number(r.clicks)||0),0);
+      const rsvps = state.results.reduce((s,r)=>s+(Number(r.rsvps)||0),0);
+
+      analyticsSent.textContent = sent;
+      analyticsOpens.textContent = opens;
+      analyticsClicks.textContent = clicks;
+      analyticsRsvps.textContent = rsvps;
+
+      sentCountBadge.textContent = sent;
+    }
+
+    function renderAll(){
+      renderKPIs();
+      renderAlumniTable();
+      renderSelectionPreview();
+      $("#selectionPreviewCount").textContent = state.selectedIds.size;
+
+      // update content tab count
+      draftAudienceSize.textContent = state.selectedIds.size;
+
+      renderDrafts();
+      refreshApprovedCampaignOptions();
+      renderScheduled();
+      renderResults();
+    }
+
+    /***********************
+     * Events: Tabs + filters
+     ***********************/
+    function setActiveTab(name){
+      tabs.forEach(t=>{
+        const active = t.getAttribute("data-tab") === name;
+        t.classList.toggle("active", active);
+        t.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      Object.entries(panels).forEach(([k,el])=>{
+        el.style.display = (k === name) ? "" : "none";
+      });
+    }
+
+    tabs.forEach(t=>{
+      t.addEventListener("click", ()=>{
+        setActiveTab(t.getAttribute("data-tab"));
+      });
+    });
+
+    // Filter listeners
+    [q,fGrad,fCity,fCountry,fCurrent].forEach(el=>{
+      el.addEventListener("input", ()=>renderAlumniTable());
+      el.addEventListener("change", ()=>renderAlumniTable());
+    });
+
+    $("#btnClearFilters").addEventListener("click", ()=>{
+      q.value = "";
+      fGrad.value = "";
+      fCity.value = "";
+      fCountry.value = "";
+      fCurrent.value = "";
+      state.quickKpi = "all";
+      renderAll();
+    });
+
+    $("#btnNewAlum").addEventListener("click", ()=>openAlumModal("new", null));
+
+    $("#btnExport").addEventListener("click", ()=>{
+      const rows = currentFilteredRows().map(r => {
+        const out = {};
+        for(const f of FIELDS) out[f] = r[f];
+        return out;
+      });
+      const csv = toCSV(rows, FIELDS);
+      const stamp = new Date().toISOString().slice(0,10);
+      download(`dubconnect_alumni_view_${stamp}.csv`, csv);
+    });
+
+    $("#btnClearSelection").addEventListener("click", ()=>{
+      state.selectedIds.clear();
+      renderAll();
+    });
+
+    // KPI quick filters
+    function bindKpi(el, key){
+      el.addEventListener("click", ()=>{
+        state.quickKpi = key;
+        renderAll();
+      });
+    }
+    bindKpi(kpiAll, "all");
+    bindKpi(kpiCurrent, "current");
+    bindKpi(kpiClassRecent, "recent");
+    bindKpi(kpiNonUS, "nonus");
+
+    /***********************
+     * Draft creation + routing
+     ***********************/
+    $("#btnCreateDraft").addEventListener("click", ()=>{
+      if(state.selectedIds.size === 0){
+        alert("Select at least one alumni record first (Pick column).");
+        return;
+      }
+      const title = `Campaign Draft — ${nowStamp().slice(0,16)}`;
+      const d = {
+        id: uid(),
+        title,
+        channel: "Email + Social",
+        owner: "Marketing & Communications",
+        audienceIds: [...state.selectedIds],
+        status: "Draft",
+        emailBody: "Hi {{First_Name}},\n\nWe’d love to invite you to…\n\n— DubConnect Team",
+        socialBody: "Alumni: Join us for… #DubConnect",
+        audit: []
+      };
+      logDraftAction(d, "Alumni Relations Management", "Created audience", `Selected ${d.audienceIds.length} recipients.`);
+      logDraftAction(d, "Marketing & Communications", "Created draft", "Draft initialized from selected audience.");
+      d.lastAction = "Draft created";
+      state.drafts.unshift(d);
+
+      // Prefill draft form and jump to tab
+      draftTitle.value = d.title;
+      channel.value = d.channel;
+      owner.value = d.owner;
+      emailBody.value = d.emailBody;
+      socialBody.value = d.socialBody;
+      draftAudienceSize.textContent = d.audienceIds.length;
+
+      setActiveTab("content");
+      renderAll();
+    });
+
+    $("#btnSaveDraft").addEventListener("click", ()=>{
+      const title = draftTitle.value.trim();
+      if(!title){
+        alert("Campaign Title is required.");
+        draftTitle.focus();
+        return;
+      }
+      // Update existing draft if same title exists and is most recent, else create new
+      const existing = state.drafts.find(d => d.title === title);
+      const audienceIds = state.selectedIds.size ? [...state.selectedIds] : (existing?.audienceIds || []);
+
+      if(existing){
+        existing.channel = channel.value;
+        existing.owner = owner.value;
+        existing.emailBody = emailBody.value;
+        existing.socialBody = socialBody.value;
+        existing.audienceIds = audienceIds;
+        if(existing.status === "Approved") existing.status = "Draft"; // editing approved → back to draft in prototype
+        existing.lastAction = nowStamp();
+        logDraftAction(existing, "Marketing & Communications", "Updated draft", "Draft updated in editor.");
+      }else{
+        const d = {
+          id: uid(),
+          title,
+          channel: channel.value,
+          owner: owner.value,
+          audienceIds,
+          status: "Draft",
+          emailBody: emailBody.value,
+          socialBody: socialBody.value,
+          audit: []
+        };
+        logDraftAction(d, "Marketing & Communications", "Saved draft", "New draft saved.");
+        d.lastAction = nowStamp();
+        state.drafts.unshift(d);
+      }
+
+      renderAll();
+      alert("Draft saved.");
+    });
+
+    $("#btnRouteForApproval").addEventListener("click", ()=>{
+      // Route the most recently created/updated draft that matches the current title if possible
+      const title = draftTitle.value.trim();
+      const draft = title ? state.drafts.find(d => d.title === title) : state.drafts[0];
+
+      if(!draft){
+        alert("No draft found. Save a draft first.");
+        return;
+      }
+      if((draft.audienceIds || []).length === 0){
+        alert("This draft has no audience. Create a target audience selection first.");
+        return;
+      }
+
+      draft.status = "In Review";
+      draft.lastAction = nowStamp();
+      logDraftAction(draft, "DubConnect", "Routed for review", "Routed to University Advancement leadership.");
+      renderAll();
+      alert("Draft routed for approval.");
+    });
+
+    /***********************
+     * Schedule delivery
+     ***********************/
+    $("#btnSchedule").addEventListener("click", ()=>{
+      const draftId = scheduleCampaign.value;
+      if(!draftId){
+        alert("Select an approved campaign first.");
+        return;
+      }
+      const date = scheduleDate.value;
+      const time = scheduleTime.value;
+      if(!date || !time){
+        alert("Select both a schedule date and time.");
+        return;
+      }
+
+      const draft = state.drafts.find(d => d.id === draftId);
+      if(!draft || draft.status !== "Approved"){
+        alert("That campaign is not approved.");
+        return;
+      }
+
+      const scheduledAt = `${date} ${time}`;
+      const item = { id: uid(), draftId, scheduledAt, status: "Scheduled" };
+      state.scheduled.unshift(item);
+
+      logDraftAction(draft, "DubConnect", "Scheduled", `Scheduled for ${scheduledAt}`);
+      renderAll();
+      alert("Campaign scheduled.");
+    });
+
+    /***********************
+     * Reset demo
+     ***********************/
+    $("#btnReset").addEventListener("click", ()=>{
+      const ok = confirm("Reset demo data? This clears drafts, schedules, results, and restores sample alumni.");
+      if(!ok) return;
+      state = {
+        alumni: seedAlumni(),
+        selectedIds: new Set(),
+        quickKpi: "all",
+        drafts: [],
+        scheduled: [],
+        results: []
+      };
+      q.value = "";
+      fGrad.value = "";
+      fCity.value = "";
+      fCountry.value = "";
+      fCurrent.value = "";
+      draftTitle.value = "";
+      emailBody.value = "";
+      socialBody.value = "";
+      rebuildFilterOptions();
+      renderAll();
+      setActiveTab("audience");
+    });
+
+    /***********************
+     * Content tab helpers
+     ***********************/
+    function seedDefaultScheduleInputs(){
+      const d = new Date();
+      const pad = n => String(n).padStart(2,"0");
+      const yyyy = d.getFullYear();
+      const mm = pad(d.getMonth()+1);
+      const dd = pad(d.getDate());
+      scheduleDate.value = `${yyyy}-${mm}-${dd}`;
+      scheduleTime.value = "10:00";
+    }
+
+    /***********************
+     * Init
+     ***********************/
+    rebuildFilterOptions();
+    seedDefaultScheduleInputs();
+    renderAll();
+  </script>
+</body>
+</html>
