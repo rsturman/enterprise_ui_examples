@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advising Request Tracker Prototype</title>
+  <style>
+    :root {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #172033;
+      background: #f5f7fb;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1200px;
+      background:
+        radial-gradient(circle at top left, rgba(32, 111, 255, 0.09), transparent 32rem),
+        linear-gradient(180deg, #ffffff 0%, #f5f7fb 22%, #eef2f8 100%);
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app-shell {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 32px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: #50617a;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      color: #111827;
+    }
+
+    h1 {
+      font-size: 2.45rem;
+      letter-spacing: -0.045em;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      max-width: 850px;
+      color: #53627a;
+      line-height: 1.6;
+      margin: 12px 0 0;
+    }
+
+    .topbar-card,
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #dfe6f1;
+      box-shadow: 0 18px 45px rgba(23, 32, 51, 0.08);
+      border-radius: 24px;
+    }
+
+    .topbar-card {
+      min-width: 300px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 18px;
+      color: #1f4f9f;
+    }
+
+    .topbar-card span {
+      display: block;
+      color: #5d6b80;
+      font-size: 0.9rem;
+      margin-top: 2px;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      flex: none;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      gap: 22px;
+    }
+
+    .left-column,
+    .main-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .badge.info {
+      background: #e8f1ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+
+    .badge.purple {
+      background: #f1edff;
+      color: #6d28d9;
+      border-color: #ddd6fe;
+    }
+
+    .badge.danger {
+      background: #fff1f2;
+      color: #be123c;
+      border-color: #fecdd3;
+    }
+
+    .badge.warning {
+      background: #fff7ed;
+      color: #c2410c;
+      border-color: #fed7aa;
+    }
+
+    .badge.success {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #bbf7d0;
+    }
+
+    .story-card {
+      background: #f8fbff;
+      border: 1px solid #e1eaf8;
+      border-radius: 18px;
+      padding: 16px;
+      color: #334155;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .story-card p {
+      margin: 0 0 6px;
+    }
+
+    .criteria-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .criteria-grid div {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid #e5eaf2;
+      color: #334155;
+      font-size: 0.92rem;
+    }
+
+    .criteria-grid .icon {
+      color: #2563eb;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      border: 1px solid #e4eaf3;
+      border-radius: 18px;
+      padding: 14px;
+      background: #fbfdff;
+    }
+
+    .metric span {
+      display: block;
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .metric strong {
+      font-size: 1.7rem;
+      color: #0f172a;
+    }
+
+    .mini-bars {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .mini-bar-row {
+      display: grid;
+      grid-template-columns: 86px 1fr 24px;
+      gap: 10px;
+      align-items: center;
+      color: #475569;
+      font-size: 0.86rem;
+    }
+
+    .bar-track {
+      height: 9px;
+      background: #eef2f7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: #2563eb;
+      border-radius: inherit;
+    }
+
+    .action-log {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 16px;
+      background: #f8fbff;
+      border: 1px solid #dbeafe;
+      color: #315075;
+      font-size: 0.9rem;
+    }
+
+    .action-log .icon {
+      color: #047857;
+    }
+
+    .spec-card ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #475569;
+      line-height: 1.7;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .searchbox {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid #dce4ef;
+      border-radius: 16px;
+      background: #ffffff;
+      padding: 0 12px;
+      color: #64748b;
+    }
+
+    .searchbox input,
+    .toolbar select,
+    .assignment-panel select {
+      border: 0;
+      outline: none;
+      background: transparent;
+      width: 100%;
+      padding: 12px 0;
+      color: #172033;
+    }
+
+    .toolbar select,
+    .assignment-panel select {
+      border: 1px solid #dce4ef;
+      border-radius: 16px;
+      background: #ffffff;
+      padding: 12px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid #e5eaf2;
+      border-radius: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead {
+      background: #f8fafc;
+    }
+
+    th {
+      text-align: left;
+      color: #53627a;
+      font-size: 0.76rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 14px 12px;
+      border-bottom: 1px solid #e5eaf2;
+    }
+
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #edf1f6;
+      color: #334155;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      cursor: pointer;
+    }
+
+    tbody tr:hover {
+      background: #f8fbff;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .selected-row {
+      background: #eff6ff;
+      outline: 2px solid #bfdbfe;
+      outline-offset: -2px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .detail-grid div {
+      border: 1px solid #e5eaf2;
+      border-radius: 16px;
+      padding: 13px;
+      background: #fbfdff;
+    }
+
+    .field-label {
+      display: block;
+      color: #64748b;
+      font-size: 0.78rem;
+      margin-bottom: 6px;
+    }
+
+    .summary-box {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 18px;
+      background: #f8fbff;
+      border: 1px solid #dbeafe;
+      margin-bottom: 16px;
+    }
+
+    .summary-box .icon {
+      color: #2563eb;
+    }
+
+    .summary-box p {
+      color: #475569;
+      line-height: 1.5;
+      margin: 6px 0;
+    }
+
+    .summary-box small {
+      color: #64748b;
+    }
+
+    .assignment-panel {
+      border: 1px solid #e5eaf2;
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-row label {
+      color: #475569;
+      font-weight: 750;
+      font-size: 0.88rem;
+    }
+
+    .form-row select {
+      display: block;
+      margin-top: 8px;
+    }
+
+    .validation {
+      margin-top: 14px;
+      display: none;
+      gap: 10px;
+      align-items: center;
+      color: #be123c;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      border-radius: 14px;
+      padding: 12px;
+      font-weight: 700;
+    }
+
+    .validation.visible {
+      display: flex;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .primary-button,
+    .secondary-button {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 16px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .primary-button {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.24);
+    }
+
+    .primary-button:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary-button {
+      background: #eef2f7;
+      color: #334155;
+    }
+
+    .secondary-button:hover {
+      background: #e2e8f0;
+    }
+
+    .prompt-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .prompt-grid div {
+      border: 1px solid #e5eaf2;
+      border-radius: 18px;
+      padding: 15px;
+      background: #fbfdff;
+    }
+
+    .prompt-grid p {
+      color: #53627a;
+      line-height: 1.45;
+      margin: 8px 0 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1100px) {
+      body {
+        min-width: 0;
+      }
+
+      .app-shell {
+        padding: 18px;
+      }
+
+      .topbar,
+      .layout {
+        grid-template-columns: 1fr;
+        display: block;
+      }
+
+      .topbar-card {
+        margin-top: 18px;
+      }
+
+      .left-column,
+      .main-column {
+        margin-bottom: 22px;
+      }
+
+      .detail-grid,
+      .prompt-grid,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">INFO 380 vertical prototype example</p>
+        <h1>Advising Request Tracker</h1>
+        <p class="subtitle">
+          A functional slice showing how backlog items, acceptance criteria, workflow rules, and dashboard behavior can be turned into a GenAI-generated prototype.
+        </p>
+      </div>
+
+      <div class="topbar-card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3v8Z"></path>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+        <div>
+          <strong>Prototype purpose</strong>
+          <span>Validate request triage and assignment requirements</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="left-column">
+        <div class="card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Backlog item being prototyped</p>
+              <h2>Assign and route advising requests</h2>
+            </div>
+            <span class="badge purple">Vertical slice</span>
+          </div>
+
+          <div class="story-card">
+            <p><strong>User story</strong></p>
+            <p>As front desk staff, I want to assign a priority and advisor so that requests are routed to the right person.</p>
+          </div>
+
+          <div class="criteria-grid">
+            <div>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              <span>Open a request and select a priority</span>
+            </div>
+            <div>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="m16 11 2 2 4-4"></path></svg>
+              <span>Assign the request to an advisor</span>
+            </div>
+            <div>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <span>Block assignment if advisor is missing</span>
+            </div>
+            <div>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              <span>Change status from New to Assigned</span>
+            </div>
+            <div>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+              <span>Update queue and dashboard counts</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Program manager dashboard</p>
+              <h2>Operational summary</h2>
+            </div>
+            <span id="agingBadge" class="badge danger">0 aging</span>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric">
+              <span>Total requests</span>
+              <strong id="totalCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>New</span>
+              <strong id="newCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>Assigned</span>
+              <strong id="assignedCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>High priority</span>
+              <strong id="highCount">0</strong>
+            </div>
+          </div>
+
+          <div id="miniBars" class="mini-bars"></div>
+
+          <div class="action-log">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+            <span id="actionLog">No changes yet.</span>
+          </div>
+        </div>
+
+        <div class="card spec-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Spec-driven development connection</p>
+              <h2>What the AI needed to know</h2>
+            </div>
+          </div>
+          <ul>
+            <li>Role: front desk staff</li>
+            <li>Workflow: review request → set priority → select advisor → assign</li>
+            <li>Data: request ID, student, type, date, status, priority, advisor</li>
+            <li>Rule: request cannot be assigned without an advisor</li>
+            <li>System response: update status, queue, and dashboard counts</li>
+            <li>Test idea: try assigning a request with no advisor selected</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="main-column">
+        <div class="card request-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Front desk request queue</p>
+              <h2>Review and triage advising requests</h2>
+            </div>
+            <span id="shownBadge" class="badge info">0 shown</span>
+          </div>
+
+          <div class="toolbar">
+            <label class="searchbox">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <input id="searchInput" placeholder="Search by student, request, or ID" />
+            </label>
+            <select id="statusFilter">
+              <option>All</option>
+              <option>New</option>
+              <option>Assigned</option>
+              <option>In Progress</option>
+              <option>Resolved</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th>Student</th>
+                  <th>Type</th>
+                  <th>Age</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Advisor</th>
+                </tr>
+              </thead>
+              <tbody id="requestTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card detail-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Request detail and assignment</p>
+              <h2 id="detailTitle">Request detail</h2>
+            </div>
+            <span id="detailStatusBadge" class="badge info">New</span>
+          </div>
+
+          <div class="detail-grid">
+            <div>
+              <span class="field-label">Student ID</span>
+              <strong id="studentId">—</strong>
+            </div>
+            <div>
+              <span class="field-label">Program</span>
+              <strong id="program">—</strong>
+            </div>
+            <div>
+              <span class="field-label">Submitted</span>
+              <strong id="submittedDate">—</strong>
+            </div>
+            <div>
+              <span class="field-label">Current advisor</span>
+              <strong id="currentAdvisor">Unassigned</strong>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path></svg>
+            <div>
+              <strong id="requestType">Request type</strong>
+              <p id="requestSummary">Summary</p>
+              <small id="requestNotes"></small>
+            </div>
+          </div>
+
+          <div class="assignment-panel">
+            <div class="form-row">
+              <label>
+                Priority
+                <select id="prioritySelect">
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                </select>
+              </label>
+
+              <label>
+                Assigned advisor
+                <select id="advisorSelect">
+                  <option value="">Select advisor</option>
+                  <option>L. Nguyen</option>
+                  <option>N. Ahmed</option>
+                  <option>R. Kim</option>
+                  <option>M. Garcia</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="validationMessage" class="validation">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              <span>Select an advisor before assigning this request.</span>
+            </div>
+
+            <div class="button-row">
+              <button id="updatePriorityButton" class="secondary-button">Update priority only</button>
+              <button id="assignButton" class="primary-button">Assign request</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card validation-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Student discussion prompts</p>
+              <h2>Validate the result</h2>
+            </div>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+
+          <div class="prompt-grid">
+            <div>
+              <strong>1. Check the backlog</strong>
+              <p>Which acceptance criteria are visible in the prototype?</p>
+            </div>
+            <div>
+              <strong>2. Test the rule</strong>
+              <p>What happens if you assign a request without selecting an advisor?</p>
+            </div>
+            <div>
+              <strong>3. Find assumptions</strong>
+              <p>What did the prototype assume about roles, data, or workflow?</p>
+            </div>
+            <div>
+              <strong>4. Improve the spec</strong>
+              <p>What would you add before asking an AI tool to generate production-oriented code?</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const requests = [
+      {
+        id: 'ADV-1028',
+        studentName: 'Maya Chen',
+        studentId: '2481937',
+        requestType: 'Graduation requirement check',
+        submittedDate: '2026-05-20',
+        status: 'New',
+        priority: 'High',
+        assignedAdvisor: '',
+        program: 'Informatics',
+        summary: 'Student is applying for summer graduation and needs confirmation that remaining degree requirements are complete.',
+        notes: 'Student mentioned a registration hold may affect summer enrollment.'
+      },
+      {
+        id: 'ADV-1027',
+        studentName: 'Jordan Patel',
+        studentId: '2258140',
+        requestType: 'Course planning',
+        submittedDate: '2026-05-21',
+        status: 'New',
+        priority: 'Medium',
+        assignedAdvisor: '',
+        program: 'Informatics',
+        summary: 'Student needs help choosing autumn quarter courses that satisfy data and society requirements.',
+        notes: ''
+      },
+      {
+        id: 'ADV-1026',
+        studentName: 'Ari Thompson',
+        studentId: '2190038',
+        requestType: 'Registration issue',
+        submittedDate: '2026-05-17',
+        status: 'New',
+        priority: 'High',
+        assignedAdvisor: '',
+        program: 'Informatics',
+        summary: 'Student cannot register for a required course even though prerequisites appear complete.',
+        notes: 'May require coordination with registrar.'
+      },
+      {
+        id: 'ADV-1025',
+        studentName: 'Sofia Alvarez',
+        studentId: '2408831',
+        requestType: 'Transfer credit review',
+        submittedDate: '2026-05-16',
+        status: 'Assigned',
+        priority: 'Medium',
+        assignedAdvisor: 'N. Ahmed',
+        program: 'Informatics',
+        summary: 'Student submitted transfer credit documentation and needs review before autumn registration.',
+        notes: 'Assigned during morning triage.'
+      },
+      {
+        id: 'ADV-1024',
+        studentName: 'Ethan Brooks',
+        studentId: '2327719',
+        requestType: 'Academic progress concern',
+        submittedDate: '2026-05-14',
+        status: 'In Progress',
+        priority: 'High',
+        assignedAdvisor: 'L. Nguyen',
+        program: 'Informatics',
+        summary: 'Student is concerned about completing prerequisites before capstone eligibility review.',
+        notes: 'Advisor requested transcript review.'
+      },
+      {
+        id: 'ADV-1023',
+        studentName: 'Nia Williams',
+        studentId: '2413208',
+        requestType: 'Major application question',
+        submittedDate: '2026-05-22',
+        status: 'Resolved',
+        priority: 'Low',
+        assignedAdvisor: 'R. Kim',
+        program: 'Pre-major',
+        summary: 'Student asked whether current coursework meets application preparation recommendations.',
+        notes: 'Response sent with links to application guidance.'
+      },
+      {
+        id: 'ADV-1022',
+        studentName: 'Leo Martin',
+        studentId: '2294376',
+        requestType: 'Internship credit',
+        submittedDate: '2026-05-18',
+        status: 'Assigned',
+        priority: 'Low',
+        assignedAdvisor: 'N. Ahmed',
+        program: 'Informatics',
+        summary: 'Student wants to know whether an internship can count toward elective credit.',
+        notes: ''
+      },
+      {
+        id: 'ADV-1021',
+        studentName: 'Priya Singh',
+        studentId: '2381904',
+        requestType: 'Petition review',
+        submittedDate: '2026-05-13',
+        status: 'New',
+        priority: 'Medium',
+        assignedAdvisor: '',
+        program: 'Informatics',
+        summary: 'Student submitted a late add petition and needs advising office review.',
+        notes: 'Aging request. Needs triage today.'
+      }
+    ];
+
+    const statusOrder = ['New', 'Assigned', 'In Progress', 'Resolved'];
+    const priorities = ['Low', 'Medium', 'High'];
+    let selectedId = requests[0].id;
+
+    const $ = (id) => document.getElementById(id);
+
+    function daysOld(dateString) {
+      const submitted = new Date(dateString + 'T00:00:00');
+      const today = new Date('2026-05-25T00:00:00');
+      return Math.max(0, Math.round((today - submitted) / (1000 * 60 * 60 * 24)));
+    }
+
+    function badgeClass(value) {
+      if (value === 'High') return 'danger';
+      if (value === 'Medium') return 'warning';
+      if (value === 'Low') return 'success';
+      if (value === 'New') return 'info';
+      if (value === 'Assigned') return 'purple';
+      if (value === 'In Progress') return 'warning';
+      if (value === 'Resolved') return 'success';
+      return 'info';
+    }
+
+    function renderBadge(value) {
+      return `<span class="badge ${badgeClass(value)}">${value}</span>`;
+    }
+
+    function getSelectedRequest() {
+      return requests.find((request) => request.id === selectedId) || requests[0];
+    }
+
+    function getFilteredRequests() {
+      const search = $('searchInput').value.toLowerCase();
+      const statusFilter = $('statusFilter').value;
+
+      return requests
+        .filter((request) => {
+          const searchable = `${request.studentName} ${request.requestType} ${request.id}`.toLowerCase();
+          const matchesSearch = searchable.includes(search);
+          const matchesStatus = statusFilter === 'All' || request.status === statusFilter;
+          return matchesSearch && matchesStatus;
+        })
+        .sort((a, b) => {
+          const priorityRank = { High: 0, Medium: 1, Low: 2 };
+          return priorityRank[a.priority] - priorityRank[b.priority] || new Date(a.submittedDate) - new Date(b.submittedDate);
+        });
+    }
+
+    function renderTable() {
+      const filtered = getFilteredRequests();
+      $('shownBadge').textContent = `${filtered.length} shown`;
+
+      $('requestTableBody').innerHTML = filtered.map((request) => `
+        <tr class="${request.id === selectedId ? 'selected-row' : ''}" data-request-id="${request.id}">
+          <td><strong>${request.id}</strong></td>
+          <td>${request.studentName}</td>
+          <td>${request.requestType}</td>
+          <td>${daysOld(request.submittedDate)} days</td>
+          <td>${renderBadge(request.priority)}</td>
+          <td>${renderBadge(request.status)}</td>
+          <td>${request.assignedAdvisor || 'Unassigned'}</td>
+        </tr>
+      `).join('');
+
+      document.querySelectorAll('#requestTableBody tr').forEach((row) => {
+        row.addEventListener('click', () => {
+          selectedId = row.dataset.requestId;
+          hideValidation();
+          render();
+        });
+      });
+    }
+
+    function renderDetail() {
+      const request = getSelectedRequest();
+
+      $('detailTitle').textContent = `${request.id}: ${request.studentName}`;
+      $('detailStatusBadge').textContent = request.status;
+      $('detailStatusBadge').className = `badge ${badgeClass(request.status)}`;
+      $('studentId').textContent = request.studentId;
+      $('program').textContent = request.program;
+      $('submittedDate').textContent = request.submittedDate;
+      $('currentAdvisor').textContent = request.assignedAdvisor || 'Unassigned';
+      $('requestType').textContent = request.requestType;
+      $('requestSummary').textContent = request.summary;
+      $('requestNotes').textContent = request.notes ? `Note: ${request.notes}` : '';
+      $('prioritySelect').value = request.priority;
+      $('advisorSelect').value = request.assignedAdvisor || '';
+    }
+
+    function renderDashboard() {
+      const total = requests.length;
+      const byStatus = Object.fromEntries(statusOrder.map((status) => [status, 0]));
+      const byPriority = Object.fromEntries(priorities.map((priority) => [priority, 0]));
+
+      requests.forEach((request) => {
+        byStatus[request.status] += 1;
+        byPriority[request.priority] += 1;
+      });
+
+      const aging = requests.filter((request) => request.status !== 'Resolved' && daysOld(request.submittedDate) >= 5).length;
+
+      $('totalCount').textContent = total;
+      $('newCount').textContent = byStatus.New;
+      $('assignedCount').textContent = byStatus.Assigned;
+      $('highCount').textContent = byPriority.High;
+
+      $('agingBadge').textContent = `${aging} aging`;
+      $('agingBadge').className = `badge ${aging > 0 ? 'danger' : 'success'}`;
+
+      $('miniBars').innerHTML = statusOrder.map((status) => {
+        const width = total ? (byStatus[status] / total) * 100 : 0;
+        return `
+          <div class="mini-bar-row">
+            <span>${status}</span>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: ${width}%"></div>
+            </div>
+            <strong>${byStatus[status]}</strong>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function hideValidation() {
+      $('validationMessage').classList.remove('visible');
+    }
+
+    function showValidation() {
+      $('validationMessage').classList.add('visible');
+    }
+
+    function updatePriorityOnly() {
+      const request = getSelectedRequest();
+      request.priority = $('prioritySelect').value;
+      $('actionLog').textContent = `${request.id} priority changed to ${request.priority}.`;
+      hideValidation();
+      render();
+    }
+
+    function assignRequest() {
+      const request = getSelectedRequest();
+      const advisor = $('advisorSelect').value;
+
+      if (!advisor) {
+        showValidation();
+        return;
+      }
+
+      request.assignedAdvisor = advisor;
+      request.priority = $('prioritySelect').value;
+      request.status = 'Assigned';
+
+      $('actionLog').textContent = `${request.id} assigned to ${advisor}. Dashboard counts updated.`;
+      hideValidation();
+      render();
+    }
+
+    function render() {
+      renderTable();
+      renderDetail();
+      renderDashboard();
+    }
+
+    $('searchInput').addEventListener('input', renderTable);
+    $('statusFilter').addEventListener('change', renderTable);
+    $('updatePriorityButton').addEventListener('click', updatePriorityOnly);
+    $('assignButton').addEventListener('click', assignRequest);
+
+    render();
+  </script>
+</body>
+</html>
