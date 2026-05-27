@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyOps DFMS - Drone Fleet Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0F1A2E;
+  --navy-mid: #1A2942;
+  --navy-light: #243552;
+  --slate: #2D3E56;
+  --accent: #22D3EE;
+  --accent-dim: rgba(34,211,238,0.15);
+  --accent-text: #0EA5E9;
+  --green: #34D399;
+  --green-bg: rgba(52,211,153,0.12);
+  --green-text: #10B981;
+  --amber: #FBBF24;
+  --amber-bg: rgba(251,191,36,0.12);
+  --amber-text: #D97706;
+  --red: #F87171;
+  --red-bg: rgba(248,113,113,0.12);
+  --red-text: #EF4444;
+  --orange: #FB923C;
+  --orange-bg: rgba(251,146,60,0.12);
+  --text-primary: #E8ECF1;
+  --text-secondary: #94A3B8;
+  --text-tertiary: #64748B;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.14);
+  --surface: #0F1A2E;
+  --surface-card: #1A2942;
+  --surface-raised: #243552;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.3);
+  --font: 'DM Sans', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --transition: 0.2s ease;
+}
+body { font-family: var(--font); background: var(--surface); color: var(--text-primary); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+/* ---- Top bar ---- */
+.topbar { background: var(--navy); border-bottom: 1px solid var(--border); height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; z-index: 100; }
+.topbar-logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; letter-spacing: 0.02em; }
+.logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, var(--accent) 0%, #0EA5E9 100%); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.role-switch { display: flex; background: var(--navy-mid); border: 1px solid var(--border); border-radius: 6px; padding: 2px; gap: 2px; }
+.role-btn { padding: 5px 12px; border: none; background: transparent; color: var(--text-tertiary); font-size: 12px; font-family: var(--font); font-weight: 500; border-radius: 4px; cursor: pointer; transition: var(--transition); }
+.role-btn.active { background: var(--accent-dim); color: var(--accent); }
+.role-btn:hover:not(.active) { color: var(--text-secondary); }
+.user-pill { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); }
+.avatar-sm { width: 26px; height: 26px; border-radius: 50%; background: var(--slate); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--accent); border: 1px solid var(--border); }
+
+/* ---- Layout ---- */
+.layout { display: flex; min-height: calc(100vh - 52px); }
+.sidebar { width: 200px; background: var(--navy-mid); border-right: 1px solid var(--border); padding: 12px 0; flex-shrink: 0; }
+.nav-group { padding: 0 10px; margin-bottom: 20px; }
+.nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); font-weight: 600; padding: 0 8px; margin-bottom: 6px; }
+.nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; font-size: 13px; color: var(--text-secondary); cursor: pointer; border-radius: var(--radius-sm); transition: var(--transition); margin-bottom: 1px; }
+.nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text-primary); }
+.nav-item.active { background: var(--accent-dim); color: var(--accent); }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.nav-badge { margin-left: auto; background: var(--red); color: white; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; }
+
+.main { flex: 1; padding: 20px 28px; overflow-x: hidden; }
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+.page-sub { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+/* ---- Buttons ---- */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius-sm); font-family: var(--font); font-size: 13px; font-weight: 500; border: none; cursor: pointer; transition: var(--transition); }
+.btn-accent { background: var(--accent); color: var(--navy); }
+.btn-accent:hover { background: #06B6D4; }
+.btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--border-hover); color: var(--text-primary); }
+.btn-green { background: var(--green); color: var(--navy); }
+.btn-green:hover { opacity: 0.9; }
+.btn-red { background: transparent; color: var(--red-text); border: 1px solid rgba(248,113,113,0.3); }
+.btn-red:hover { background: var(--red-bg); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* ---- Cards ---- */
+.card { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+
+/* ---- Stats ---- */
+.stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; }
+.stat-val { font-size: 26px; font-weight: 600; font-family: var(--mono); letter-spacing: -0.02em; }
+.stat-val.green { color: var(--green); }
+.stat-val.amber { color: var(--amber); }
+.stat-val.red { color: var(--red); }
+.stat-val.accent { color: var(--accent); }
+.stat-label { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ---- Tables ---- */
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: left; padding: 9px 14px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); background: var(--surface-raised); border-bottom: 1px solid var(--border); }
+.tbl td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.tbl tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ---- Badges ---- */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+.badge-green { background: var(--green-bg); color: var(--green-text); }
+.badge-amber { background: var(--amber-bg); color: var(--amber-text); }
+.badge-red { background: var(--red-bg); color: var(--red-text); }
+.badge-blue { background: var(--accent-dim); color: var(--accent-text); }
+.badge-orange { background: var(--orange-bg); color: var(--orange); }
+
+/* ---- Status dot ---- */
+.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.dot-green { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.5); }
+.dot-amber { background: var(--amber); box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+.dot-red { background: var(--red); box-shadow: 0 0 6px rgba(248,113,113,0.4); }
+.dot-gray { background: var(--text-tertiary); }
+
+/* ---- Pulse animation for live indicators ---- */
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+.live-dot { animation: pulse 2s ease-in-out infinite; }
+
+/* ---- Form ---- */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.form-label .req { color: var(--red); }
+.form-input, .form-select, .form-textarea { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font); background: var(--navy); color: var(--text-primary); outline: none; transition: var(--transition); }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(34,211,238,0.15); }
+.form-textarea { resize: vertical; min-height: 70px; }
+.form-hint { font-size: 11px; color: var(--text-tertiary); }
+.form-input.error { border-color: var(--red); }
+.form-error { font-size: 11px; color: var(--red); }
+.form-section { margin-bottom: 20px; }
+.form-section-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+/* ---- Telemetry panel ---- */
+.telem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.telem-card { background: var(--navy); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; text-align: center; }
+.telem-val { font-family: var(--mono); font-size: 22px; font-weight: 500; }
+.telem-unit { font-size: 12px; color: var(--text-tertiary); }
+.telem-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+
+/* ---- Severity indicator ---- */
+.severity-bar { display: flex; gap: 3px; align-items: center; }
+.severity-seg { width: 18px; height: 8px; border-radius: 2px; background: var(--navy-light); }
+.severity-seg.filled-green { background: var(--green); }
+.severity-seg.filled-amber { background: var(--amber); }
+.severity-seg.filled-red { background: var(--red); }
+
+/* ---- Finding cards ---- */
+.finding-card { background: var(--navy); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 10px; }
+.finding-card:hover { border-color: var(--border-hover); }
+.finding-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.finding-title { font-weight: 600; font-size: 14px; }
+.finding-meta { font-size: 12px; color: var(--text-tertiary); margin-bottom: 6px; }
+.finding-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+.finding-img { width: 100%; height: 120px; background: var(--navy-mid); border-radius: var(--radius-sm); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 12px; margin-bottom: 10px; }
+.finding-actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+/* ---- Mission map placeholder ---- */
+.map-placeholder { background: var(--navy); border: 1px solid var(--border); border-radius: var(--radius-md); height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 13px; position: relative; overflow: hidden; }
+.map-placeholder::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 60% 40%, rgba(34,211,238,0.06) 0%, transparent 70%); }
+.map-grid-lines { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; }
+.drone-marker { position: absolute; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px rgba(34,211,238,0.6); }
+.turbine-marker { position: absolute; width: 8px; height: 8px; background: var(--text-tertiary); border-radius: 2px; border: 1px solid rgba(255,255,255,0.1); }
+.flight-path { position: absolute; border: 1px dashed rgba(34,211,238,0.3); border-radius: 0; }
+
+/* ---- Modal ---- */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 200; animation: fadeIn 0.2s ease; }
+.modal { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; max-width: 480px; width: 90%; box-shadow: var(--shadow); animation: slideUp 0.3s ease; }
+.modal h2 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.modal p { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+.modal-detail { background: var(--navy); border-radius: var(--radius-md); padding: 12px; margin: 14px 0; }
+.modal-row { display: flex; justify-content: space-between; font-size: 12px; padding: 3px 0; }
+.modal-row .lbl { color: var(--text-tertiary); }
+.modal-row .val { font-weight: 500; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ---- Toast ---- */
+.toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: var(--navy); padding: 10px 18px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; box-shadow: var(--shadow); z-index: 300; animation: slideUp 0.3s ease; display: flex; align-items: center; gap: 6px; }
+
+/* ---- Back link ---- */
+.back-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-tertiary); cursor: pointer; margin-bottom: 14px; transition: var(--transition); }
+.back-link:hover { color: var(--accent); }
+
+/* ---- Responsive ---- */
+@media (max-width: 960px) {
+  .sidebar { display: none; }
+  .main { padding: 16px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .telem-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+@keyframes fadeIn { from{opacity:0}to{opacity:1} }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.5/babel.min.js"></script>
+<script type="text/babel">
+const { useState } = React;
+
+/* ========== DATA (grounded in data dictionary) ========== */
+const DRONES = [
+  { id: 'DRN-001', model: 'DJI Matrice 350 RTK', status: 'In Flight', battery: 72, lastMaint: '2026-05-10', flightHrs: 342.5, location: 'Wind Farm Alpha, Sector 3' },
+  { id: 'DRN-002', model: 'DJI Matrice 350 RTK', status: 'Available', battery: 98, lastMaint: '2026-05-22', flightHrs: 218.1, location: 'Base Station A' },
+  { id: 'DRN-003', model: 'Autel EVO II Pro', status: 'Available', battery: 95, lastMaint: '2026-05-18', flightHrs: 189.7, location: 'Base Station A' },
+  { id: 'DRN-004', model: 'DJI Matrice 350 RTK', status: 'Maintenance', battery: 45, lastMaint: '2026-04-30', flightHrs: 511.2, location: 'Maintenance Bay' },
+  { id: 'DRN-005', model: 'Autel EVO II Pro', status: 'Available', battery: 88, lastMaint: '2026-05-20', flightHrs: 156.3, location: 'Base Station B' },
+];
+
+const TURBINES = [
+  { id: 'WT-101', name: 'Alpha-North-01', farm: 'Wind Farm Alpha', sector: 'Sector 1', model: 'Vestas V150-4.2 MW', lastInspection: '2026-04-15', status: 'Operational', riskLevel: 'Low' },
+  { id: 'WT-102', name: 'Alpha-North-02', farm: 'Wind Farm Alpha', sector: 'Sector 1', model: 'Vestas V150-4.2 MW', lastInspection: '2026-03-28', status: 'Operational', riskLevel: 'Medium' },
+  { id: 'WT-103', name: 'Alpha-South-01', farm: 'Wind Farm Alpha', sector: 'Sector 2', model: 'Vestas V150-4.2 MW', lastInspection: '2026-05-02', status: 'Operational', riskLevel: 'Low' },
+  { id: 'WT-201', name: 'Beta-East-01', farm: 'Wind Farm Beta', sector: 'Sector 1', model: 'Siemens SG 5.8-170', lastInspection: '2026-02-10', status: 'Flagged', riskLevel: 'High' },
+  { id: 'WT-202', name: 'Beta-East-02', farm: 'Wind Farm Beta', sector: 'Sector 1', model: 'Siemens SG 5.8-170', lastInspection: '2026-04-22', status: 'Operational', riskLevel: 'Low' },
+];
+
+const MISSIONS = [
+  { id: 'MSN-2026-047', drone: 'DRN-001', turbine: 'WT-201', type: 'Full Structural', status: 'In Progress', scheduled: '2026-05-27 09:30', pilot: 'Auto', priority: 'High', progress: 68, eta: '14 min remaining' },
+  { id: 'MSN-2026-046', drone: 'DRN-002', turbine: 'WT-102', type: 'Blade Surface', status: 'Completed', scheduled: '2026-05-26 14:00', pilot: 'Auto', priority: 'Medium', progress: 100, eta: '' },
+  { id: 'MSN-2026-045', drone: 'DRN-003', turbine: 'WT-103', type: 'Thermal Scan', status: 'Completed', scheduled: '2026-05-25 10:15', pilot: 'Auto', priority: 'Low', progress: 100, eta: '' },
+  { id: 'MSN-2026-044', drone: 'DRN-001', turbine: 'WT-101', type: 'Full Structural', status: 'Completed', scheduled: '2026-05-24 08:00', pilot: 'Auto', priority: 'Medium', progress: 100, eta: '' },
+];
+
+const FINDINGS = [
+  { id: 'FND-301', mission: 'MSN-2026-046', turbine: 'WT-102', component: 'Blade 2 - Leading Edge', severity: 'High', type: 'Erosion', description: 'Significant leading-edge erosion detected on Blade 2 at 62-68m span. Surface coating loss approximately 15cm x 40cm. Erosion depth estimated at 2-3mm based on shadow analysis. Pattern consistent with rain erosion damage.', status: 'Pending Review', detectedAt: '2026-05-26 14:32', confidence: 94 },
+  { id: 'FND-302', mission: 'MSN-2026-046', turbine: 'WT-102', component: 'Blade 1 - Trailing Edge', severity: 'Medium', type: 'Crack', description: 'Hairline crack detected on trailing edge at 45m span, approximately 8cm in length. No delamination observed in surrounding area. Recommend monitoring interval reduction to 30 days.', status: 'Pending Review', detectedAt: '2026-05-26 14:41', confidence: 87 },
+  { id: 'FND-303', mission: 'MSN-2026-045', turbine: 'WT-103', component: 'Nacelle - Gearbox Housing', severity: 'Low', type: 'Thermal Anomaly', description: 'Thermal scan shows 8°C hotspot on gearbox housing exterior, northeast quadrant. Within acceptable operating range but 3°C above baseline from January scan. Likely seasonal variation.', status: 'Reviewed - Monitor', detectedAt: '2026-05-25 10:48', confidence: 91 },
+  { id: 'FND-304', mission: 'MSN-2026-044', turbine: 'WT-101', component: 'Tower Base - Section 1', severity: 'Low', type: 'Corrosion', description: 'Minor surface corrosion on bolt flanges at tower base, sections 3 and 7. Paint system intact in surrounding areas. Consistent with normal weathering for coastal installation age.', status: 'Reviewed - No Action', detectedAt: '2026-05-24 09:15', confidence: 96 },
+];
+
+const WORK_ORDERS = [
+  { id: 'WO-2026-018', finding: 'FND-301', turbine: 'WT-102', component: 'Blade 2 - Leading Edge', type: 'Blade Repair', priority: 'High', status: 'Pending Approval', requestedBy: 'Jordan Lee', requestDate: '2026-05-26', estimatedHrs: 16, estimatedCost: 12400, crew: '2 blade technicians + 1 safety', notes: 'Requires rope access. Weather window needed: wind < 8 m/s. LEP repair kit model VE-150-LE required from warehouse.' },
+  { id: 'WO-2026-017', finding: 'FND-302', turbine: 'WT-102', component: 'Blade 1 - Trailing Edge', type: 'Monitoring', priority: 'Medium', status: 'Pending Approval', requestedBy: 'Jordan Lee', requestDate: '2026-05-26', estimatedHrs: 2, estimatedCost: 800, crew: 'Drone re-inspection in 30 days', notes: 'Schedule follow-up drone inspection MSN for June 25. If crack growth > 2cm, escalate to blade repair.' },
+];
+
+/* ========== UTILITIES ========== */
+function statusColor(s) {
+  const map = { 'Available': 'green', 'In Flight': 'blue', 'Maintenance': 'amber', 'Completed': 'green', 'In Progress': 'blue', 'Scheduled': 'amber', 'Flagged': 'red', 'Operational': 'green', 'Pending Review': 'amber', 'Reviewed - Monitor': 'blue', 'Reviewed - No Action': 'green', 'Pending Approval': 'amber', 'Approved': 'green', 'High':'red', 'Medium':'amber', 'Low':'green' };
+  return map[s] || 'blue';
+}
+function Badge({ label }) { return <span className={`badge badge-${statusColor(label)}`}><span className={`dot dot-${statusColor(label)}`}></span>{label}</span>; }
+function SeverityBar({ level }) {
+  const n = level === 'High' ? 3 : level === 'Medium' ? 2 : 1;
+  const color = level === 'High' ? 'red' : level === 'Medium' ? 'amber' : 'green';
+  return <div className="severity-bar">{[1,2,3].map(i => <div key={i} className={`severity-seg ${i <= n ? 'filled-'+color : ''}`}></div>)}<span style={{marginLeft:4,fontSize:11,color:`var(--${color})`}}>{level}</span></div>;
+}
+
+/* ========== COMPONENTS ========== */
+
+function TopBar({ role, setRole, setView }) {
+  const user = role === 'ops' ? { name: 'Sarah Chen', init: 'SC', title: 'Operations Manager' } : { name: 'Jordan Lee', init: 'JL', title: 'Field Technician' };
+  return (
+    <div className="topbar">
+      <div className="topbar-logo">
+        <div className="logo-icon">⬡</div>
+        SkyOps DFMS
+      </div>
+      <div className="topbar-right">
+        <div className="role-switch">
+          <button className={`role-btn ${role==='ops'?'active':''}`} onClick={()=>{setRole('ops');setView('dashboard');}}>Operations Mgr</button>
+          <button className={`role-btn ${role==='tech'?'active':''}`} onClick={()=>{setRole('tech');setView('findings');}}>Field Technician</button>
+        </div>
+        <div className="user-pill">
+          <div className="avatar-sm">{user.init}</div>
+          {user.name}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Sidebar({ role, view, setView }) {
+  if (role === 'ops') return (
+    <div className="sidebar">
+      <div className="nav-group">
+        <div className="nav-label">Operations</div>
+        <div className={`nav-item ${view==='dashboard'?'active':''}`} onClick={()=>setView('dashboard')}><span className="nav-icon">📊</span>Fleet dashboard</div>
+        <div className={`nav-item ${view==='schedule'?'active':''}`} onClick={()=>setView('schedule')}><span className="nav-icon">📋</span>Schedule inspection</div>
+        <div className={`nav-item ${view==='monitor'?'active':''}`} onClick={()=>setView('monitor')}><span className="nav-icon">📡</span>Mission monitor<span className="nav-badge">1</span></div>
+      </div>
+      <div className="nav-group">
+        <div className="nav-label">Maintenance</div>
+        <div className={`nav-item ${view==='workorders'?'active':''}`} onClick={()=>setView('workorders')}><span className="nav-icon">🔧</span>Work orders<span className="nav-badge">2</span></div>
+      </div>
+    </div>
+  );
+  return (
+    <div className="sidebar">
+      <div className="nav-group">
+        <div className="nav-label">Inspections</div>
+        <div className={`nav-item ${view==='findings'?'active':''}`} onClick={()=>setView('findings')}><span className="nav-icon">🔍</span>Findings<span className="nav-badge">2</span></div>
+        <div className={`nav-item ${view==='history'?'active':''}`} onClick={()=>setView('history')}><span className="nav-icon">📁</span>History</div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Screen 1: Fleet Dashboard (Ops Manager) ---- */
+function Dashboard({ setView }) {
+  const avail = DRONES.filter(d=>d.status==='Available').length;
+  const inFlight = DRONES.filter(d=>d.status==='In Flight').length;
+  const maint = DRONES.filter(d=>d.status==='Maintenance').length;
+  const flagged = TURBINES.filter(t=>t.riskLevel==='High').length;
+  return (
+    <div className="main">
+      <div className="page-header">
+        <div><h1 className="page-title">Fleet dashboard</h1><p className="page-sub">Wind Farm Alpha &amp; Beta operations overview</p></div>
+        <button className="btn btn-accent" onClick={()=>setView('schedule')}>+ Schedule inspection</button>
+      </div>
+      <div className="stats-grid">
+        <div className="stat-card"><div className="stat-val">{DRONES.length}</div><div className="stat-label">Total drones</div></div>
+        <div className="stat-card"><div className="stat-val green">{avail}</div><div className="stat-label">Available</div></div>
+        <div className="stat-card"><div className="stat-val accent">{inFlight}</div><div className="stat-label">In flight</div></div>
+        <div className="stat-card"><div className="stat-val amber">{maint}</div><div className="stat-label">In maintenance</div></div>
+        <div className="stat-card"><div className="stat-val red">{flagged}</div><div className="stat-label">Turbines flagged</div></div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:20}}>
+        <div className="card" style={{padding:16}}>
+          <div style={{fontWeight:600,fontSize:14,marginBottom:12}}>Drone fleet status</div>
+          <table className="tbl">
+            <thead><tr><th>Drone ID</th><th>Model</th><th>Status</th><th>Battery</th><th>Flight hrs</th></tr></thead>
+            <tbody>
+              {DRONES.map(d=>(
+                <tr key={d.id}>
+                  <td style={{fontWeight:500,fontFamily:'var(--mono)',fontSize:12}}>{d.id}</td>
+                  <td style={{fontSize:12}}>{d.model}</td>
+                  <td><Badge label={d.status}/></td>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:6}}>
+                      <div style={{width:40,height:5,background:'var(--navy)',borderRadius:3,overflow:'hidden'}}>
+                        <div style={{width:d.battery+'%',height:'100%',background:d.battery>50?'var(--green)':d.battery>20?'var(--amber)':'var(--red)',borderRadius:3}}></div>
+                      </div>
+                      <span style={{fontFamily:'var(--mono)',fontSize:11}}>{d.battery}%</span>
+                    </div>
+                  </td>
+                  <td style={{fontFamily:'var(--mono)',fontSize:12}}>{d.flightHrs}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="card" style={{padding:16}}>
+          <div style={{fontWeight:600,fontSize:14,marginBottom:12}}>Recent missions</div>
+          <table className="tbl">
+            <thead><tr><th>Mission</th><th>Turbine</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody>
+              {MISSIONS.map(m=>(
+                <tr key={m.id} style={{cursor:'pointer'}} onClick={()=>m.status==='In Progress'&&setView('monitor')}>
+                  <td style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:500}}>{m.id}</td>
+                  <td>{m.turbine}</td>
+                  <td style={{fontSize:12}}>{m.type}</td>
+                  <td><Badge label={m.status}/></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="card" style={{padding:16}}>
+        <div style={{fontWeight:600,fontSize:14,marginBottom:12}}>Turbine risk overview</div>
+        <table className="tbl">
+          <thead><tr><th>Turbine</th><th>Farm / Sector</th><th>Model</th><th>Last inspection</th><th>Risk level</th><th>Status</th></tr></thead>
+          <tbody>
+            {TURBINES.map(t=>(
+              <tr key={t.id}>
+                <td><span style={{fontWeight:500}}>{t.name}</span><span style={{fontFamily:'var(--mono)',fontSize:11,color:'var(--text-tertiary)',marginLeft:6}}>{t.id}</span></td>
+                <td style={{fontSize:12}}>{t.farm}, {t.sector}</td>
+                <td style={{fontSize:12}}>{t.model}</td>
+                <td>{t.lastInspection}</td>
+                <td><SeverityBar level={t.riskLevel}/></td>
+                <td><Badge label={t.status}/></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Screen 2: Schedule Inspection (Ops Manager) ---- */
+function ScheduleInspection({ setView }) {
+  const [errors, setErrors] = useState({});
+  const [toast, setToast] = useState(false);
+
+  function handleSubmit() {
+    setToast(true);
+    setTimeout(()=>{setToast(false);setView('dashboard');},2000);
+  }
+
+  return (
+    <div className="main">
+      <div className="back-link" onClick={()=>setView('dashboard')}>← Back to dashboard</div>
+      <div className="page-header"><div><h1 className="page-title">Schedule inspection</h1><p className="page-sub">Assign a drone to inspect a wind turbine</p></div></div>
+      <div className="card" style={{padding:20,maxWidth:720}}>
+        <div className="form-section">
+          <div className="form-section-title">Target turbine</div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Wind farm <span className="req">*</span></label>
+              <select className="form-select"><option value="">Select farm...</option><option>Wind Farm Alpha</option><option>Wind Farm Beta</option></select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Turbine <span className="req">*</span></label>
+              <select className="form-select"><option value="">Select turbine...</option>{TURBINES.map(t=><option key={t.id}>{t.name} ({t.id})</option>)}</select>
+              <span className="form-hint">Turbines with "High" risk are prioritized</span>
+            </div>
+          </div>
+        </div>
+        <div className="form-section">
+          <div className="form-section-title">Inspection parameters</div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Inspection type <span className="req">*</span></label>
+              <select className="form-select"><option>Full Structural</option><option>Blade Surface</option><option>Thermal Scan</option><option>Lightning Damage Assessment</option></select>
+              <span className="form-hint">Acceptable values: Full Structural, Blade Surface, Thermal Scan, Lightning Damage Assessment</span>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Priority <span className="req">*</span></label>
+              <select className="form-select"><option>High</option><option>Medium</option><option>Low</option></select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Scheduled date <span className="req">*</span></label>
+              <input className="form-input" type="date" defaultValue="2026-05-28" />
+              <span className="form-hint">Must be a future date. Weather check performed automatically.</span>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Scheduled time <span className="req">*</span></label>
+              <input className="form-input" type="time" defaultValue="09:00" />
+              <span className="form-hint">Daylight hours only (06:00 - 20:00)</span>
+            </div>
+          </div>
+        </div>
+        <div className="form-section">
+          <div className="form-section-title">Drone assignment</div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Assign drone <span className="req">*</span></label>
+              <select className="form-select">
+                <option value="">Auto-assign (recommended)</option>
+                {DRONES.filter(d=>d.status==='Available').map(d=><option key={d.id}>{d.id} - {d.model} (Battery: {d.battery}%)</option>)}
+              </select>
+              <span className="form-hint">Auto-assign selects the nearest available drone with sufficient battery (min 60%)</span>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Flight mode</label>
+              <select className="form-select"><option>Autonomous</option><option>Manual Override</option></select>
+            </div>
+            <div className="form-group full">
+              <label className="form-label">Pre-flight notes</label>
+              <textarea className="form-textarea" placeholder="Any special instructions, weather considerations, or known hazards at this turbine location..."></textarea>
+              <span className="form-hint">Max 500 characters. Visible to field technician reviewing results.</span>
+            </div>
+          </div>
+        </div>
+        <div className="form-section">
+          <div className="form-section-title">Weather &amp; safety check</div>
+          <div style={{background:'var(--navy)',border:'1px solid var(--border)',borderRadius:'var(--radius-md)',padding:12,display:'flex',gap:16,alignItems:'center',fontSize:13}}>
+            <div><span style={{color:'var(--green)'}}>✓</span> Wind speed: <strong>5.2 m/s</strong> <span style={{color:'var(--text-tertiary)'}}>(max: 12 m/s)</span></div>
+            <div><span style={{color:'var(--green)'}}>✓</span> Visibility: <strong>8.4 km</strong> <span style={{color:'var(--text-tertiary)'}}>(min: 3 km)</span></div>
+            <div><span style={{color:'var(--green)'}}>✓</span> Precipitation: <strong>0%</strong></div>
+            <Badge label="Clear to fly"/>
+          </div>
+        </div>
+        <div style={{display:'flex',gap:8,justifyContent:'flex-end',paddingTop:14,borderTop:'1px solid var(--border)'}}>
+          <button className="btn btn-ghost" onClick={()=>setView('dashboard')}>Cancel</button>
+          <button className="btn btn-accent" onClick={handleSubmit}>Schedule mission</button>
+        </div>
+      </div>
+      {toast && <div className="toast">✓ Mission MSN-2026-048 scheduled successfully</div>}
+    </div>
+  );
+}
+
+/* ---- Screen 3: Mission Monitor (Ops Manager) ---- */
+function MissionMonitor({ setView }) {
+  const mission = MISSIONS[0];
+  return (
+    <div className="main">
+      <div className="back-link" onClick={()=>setView('dashboard')}>← Back to dashboard</div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Mission monitor</h1>
+          <p className="page-sub" style={{fontFamily:'var(--mono)',fontSize:12}}>{mission.id} &middot; {mission.turbine} &middot; {mission.type}</p>
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:8}}>
+          <span className="dot dot-green live-dot"></span>
+          <span style={{fontSize:12,color:'var(--green)',fontWeight:500}}>LIVE</span>
+          <Badge label={mission.status}/>
+        </div>
+      </div>
+
+      <div className="telem-grid">
+        <div className="telem-card"><div className="telem-val" style={{color:'var(--accent)'}}>72<span className="telem-unit">%</span></div><div className="telem-label">Battery</div></div>
+        <div className="telem-card"><div className="telem-val">85<span className="telem-unit">m</span></div><div className="telem-label">Altitude</div></div>
+        <div className="telem-card"><div className="telem-val">4.3<span className="telem-unit">m/s</span></div><div className="telem-label">Wind speed</div></div>
+        <div className="telem-card"><div className="telem-val" style={{color:'var(--green)'}}>12<span className="telem-unit">°C</span></div><div className="telem-label">Ambient temp</div></div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'1fr 320px',gap:16,marginBottom:16}}>
+        <div>
+          <div className="map-placeholder">
+            <div className="map-grid-lines"></div>
+            <div className="drone-marker live-dot" style={{top:'38%',left:'55%'}}></div>
+            <div className="turbine-marker" style={{top:'35%',left:'62%'}}></div>
+            <div className="turbine-marker" style={{top:'50%',left:'45%'}}></div>
+            <div className="turbine-marker" style={{top:'28%',left:'38%'}}></div>
+            <div className="turbine-marker" style={{top:'60%',left:'58%'}}></div>
+            <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none'}}>
+              <path d="M 180 180 Q 240 120 360 100" stroke="rgba(34,211,238,0.3)" strokeWidth="1.5" strokeDasharray="6 4" fill="none"/>
+            </svg>
+            <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+              <span style={{fontSize:11}}>Live flight tracking</span>
+              <span style={{fontFamily:'var(--mono)',fontSize:10,color:'var(--accent)'}}>47.6062°N, 122.3321°W</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="card" style={{padding:14,marginBottom:12}}>
+            <div style={{fontWeight:600,fontSize:13,marginBottom:10}}>Mission progress</div>
+            <div style={{background:'var(--navy)',borderRadius:6,height:8,overflow:'hidden',marginBottom:6}}>
+              <div style={{width:mission.progress+'%',height:'100%',background:'linear-gradient(90deg,var(--accent),#0EA5E9)',borderRadius:6,transition:'width 0.5s ease'}}></div>
+            </div>
+            <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--text-tertiary)'}}>
+              <span>{mission.progress}% complete</span><span>{mission.eta}</span>
+            </div>
+          </div>
+          <div className="card" style={{padding:14,marginBottom:12}}>
+            <div style={{fontWeight:600,fontSize:13,marginBottom:10}}>Flight details</div>
+            {[['Drone',mission.drone],['Turbine',mission.turbine+' (Beta-East-01)'],['Type',mission.type],['Priority',mission.priority],['Mode','Autonomous'],['Launched','09:32 AM'],['Est. duration','42 min']].map(([l,v])=>(
+              <div key={l} style={{display:'flex',justifyContent:'space-between',fontSize:12,padding:'4px 0',borderBottom:'1px solid var(--border)'}}>
+                <span style={{color:'var(--text-tertiary)'}}>{l}</span><span style={{fontWeight:500}}>{v}</span>
+              </div>
+            ))}
+          </div>
+          <div className="card" style={{padding:14}}>
+            <div style={{fontWeight:600,fontSize:13,marginBottom:8}}>Live alerts</div>
+            <div style={{background:'var(--amber-bg)',border:'1px solid rgba(251,191,36,0.2)',borderRadius:6,padding:8,fontSize:12,color:'var(--amber-text)',marginBottom:6}}>
+              ⚠ Wind gust detected: 8.1 m/s at 14:12. Within safe limits.
+            </div>
+            <div style={{background:'var(--accent-dim)',border:'1px solid rgba(34,211,238,0.15)',borderRadius:6,padding:8,fontSize:12,color:'var(--accent-text)'}}>
+              ℹ Anomaly flagged on Blade 2 leading edge. Image captured for review.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{display:'flex',gap:8}}>
+        <button className="btn btn-red">Abort mission</button>
+        <button className="btn btn-ghost">Return to base</button>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Screen 4: Inspection Findings (Field Technician) ---- */
+function InspectionFindings({ setView }) {
+  const [reviewModal, setReviewModal] = useState(null);
+  const pending = FINDINGS.filter(f=>f.status==='Pending Review');
+  const reviewed = FINDINGS.filter(f=>f.status!=='Pending Review');
+
+  return (
+    <div className="main">
+      <div className="page-header">
+        <div><h1 className="page-title">Inspection findings</h1><p className="page-sub">Review AI-detected anomalies and create work orders</p></div>
+      </div>
+
+      <div style={{marginBottom:8,fontWeight:600,fontSize:13,color:'var(--amber-text)'}}>Pending review ({pending.length})</div>
+      {pending.map(f=>(
+        <div className="finding-card" key={f.id}>
+          <div className="finding-header">
+            <div>
+              <div className="finding-title">{f.component}</div>
+              <div className="finding-meta"><span style={{fontFamily:'var(--mono)'}}>{f.id}</span> &middot; {f.turbine} &middot; Detected {f.detectedAt}</div>
+            </div>
+            <SeverityBar level={f.severity}/>
+          </div>
+          <div className="finding-desc">{f.description}</div>
+          <div className="finding-img">
+            <div style={{textAlign:'center'}}>
+              <div style={{fontSize:24,marginBottom:4}}>📸</div>
+              Drone capture: {f.component}<br/>
+              <span style={{fontFamily:'var(--mono)',fontSize:10}}>AI confidence: {f.confidence}%</span>
+            </div>
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div style={{display:'flex',gap:8,fontSize:12}}>
+              <Badge label={f.type}/>
+              <span style={{color:'var(--text-tertiary)'}}>Mission: {f.mission}</span>
+            </div>
+            <div className="finding-actions">
+              <button className="btn btn-ghost btn-sm" onClick={()=>setReviewModal({...f,action:'dismiss'})}>Dismiss</button>
+              <button className="btn btn-accent btn-sm" onClick={()=>setReviewModal({...f,action:'workorder'})}>Create work order</button>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      <div style={{marginTop:20,marginBottom:8,fontWeight:600,fontSize:13,color:'var(--text-tertiary)'}}>Previously reviewed ({reviewed.length})</div>
+      {reviewed.map(f=>(
+        <div className="finding-card" key={f.id} style={{opacity:0.7}}>
+          <div className="finding-header">
+            <div>
+              <div className="finding-title" style={{fontSize:13}}>{f.component}</div>
+              <div className="finding-meta"><span style={{fontFamily:'var(--mono)'}}>{f.id}</span> &middot; {f.turbine}</div>
+            </div>
+            <Badge label={f.status}/>
+          </div>
+          <div className="finding-desc" style={{fontSize:12}}>{f.description.substring(0,120)}...</div>
+        </div>
+      ))}
+
+      {reviewModal && (
+        <div className="modal-overlay" onClick={()=>setReviewModal(null)}>
+          <div className="modal" onClick={e=>e.stopPropagation()}>
+            <h2>{reviewModal.action==='workorder' ? 'Create work order' : 'Dismiss finding'}</h2>
+            <p>{reviewModal.action==='workorder' ? 'This will generate a maintenance work order for operations manager approval.' : 'Mark this finding as reviewed with no action required.'}</p>
+            <div className="modal-detail">
+              {[['Finding',reviewModal.id],['Component',reviewModal.component],['Severity',reviewModal.severity],['Turbine',reviewModal.turbine],['AI confidence',reviewModal.confidence+'%']].map(([l,v])=>(
+                <div className="modal-row" key={l}><span className="lbl">{l}</span><span className="val">{v}</span></div>
+              ))}
+            </div>
+            {reviewModal.action==='workorder' && (
+              <>
+                <div className="form-group" style={{marginBottom:10}}>
+                  <label className="form-label">Recommended action <span className="req">*</span></label>
+                  <select className="form-select"><option>Blade Repair</option><option>Component Replacement</option><option>Re-inspection</option><option>Monitoring</option></select>
+                </div>
+                <div className="form-group" style={{marginBottom:10}}>
+                  <label className="form-label">Estimated hours</label>
+                  <input className="form-input" type="number" defaultValue="16" min="1" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Technician notes</label>
+                  <textarea className="form-textarea" rows="2" placeholder="Describe recommended repair approach, required parts, safety considerations..."></textarea>
+                </div>
+              </>
+            )}
+            {reviewModal.action==='dismiss' && (
+              <div className="form-group">
+                <label className="form-label">Reason for dismissal <span className="req">*</span></label>
+                <select className="form-select"><option>False positive</option><option>Pre-existing condition (documented)</option><option>Within acceptable tolerance</option><option>Duplicate finding</option></select>
+              </div>
+            )}
+            <div className="modal-actions">
+              <button className="btn btn-ghost" onClick={()=>setReviewModal(null)}>Cancel</button>
+              {reviewModal.action==='workorder' ? <button className="btn btn-accent" onClick={()=>setReviewModal(null)}>Submit work order</button> : <button className="btn btn-ghost" onClick={()=>setReviewModal(null)}>Confirm dismissal</button>}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---- Screen 5: Work Order Review (Ops Manager) ---- */
+function WorkOrders({ setView }) {
+  const [approveModal, setApproveModal] = useState(null);
+  const [toast, setToast] = useState(false);
+
+  function handleApprove() {
+    setApproveModal(null);
+    setToast(true);
+    setTimeout(()=>setToast(false), 2500);
+  }
+
+  return (
+    <div className="main">
+      <div className="page-header">
+        <div><h1 className="page-title">Work orders</h1><p className="page-sub">Review and approve maintenance requests from field technicians</p></div>
+      </div>
+
+      <div className="card">
+        <table className="tbl">
+          <thead><tr><th>Work order</th><th>Turbine</th><th>Component</th><th>Type</th><th>Priority</th><th>Est. cost</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            {WORK_ORDERS.map(wo=>(
+              <tr key={wo.id}>
+                <td style={{fontFamily:'var(--mono)',fontSize:12,fontWeight:500}}>{wo.id}</td>
+                <td>{wo.turbine}</td>
+                <td style={{fontSize:12,maxWidth:140}}>{wo.component}</td>
+                <td style={{fontSize:12}}>{wo.type}</td>
+                <td><Badge label={wo.priority}/></td>
+                <td style={{fontFamily:'var(--mono)',fontSize:12}}>${wo.estimatedCost.toLocaleString()}</td>
+                <td><Badge label={wo.status}/></td>
+                <td>
+                  <button className="btn btn-accent btn-sm" onClick={()=>setApproveModal(wo)}>Review</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {approveModal && (
+        <div className="modal-overlay" onClick={()=>setApproveModal(null)}>
+          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:540}}>
+            <h2>Review work order</h2>
+            <p>Submitted by {approveModal.requestedBy} on {approveModal.requestDate}</p>
+            <div className="modal-detail">
+              {[['Work order',approveModal.id],['Finding',approveModal.finding],['Turbine',approveModal.turbine],['Component',approveModal.component],['Type',approveModal.type],['Priority',approveModal.priority],['Estimated hours',approveModal.estimatedHrs+'h'],['Estimated cost','$'+approveModal.estimatedCost.toLocaleString()],['Crew required',approveModal.crew]].map(([l,v])=>(
+                <div className="modal-row" key={l}><span className="lbl">{l}</span><span className="val">{v}</span></div>
+              ))}
+            </div>
+            <div style={{background:'var(--navy)',borderRadius:'var(--radius-md)',padding:10,fontSize:12,color:'var(--text-secondary)',marginBottom:12}}>
+              <span style={{fontWeight:500,color:'var(--text-primary)'}}>Technician notes:</span><br/>{approveModal.notes}
+            </div>
+            <div className="form-group" style={{marginBottom:10}}>
+              <label className="form-label">Manager comments</label>
+              <textarea className="form-textarea" rows="2" placeholder="Add scheduling notes, budget approval code, or additional instructions..."></textarea>
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-red btn-sm" onClick={()=>setApproveModal(null)}>Reject</button>
+              <button className="btn btn-ghost btn-sm" onClick={()=>setApproveModal(null)}>Request more info</button>
+              <button className="btn btn-green btn-sm" onClick={handleApprove}>Approve work order</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && <div className="toast">✓ Work order approved and scheduled</div>}
+    </div>
+  );
+}
+
+/* ========== APP ========== */
+function App() {
+  const [role, setRole] = useState('ops');
+  const [view, setView] = useState('dashboard');
+
+  let content;
+  if (role === 'ops') {
+    if (view === 'dashboard') content = <Dashboard setView={setView}/>;
+    else if (view === 'schedule') content = <ScheduleInspection setView={setView}/>;
+    else if (view === 'monitor') content = <MissionMonitor setView={setView}/>;
+    else if (view === 'workorders') content = <WorkOrders setView={setView}/>;
+    else content = <Dashboard setView={setView}/>;
+  } else {
+    if (view === 'findings') content = <InspectionFindings setView={setView}/>;
+    else content = <InspectionFindings setView={setView}/>;
+  }
+
+  return (
+    <>
+      <TopBar role={role} setRole={setRole} setView={setView}/>
+      <div className="layout">
+        <Sidebar role={role} view={view} setView={setView}/>
+        {content}
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+</script>
+</body>
+</html>
